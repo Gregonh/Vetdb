@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true, //avoid some problems with old libraries
+    "allowJs": true,
+    "noUncheckedIndexedAccess": true, //warn that array index could be undefined
+    "noEmit": true,
+    "useDefineForClassFields": true,
+    /* Bundler mode */
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "target": "ES2022",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "outDir": "../dist/client", //all compiled javascript files will be placed here
+    "rootDir": "./src", //doesn't affect which files compile, no interact with include
+    /* Bundler mode */
+    "jsx": "react-jsx",
+    "baseUrl": ".", // Setting the baseUrl for module resolution
+    "paths": {
+      "@/*": ["./src/*"] // Alias for resolving paths
+    }
+  },
+  "include": ["./src/**/*"], //files to compile and get javascript
+  "exclude": ["node_modules"]
+}

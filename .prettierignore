@@ -1,0 +1,19 @@
+# Ignore artifacts:
+build
+coverage
+
+node_modules/
+dist/
+build/
+
+.gitignore
+.eslintignore
+README.md
+vite.config.js
+
+*-min.js
+*.min.css
+
+client/dist
+client/node_modules
+server/node_modules

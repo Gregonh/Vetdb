@@ -1,0 +1,4 @@
+A place for favicon,
+logos, manifest,
+robots.txt, patterns.
+

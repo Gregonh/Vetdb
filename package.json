@@ -1,0 +1,41 @@
+{
+  "type": "module",
+  "name": "template-project",
+  "version": "1.0.0",
+  "description": "A template for a project : vite, typescript, react, react-router, tailwind, node, express, zustand, swr, eslint and prettier",
+  "main": "index.js",
+  "scripts": {
+    "client": "npm --prefix client start",
+    "client:dev": "npm --prefix client run dev",
+    "client:build": "npm --prefix client run build",
+    "client:preview": "npm --prefix client run preview",
+    "server": "npm --prefix server start",
+    "start": "npm run client:build && npm run server",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --ignore-path .gitignore",
+    "lint-fix": "pnpm lint -- --fix",
+    "dev": "concurrently \"npm run client:dev\" \"npm run server\""
+  },
+  "keywords": [],
+  "author": "Grego Nunez",
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
+    "@typescript-eslint/parser": "^7.13.1",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.34.3",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
+    "globals": "^15.6.0",
+    "prettier": "3.3.2",
+    "prettier-plugin-tailwindcss": "^0.6.5",
+    "typescript": "^5.2.2",
+    "typescript-eslint": "^7.13.1"
+  }
+}
