@@ -4,10 +4,10 @@
 import bodyParser from 'body-parser';
 import errorhandler from 'errorhandler';
 import express from 'express';
-import { Pool } from 'pg';
+
+import { db } from './queries/query_users';
 
 const app = express();
-//where to listen for new requests by providing a port number
 const PORT = process.env.PORT || 4001;
 app.use(bodyParser.json());
 app.use(
@@ -16,15 +16,6 @@ app.use(
   }),
 );
 
-const pool = new Pool({
-  user: 'postgres', // replace with your database username
-  host: 'localhost', // replace with your database host
-  database: 'dvdrental', // replace with your database name
-  password: 'libretita5445.', // replace with your database password
-  port: 5432, // replace with your database port
-});
-
-// Use static server to serve the Express Yourself Website
 app.use(express.static('public'));
 
 app.use((req, res, next) => {
@@ -32,19 +23,16 @@ app.use((req, res, next) => {
   next();
 });
 
-//query function to call in the endpoint
-const getUsers = (request, response) => {
-  pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
-    if (error) {
-      throw error;
-    }
-    response.status(200).json(results.rows);
-  });
-};
-
 app.get('/', (request, response) => {
   response.json({ info: 'Node.js, Express, and Postgres API' });
 });
+
+//routes with callback queries
+app.get("/users", db.getUsers);
+app.get("/users/:id", db.getUserById);
+app.post("/users", db.createUser);
+app.put("/users/:id", db.updateUser);
+app.delete("/users/:id", db.deleteUser);
 
 if (process.env.NODE_ENV === 'development') {
   app.use(errorhandler());

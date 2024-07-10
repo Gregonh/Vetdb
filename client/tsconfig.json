@@ -8,6 +8,7 @@
     "noUncheckedIndexedAccess": true, //warn that array index could be undefined
     "noEmit": true,
     "useDefineForClassFields": true,
+    "removeComments": true,
     /* Bundler mode */
     "module": "ESNext",
     "moduleResolution": "bundler",
@@ -23,7 +24,7 @@
     "noFallthroughCasesInSwitch": true,
 
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-    "target": "ES2022",
+    "target": "es2023",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "outDir": "../dist/client", //all compiled javascript files will be placed here
     "rootDir": "./src", //doesn't affect which files compile, no interact with include
