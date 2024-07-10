@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import errorhandler from 'errorhandler';
 import express from 'express';
 
-import { db } from './queries/query_users';
+import { db } from './data-sources/query_users';
 
 const app = express();
 const PORT = process.env.PORT || 4001;
@@ -28,11 +28,11 @@ app.get('/', (request, response) => {
 });
 
 //routes with callback queries
-app.get("/users", db.getUsers);
-app.get("/users/:id", db.getUserById);
-app.post("/users", db.createUser);
-app.put("/users/:id", db.updateUser);
-app.delete("/users/:id", db.deleteUser);
+app.get('/users', db.getUsers);
+app.get('/users/:id', db.getUserById);
+app.post('/users', db.createUser);
+app.put('/users/:id', db.updateUser);
+app.delete('/users/:id', db.deleteUser);
 
 if (process.env.NODE_ENV === 'development') {
   app.use(errorhandler());
