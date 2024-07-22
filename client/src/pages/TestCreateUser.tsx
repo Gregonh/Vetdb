@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Button } from '../components/ui/button';
+import { Checkbox } from '../components/ui/checkbox';
 import {
   Form,
   FormControl,
@@ -41,7 +42,9 @@ const userValidationSchema = z
     //literal because we want exactly that value
     terms: z.literal(true, {
       //to customize the error message
-      errorMap: () => ({ message: 'You must accept Terms and Conditions' }),
+      errorMap: () => ({
+        message: 'You must accept our Terms and Privacy Policy',
+      }),
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -57,7 +60,6 @@ export function UserVet() {
   });
 
   const {
-    register,
     handleSubmit,
     formState: { errors },
     control,
@@ -247,53 +249,73 @@ export function UserVet() {
               />
             </div>
           </div>
-          <Button type="submit">Submit</Button>
+          <div className="mb-6">
+            <FormField
+              control={control}
+              name="terms"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="mb-4 flex items-start space-x-2">
+                    <FormControl>
+                      <Checkbox
+                        id="terms"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="grid gap-3 leading-none">
+                      <FormLabel
+                        className={`text-sm font-bold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${
+                          errors.terms ? 'text-red-500' : 'text-gray-700'
+                        }`}
+                        htmlFor="terms"
+                      >
+                        Accept Terms & Conditions
+                      </FormLabel>
+                      {!errors.terms ? (
+                        <FormDescription>
+                          You agree to our Terms of Service and Privacy Policy.
+                        </FormDescription>
+                      ) : (
+                        <FormMessage className="italic">
+                          {errors.terms && errors.terms?.message}
+                        </FormMessage>
+                      )}
+                    </div>
+                  </div>
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="mb-6 text-center">
+            <Button
+              className="focus:shadow-outline w-full rounded-full bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none"
+              type="submit"
+            >
+              Register Account
+            </Button>
+          </div>
         </form>
       </Form>
 
-      <form className="mb-4 px-8 pb-8 pt-6" onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-4">
-          <input type="checkbox" id="terms" {...register('terms')} />
-          <label
-            htmlFor="terms"
-            className={`mb-2 ml-2 text-sm font-bold ${
-              errors.terms ? 'text-red-500' : 'text-gray-700'
-            }`}
-          >
-            Accept Terms & Conditions
-          </label>
-          {errors.terms && (
-            <p className="mt-2 text-xs italic text-red-500">
-              {errors.terms?.message}
-            </p>
-          )}
-        </div>
-        <div className="mb-6 text-center">
-          <button
-            className="focus:shadow-outline w-full rounded-full bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none"
-            type="submit"
-          >
-            Register Account
-          </button>
-        </div>
-        <hr className="mb-6 border-t" />
-        <div className="text-center">
-          <a
-            className="inline-block align-baseline text-sm text-blue-500 hover:text-blue-800"
-            href="#test"
-          >
-            Forgot Password?
-          </a>
-        </div>
-        <div className="text-center">
-          <a
-            className="inline-block align-baseline text-sm text-blue-500 hover:text-blue-800"
-            href="./index.html"
-          >
-            Already have an account? Login!
-          </a>
-        </div>
-      </form>
+      <hr className="mb-6 border-t" />
+      <div className="text-center">
+        <a
+          className="inline-block align-baseline text-sm text-blue-500 hover:text-blue-800"
+          href="#test"
+        >
+          Forgot Password?
+        </a>
+      </div>
+      <div className="text-center">
+        <a
+          className="inline-block align-baseline text-sm text-blue-500 hover:text-blue-800"
+          href="./index.html"
+        >
+          Already have an account? Login!
+        </a>
+      </div>
     </div>
   );
 }
