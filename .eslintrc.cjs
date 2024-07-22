@@ -130,6 +130,14 @@ module.exports = {
           'error',
           { ignoreVoid: true },
         ],
+        '@typescript-eslint/no-misused-promises': [
+          2,
+          {
+            checksVoidReturn: {
+              attributes: false,
+            },
+          },
+        ],
       },
     },
   ],

@@ -1,4 +1,158 @@
 @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
-  
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    /*font root to fix rem in tailwind default classes*/
+    font-size: 16px;
+  }
+
+  /*utopia type scale and spacing (for viewport and container).
+  Viewport clamp for root elements and container´s units for inner elements*/
+  :root {
+    /* Step -2: 12.642px → 16.6667px */
+    --vfont--2: clamp(0.7901rem, 0.7366rem + 0.2712vw, 1.0417rem);
+    /* Step -1: 14.2222px → 20px */
+    --vfont--1: clamp(0.8889rem, 0.812rem + 0.3893vw, 1.25rem);
+    /* Step 0: 16px → 24px */
+    --vfont-0: clamp(1rem, 0.8935rem + 0.5391vw, 1.5rem);
+    /* Step 1: 18px → 28.8px */
+    --vfont-1: clamp(1.125rem, 0.9813rem + 0.7278vw, 1.8rem);
+    /* Step 2: 20.25px → 34.56px */
+    --vfont-2: clamp(1.2656rem, 1.0752rem + 0.9643vw, 2.16rem);
+    /* Step 3: 22.7813px → 41.472px */
+    --vfont-3: clamp(1.4238rem, 1.1751rem + 1.2595vw, 2.592rem);
+    /* Step 4: 25.6289px → 49.7664px */
+    --vfont-4: clamp(1.6018rem, 1.2806rem + 1.6265vw, 3.1104rem);
+    /* Step 5: 28.8325px → 59.7197px */
+    --vfont-5: clamp(1.802rem, 1.391rem + 2.0813vw, 3.7325rem);
+
+    /* Step -2: 12.642px → 16.6667px */
+    --cfont--2: clamp(0.7901rem, 0.7366rem + 0.2712vw, 1.0417rem);
+    /* Step -1: 14.2222px → 20px */
+    --cfont--1: clamp(0.8889rem, 0.812rem + 0.3893vw, 1.25rem);
+    /* Step 0: 16px → 24px */
+    --cfont-0: clamp(1rem, 0.8935rem + 0.5391vw, 1.5rem);
+    /* Step 1: 18px → 28.8px */
+    --cfont-1: clamp(1.125rem, 0.9813rem + 0.7278vw, 1.8rem);
+    /* Step 2: 20.25px → 34.56px */
+    --cfont-2: clamp(1.2656rem, 1.0752rem + 0.9643vw, 2.16rem);
+    /* Step 3: 22.7813px → 41.472px */
+    --cfont-3: clamp(1.4238rem, 1.1751rem + 1.2595vw, 2.592rem);
+    /* Step 4: 25.6289px → 49.7664px */
+    --cfont-4: clamp(1.6018rem, 1.2806rem + 1.6265vw, 3.1104rem);
+    /* Step 5: 28.8325px → 59.7197px */
+    --cfont-5: clamp(1.802rem, 1.391rem + 2.0813vw, 3.7325rem);
+
+    /*viewport spacing*/
+    /* Space 3xs: 4px → 6px */
+    --vspace-3xs: clamp(0.25rem, 0.2234rem + 0.1348vw, 0.375rem);
+    /* Space 2xs: 8px → 12px */
+    --vspace-2xs: clamp(0.5rem, 0.4468rem + 0.2695vw, 0.75rem);
+    /* Space xs: 12px → 18px */
+    --vspace-xs: clamp(0.75rem, 0.6701rem + 0.4043vw, 1.125rem);
+    /* Space s: 16px → 24px */
+    --vspace-s: clamp(1rem, 0.8935rem + 0.5391vw, 1.5rem);
+    /* Space m: 24px → 36px */
+    --vspace-m: clamp(1.5rem, 1.3403rem + 0.8086vw, 2.25rem);
+    /* Space l: 32px → 48px */
+    --vspace-l: clamp(2rem, 1.7871rem + 1.0782vw, 3rem);
+    /* Space xl: 48px → 72px */
+    --vspace-xl: clamp(3rem, 2.6806rem + 1.6173vw, 4.5rem);
+    /* Space 2xl: 64px → 96px */
+    --vspace-2xl: clamp(4rem, 3.5741rem + 2.1563vw, 6rem);
+    /* Space 3xl: 96px → 144px */
+    --vspace-3xl: clamp(6rem, 5.3612rem + 3.2345vw, 9rem);
+
+    /* One-up pairs: better for drastic space change between viewport */
+    /* Space 3xs-2xs: 4px → 12px */
+    --vspace-3xs-2xs: clamp(0.25rem, 0.1435rem + 0.5391vw, 0.75rem);
+    /* Space 2xs-xs: 8px → 18px */
+    --vspace-2xs-xs: clamp(0.5rem, 0.3669rem + 0.6739vw, 1.125rem);
+    /* Space xs-s: 12px → 24px */
+    --vspace-xs-s: clamp(0.75rem, 0.5903rem + 0.8086vw, 1.5rem);
+    /* Space s-m: 16px → 36px */
+    --vspace-s-m: clamp(1rem, 0.7338rem + 1.3477vw, 2.25rem);
+    /* Space m-l: 24px → 48px */
+    --vspace-m-l: clamp(1.5rem, 1.1806rem + 1.6173vw, 3rem);
+    /* Space l-xl: 32px → 72px */
+    --vspace-l-xl: clamp(2rem, 1.4677rem + 2.6954vw, 4.5rem);
+    /* Space xl-2xl: 48px → 96px */
+    --vspace-xl-2xl: clamp(3rem, 2.3612rem + 3.2345vw, 6rem);
+    /* Space 2xl-3xl: 64px → 144px */
+    --vspace-2xl-3xl: clamp(4rem, 2.9353rem + 5.3908vw, 9rem);
+
+    /* Custom pairs */
+    /* Space s-l: 16px → 48px */
+    --vspace-s-l: clamp(1rem, 0.5741rem + 2.1563vw, 3rem);
+    /* Space s-xl: 16px → 72px */
+    --vspace-s-xl: clamp(1rem, 0.2547rem + 3.7736vw, 4.5rem);
+
+    /* container space */
+    --cspace-3xs: clamp(0.25rem, 0.2234rem + 0.1348cqi, 0.375rem);
+    --cspace-2xs: clamp(0.5rem, 0.4468rem + 0.2695cqi, 0.75rem);
+    --cspace-xs: clamp(0.75rem, 0.6701rem + 0.4043cqi, 1.125rem);
+    --cspace-s: clamp(1rem, 0.8935rem + 0.5391cqi, 1.5rem);
+    --cspace-m: clamp(1.5rem, 1.3403rem + 0.8086cqi, 2.25rem);
+    --cspace-l: clamp(2rem, 1.7871rem + 1.0782cqi, 3rem);
+    --cspace-xl: clamp(3rem, 2.6806rem + 1.6173cqi, 4.5rem);
+    --cspace-2xl: clamp(4rem, 3.5741rem + 2.1563cqi, 6rem);
+    --cspace-3xl: clamp(6rem, 5.3612rem + 3.2345cqi, 9rem);
+
+    /* One-up pairs */
+    --cspace-3xs-2xs: clamp(0.25rem, 0.1435rem + 0.5391cqi, 0.75rem);
+    --cspace-2xs-xs: clamp(0.5rem, 0.3669rem + 0.6739cqi, 1.125rem);
+    --cspace-xs-s: clamp(0.75rem, 0.5903rem + 0.8086cqi, 1.5rem);
+    --cspace-s-m: clamp(1rem, 0.7338rem + 1.3477cqi, 2.25rem);
+    --cspace-m-l: clamp(1.5rem, 1.1806rem + 1.6173cqi, 3rem);
+    --cspace-l-xl: clamp(2rem, 1.4677rem + 2.6954cqi, 4.5rem);
+    --cspace-xl-2xl: clamp(3rem, 2.3612rem + 3.2345cqi, 6rem);
+    --cspace-2xl-3xl: clamp(4rem, 2.9353rem + 5.3908cqi, 9rem);
+
+    /* Custom pairs */
+    --cspace-s-l: clamp(1rem, 0.5741rem + 2.1563cqi, 3rem);
+    --cspace-s-xl: clamp(1rem, 0.2547rem + 3.7736cqi, 4.5rem);
+  }
+}
+
+@layer components {
+  :root {
+    /*
+    Stablish a fluid grid to work as visual align tester, also
+    to get the ugrid-gutter. This gutter can be used inside grid,
+    but also as padding for root element that are not full width.
+    Min viewport of 316px and max viewport of 1800px.
+    */
+    --ugrid-max-width: 112.5rem;
+    --ugrid-gutter: var(
+      --space-s-xl,
+      clamp(1rem, 0.2547rem + 3.7736vw, 4.5rem)
+    );
+    --ugrid-columns: 12;
+  }
+  /*the wrapper for the grid*/
+  .u-container {
+    max-width: var(--ugrid-max-width);
+    /* all the screen´s height and over 1800 width, center and add fluid padding */
+    padding-inline: var(--ugrid-gutter);
+    margin-inline: auto;
+    height: 100vh;
+  }
+
+  .u-grid {
+    display: grid;
+    gap: var(--ugrid-gutter);
+    /*change the next according our needs*/
+    height: 100%;
+    grid-template-columns: repeat(var(--ugrid-columns), 1fr);
+    /* color gap */
+    background-color: #ce9494;
+  }
+
+  .u-grid-item {
+    /* column color */
+    background-color: #d7d7d7;
+    /* outline: 1px solid #ce9494; */
+  }
+}
