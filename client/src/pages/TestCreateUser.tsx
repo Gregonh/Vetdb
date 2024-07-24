@@ -51,6 +51,10 @@ const userValidationSchema = z
     path: ['confirmPassword'],
     message: "Password don't match",
   });
+/**
+ * put the refine at the end means that the validation is not send
+ * until the others default validation passed.
+ */
 
 type UserValidation = z.infer<typeof userValidationSchema>;
 
@@ -85,15 +89,15 @@ export function UserVet() {
     <div className="p-vspace-xs sm:p-custom8 md:p-custom12 m-auto mb-[max(8vh,2rem)] max-w-xs sm:max-w-sm md:max-w-md xl:max-w-2xl">
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)} className="p-8">
-          <div className="mb-4 md:flex md:justify-between">
-            <div className="mb-4 md:mb-0 md:mr-2">
+          <div className="md:flex md:justify-between md:gap-x-4">
+            <div className="md:grow md:basis-0">
               <FormField
                 control={control}
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel
-                      className="mb-2 block text-sm font-bold text-gray-700"
+                      className="block text-sm font-bold text-gray-700"
                       htmlFor="firstName"
                     >
                       Username
@@ -119,14 +123,14 @@ export function UserVet() {
                 )}
               />
             </div>
-            <div className="md:ml-2">
+            <div className="mt-4 md:mt-0 md:grow md:basis-0">
               <FormField
                 control={control}
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel
-                      className="mb-2 block text-sm font-bold text-gray-700"
+                      className="block text-sm font-bold text-gray-700"
                       htmlFor="lastName"
                     >
                       Lastname
@@ -151,14 +155,14 @@ export function UserVet() {
               />
             </div>
           </div>
-          <div className="mb-4">
+          <div className="mt-4">
             <FormField
               control={control}
               name="email"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel
-                    className="mb-2 block text-sm font-bold text-gray-700"
+                    className="block text-sm font-bold text-gray-700"
                     htmlFor="email"
                   >
                     Email
@@ -184,20 +188,20 @@ export function UserVet() {
               )}
             />
           </div>
-          <div className="mb-4 md:flex md:justify-between">
-            <div className="mb-4 md:mb-0 md:mr-2">
+          <div className="mt-4 md:flex md:min-h-64 md:gap-x-4">
+            <div className="md:grow md:basis-0">
               <FormField
                 control={control}
                 name="password"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="md:flex md:h-[100%] md:flex-col">
                     <FormLabel
-                      className="mb-2 block text-sm font-bold text-gray-700"
+                      className="block text-sm font-bold text-gray-700 md:grow md:basis-0"
                       htmlFor="password"
                     >
                       Password
                     </FormLabel>
-                    <FormControl>
+                    <FormControl className="mt-2">
                       <input
                         {...field}
                         type="password"
@@ -208,27 +212,29 @@ export function UserVet() {
                         id="password"
                       />
                     </FormControl>
-                    <FormDescription>Choose a strong password.</FormDescription>
-                    <FormMessage>
+                    <FormDescription className="md:basis-12 md:overflow-y-auto">
+                      Choose a strong password.
+                    </FormDescription>
+                    <FormMessage className="md:grow md:basis-0">
                       {errors.password && errors.password?.message}
                     </FormMessage>
                   </FormItem>
                 )}
               />
             </div>
-            <div className="md:ml-2">
+            <div className="mt-4 md:mt-0 md:grow md:basis-0">
               <FormField
                 control={control}
                 name="confirmPassword"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="md:flex md:h-[100%] md:flex-col">
                     <FormLabel
-                      className="mb-2 block text-sm font-bold text-gray-700"
+                      className="block text-sm font-bold text-gray-700 md:grow md:basis-0"
                       htmlFor="c_password"
                     >
                       Confirm password
                     </FormLabel>
-                    <FormControl>
+                    <FormControl className="mt-2">
                       <input
                         {...field}
                         type="password"
@@ -239,8 +245,10 @@ export function UserVet() {
                         id="c_password"
                       />
                     </FormControl>
-                    <FormDescription>Choose the same password.</FormDescription>
-                    <FormMessage>
+                    <FormDescription className="md:basis-12 md:overflow-y-auto">
+                      Choose the same password.
+                    </FormDescription>
+                    <FormMessage className="md:grow md:basis-0">
                       {errors.confirmPassword &&
                         errors.confirmPassword?.message}
                     </FormMessage>
@@ -249,13 +257,13 @@ export function UserVet() {
               />
             </div>
           </div>
-          <div className="mb-6">
+          <div className="mt-6">
             <FormField
               control={control}
               name="terms"
               render={({ field }) => (
                 <FormItem>
-                  <div className="mb-4 flex items-start space-x-2">
+                  <div className="flex items-start space-x-2">
                     <FormControl>
                       <Checkbox
                         id="terms"
@@ -288,7 +296,7 @@ export function UserVet() {
             />
           </div>
 
-          <div className="mb-6 text-center">
+          <div className="mt-6 text-center">
             <Button
               className="focus:shadow-outline w-full rounded-full bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none"
               type="submit"
@@ -299,8 +307,8 @@ export function UserVet() {
         </form>
       </Form>
 
-      <hr className="mb-6 border-t" />
-      <div className="text-center">
+      <hr className="mt-6 border-t" />
+      <div className="mt-6 text-center">
         <a
           className="inline-block align-baseline text-sm text-blue-500 hover:text-blue-800"
           href="#test"
