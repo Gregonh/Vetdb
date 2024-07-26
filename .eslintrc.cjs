@@ -113,7 +113,13 @@ module.exports = {
       ],
       parser: '@typescript-eslint/parser',
       parserOptions: {
-        project: ['./client/tsconfig.json', './client/tsconfig.vite.json'],
+        project: [
+          './client/tsconfig.json',
+          './client/tsconfig.vite.json',
+          './server/tsconfig.json',
+        ],
+        tsconfigRootDir: __dirname,
+        sourceType: 'module', // This will be overridden for server files
         //project: true, //para que function el recommended-requiring-type-checking buscando en el tsconfig
       },
       plugins: ['@typescript-eslint/eslint-plugin'],
@@ -138,6 +144,30 @@ module.exports = {
             },
           },
         ],
+      },
+    },
+    {
+      files: ['./client/**/*.ts', './client/**/*.tsx'],
+      parserOptions: {
+        project: ['./client/tsconfig.json'],
+        tsconfigRootDir: __dirname,
+        sourceType: 'module', // Client uses ES Modules
+      },
+      env: {
+        browser: true,
+      },
+    },
+    {
+      files: ['./server/**/*.ts'],
+      parserOptions: {
+        project: ['./server/tsconfig.json'],
+        tsconfigRootDir: __dirname,
+        sourceType: 'module', // Linting TypeScript as ES Modules
+        // Server esmodule for ts, then use module. But the generated code is commonjs
+      },
+      env: {
+        //recognize node.js globals such as process
+        node: true,
       },
     },
   ],

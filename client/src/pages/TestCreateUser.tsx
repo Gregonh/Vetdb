@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -69,15 +70,37 @@ export function UserVet() {
     control,
   } = form;
 
-  const onSubmit = (data: UserValidation) => {
+  const createUser = async (user: UserValidation) => {
+    // eslint-disable-next-line no-useless-catch
     try {
-      const user = userValidationSchema.parse(data); // Validate form data
-      console.log('Valid user:', user);
+      console.log({ user });
+      const client = axios.create({
+        baseURL: 'http://localhost:4001/users',
+        timeout: 40000, //si pasa 40 seg aborta
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json; charset=utf-8',
+        },
+      });
+      const baseURL = client.defaults.baseURL as string;
+      const data = {
+        name: user.firstName,
+        email: user.email,
+      };
+      await client.post(baseURL, data).then((res) => console.log(res));
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const onSubmit = async (data: UserValidation) => {
+    try {
+      const user = userValidationSchema.parse(data);
+      await createUser(user);
     } catch (err: unknown) {
       if (err instanceof z.ZodError) {
-        console.log(err.issues);
+        console.error(err.issues);
       }
-
       if (err instanceof Error) {
         console.error(err.message);
       }
@@ -111,6 +134,7 @@ export function UserVet() {
                           errors.firstName && 'border-red-500'
                         } focus:shadow-outline appearance-none rounded focus:outline-none`}
                         id="firstName"
+                        defaultValue=""
                       />
                     </FormControl>
                     <FormDescription>
@@ -144,6 +168,7 @@ export function UserVet() {
                         } focus:shadow-outline appearance-none rounded focus:outline-none`}
                         id="lastName"
                         type="text"
+                        defaultValue=""
                       />
                     </FormControl>
                     <FormDescription>Introduce your last name.</FormDescription>
@@ -175,7 +200,8 @@ export function UserVet() {
                       } focus:shadow-outline appearance-none rounded focus:outline-none`}
                       id="email"
                       type="email"
-                      placeholder="Enter your email"
+                      autoComplete="email"
+                      defaultValue=""
                     />
                   </FormControl>
                   <FormDescription>
@@ -205,11 +231,12 @@ export function UserVet() {
                       <input
                         {...field}
                         type="password"
-                        placeholder="Enter your password"
                         className={`w-full border px-3 py-2 text-sm leading-tight text-gray-700 ${
                           errors.password && 'border-red-500'
                         } focus:shadow-outline appearance-none rounded focus:outline-none`}
                         id="password"
+                        autoComplete="new-password"
+                        defaultValue=""
                       />
                     </FormControl>
                     <FormDescription className="md:basis-12 md:overflow-y-auto">
@@ -238,11 +265,12 @@ export function UserVet() {
                       <input
                         {...field}
                         type="password"
-                        placeholder="Enter your password again"
                         className={`w-full border px-3 py-2 text-sm leading-tight text-gray-700 ${
                           errors.confirmPassword && 'border-red-500'
                         } focus:shadow-outline appearance-none rounded focus:outline-none`}
                         id="c_password"
+                        autoComplete="new-password"
+                        defaultValue=""
                       />
                     </FormControl>
                     <FormDescription className="md:basis-12 md:overflow-y-auto">
@@ -264,9 +292,8 @@ export function UserVet() {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex items-start space-x-2">
-                    <FormControl>
+                    <FormControl id="terms">
                       <Checkbox
-                        id="terms"
                         checked={field.value}
                         onCheckedChange={field.onChange}
                       />
@@ -298,7 +325,7 @@ export function UserVet() {
 
           <div className="mt-6 text-center">
             <Button
-              className="focus:shadow-outline w-full rounded-full bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none"
+              className="focus:shadow-outline w-full rounded-full bg-blue-500 px-4 py-2 font-bold text-[rgb(28,28,28)] hover:bg-blue-700 hover:text-white focus:outline-none"
               type="submit"
             >
               Register Account
@@ -310,7 +337,7 @@ export function UserVet() {
       <hr className="mt-6 border-t" />
       <div className="mt-6 text-center">
         <a
-          className="inline-block align-baseline text-sm text-blue-500 hover:text-blue-800"
+          className="inline-block align-baseline text-sm text-[rgb(39,86,163)] hover:text-blue-800"
           href="#test"
         >
           Forgot Password?
@@ -318,7 +345,7 @@ export function UserVet() {
       </div>
       <div className="text-center">
         <a
-          className="inline-block align-baseline text-sm text-blue-500 hover:text-blue-800"
+          className="inline-block align-baseline text-sm text-[rgb(39,86,163)] hover:text-blue-800"
           href="./index.html"
         >
           Already have an account? Login!

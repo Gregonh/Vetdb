@@ -22,7 +22,6 @@ import {
 function Home() {
   return (
     <>
-      
       <Link to="/user">About</Link>
       <Card className="w-[350px]">
         <CardHeader>

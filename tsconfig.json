@@ -1,0 +1,13 @@
+//Project references allow you to run several tsconfig.json files in a single tsc command
+// to use tsc -b to run the project reference. Build client and server in correct order.
+{
+  "references": [
+    {
+      "path": "./client/tsconfig.json"
+    },
+    {
+      "path": "./server/tsconfig.json"
+    }
+  ],
+  "files": []
+}

@@ -1,10 +1,10 @@
 import { pool } from '../dotConfig';
 
 //query function to call in the endpoint
-const getUsers = (request, response) => {
+const getUsers = (request, response, next) => {
   pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
     if (error) {
-      throw error;
+      return next(error);
     }
     response.status(200).json(results.rows);
   });
@@ -14,19 +14,20 @@ const getUsers = (request, response) => {
 get the custom id parameter by the URL
 $1 is a numbered placeholder that PostgreSQL uses natively instead of the ?
 */
-const getUserById = (request, response) => {
+const getUserById = (request, response, next) => {
   const id = parseInt(request.params.id);
 
   pool.query('SELECT * FROM users WHERE id = $1', [id], (error, results) => {
     if (error) {
-      throw error;
+      return next(error);
     }
     response.status(200).json(results.rows);
   });
 };
 
 //post
-const createUser = (request, response) => {
+const createUser = (request, response, next) => {
+  console.log(request.body);
   const { name, email } = request.body;
 
   pool.query(
@@ -34,9 +35,12 @@ const createUser = (request, response) => {
     [name, email],
     (error, results) => {
       if (error) {
-        throw error;
+        return next(error);
       }
-      response.status(201).send(`User added with ID: ${results.rows[0].ID}`);
+
+      response
+        .status(201)
+        .json({ message: `User added with ID: ${results.rows[0].id}` });
     },
   );
 };
@@ -46,7 +50,7 @@ const createUser = (request, response) => {
  * The /users/:id endpoint will also take two HTTP requests,
  * the GET we created for getUserById and a PUT to modify an existing user.
  */
-const updateUser = (request, response) => {
+const updateUser = (request, response, next) => {
   const id = parseInt(request.params.id);
   const { name, email } = request.body;
 
@@ -55,24 +59,24 @@ const updateUser = (request, response) => {
     [name, email, id],
     (error, results) => {
       if (error) {
-        throw error;
+        return next(error);
       }
       console.log(results);
-      response.status(200).send(`User modified with ID: ${id}`);
+      response.status(200).json({ message: `User modified with ID: ${id}` });
     },
   );
 };
 
 //delete
-const deleteUser = (request, response) => {
+const deleteUser = (request, response, next) => {
   const id = parseInt(request.params.id);
 
   pool.query('DELETE FROM users WHERE id = $1', [id], (error, results) => {
     if (error) {
-      throw error;
+      return next(error);
     }
     console.log(results);
-    response.status(200).send(`User deleted with ID: ${id}`);
+    response.status(200).json({ message: `User deleted with ID: ${id}` });
   });
 };
 
