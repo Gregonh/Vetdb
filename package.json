@@ -4,8 +4,8 @@
   "description": "A template for a project : vite, typescript, react, react-router, tailwind, node, express, zustand, swr, eslint and prettier",
   "main": "index.js",
   "scripts": {
-    "client": "npm --prefix client start",
     "client:dev": "npm --prefix client run dev",
+    "client": "npm --prefix client start",
     "client:build": "npm --prefix client run build",
     "client:preview": "npm --prefix client run preview",
     "server": "npm --prefix server start",

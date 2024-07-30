@@ -71,7 +71,7 @@ module.exports = {
         'vspace-xl-2xl': 'var(--vspace-xl-2xl)',
         'vspace-2xl-3xl': 'var(--vspace-2xl-3xl)',
         'vspace-s-l': 'var(--vspace-s-l)',
-        'vspace-2xs-xl': 'var(--vspace-2xs-xl)',
+        'vspace-s-xl': 'var(--vspace-s-xl)',
 
         //utopia responsive scale according container
         'cspace-3xs': 'var(--cspace-3xs)',
@@ -93,6 +93,7 @@ module.exports = {
         'cspace-xl-2xl': 'var(--cspace-xl-2xl)',
         'cspace-2xl-3xl': 'var(--cspace-2xl-3xl)',
         'cspace-s-l': 'var(--cspace-s-l)',
+        'cspace-s-xl': 'var(--cspace-s-xl)',
       },
       keyframes: {
         'accordion-down': {
