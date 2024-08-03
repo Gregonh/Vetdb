@@ -35,8 +35,7 @@ const userValidationSchema = z
     password: z
       .string()
       .min(6, {
-        message:
-          'Password must be at least 6 characters asdasdasdsadasdasdasdasdas asdasdasdasdasds',
+        message: 'Password must be at least 6 characters',
       })
       .max(20, { message: 'Password must be no more than 20 characters' }),
     confirmPassword: z
@@ -56,6 +55,7 @@ const userValidationSchema = z
     message: "Password don't match",
   });
 /**
+ * TODO: advise that the password and confirm password are not equal before submit
  * put the refine at the end means that the validation is not send
  * until the others default validation passed.
  */
@@ -116,7 +116,7 @@ export function UserVet() {
       <div className="[@media(min-height:1080px)]:grow">
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="p-cspace-s-l">
-            <div className="md:gap-x-cspace-xs md:flex">
+            <div className="md:gap-x-cspace-s-xl md:flex">
               <div className="md:grow md:basis-0">
                 <FormField
                   control={control}
@@ -151,7 +151,7 @@ export function UserVet() {
                   )}
                 />
               </div>
-              <div className="mt-4 md:mt-0 md:grow md:basis-0">
+              <div className="mt-cspace-xs md:mt-0 md:grow md:basis-0">
                 <FormField
                   control={control}
                   name="lastName"
@@ -186,7 +186,7 @@ export function UserVet() {
                 />
               </div>
             </div>
-            <div className="mt-4">
+            <div className="mt-cspace-xs">
               <FormField
                 control={control}
                 name="email"
@@ -220,7 +220,7 @@ export function UserVet() {
                 )}
               />
             </div>
-            <div className="md:gap-x-cspace-xs mt-4 md:flex md:min-h-44">
+            <div className="md:gap-x-cspace-s-xl mt-cspace-xs md:flex md:min-h-44">
               <div className="md:grow md:basis-0">
                 <FormField
                   control={control}
@@ -228,23 +228,25 @@ export function UserVet() {
                   render={({ field }) => (
                     <FormItem className="md:flex md:h-[100%] md:flex-col">
                       <FormLabel
-                        className="block text-sm font-bold text-gray-700 md:grow md:basis-0"
+                        className="block text-sm font-bold text-gray-700 md:overflow-y-auto"
                         htmlFor="password"
                       >
                         Password
                       </FormLabel>
-                      <FormControl className="mt-2">
-                        <input
-                          {...field}
-                          type="password"
-                          className={`w-full border px-3 py-2 text-sm leading-tight text-gray-700 ${
-                            errors.password && 'border-red-500'
-                          } focus:shadow-outline appearance-none rounded focus:outline-none`}
-                          id="password"
-                          autoComplete="new-password"
-                          defaultValue=""
-                        />
-                      </FormControl>
+                      <div className="md:grow md:basis-0">
+                        <FormControl className="mt-2">
+                          <input
+                            {...field}
+                            type="password"
+                            className={`w-full border px-3 py-2 text-sm leading-tight text-gray-700 ${
+                              errors.password && 'border-red-500'
+                            } focus:shadow-outline appearance-none rounded focus:outline-none`}
+                            id="password"
+                            autoComplete="new-password"
+                            defaultValue=""
+                          />
+                        </FormControl>
+                      </div>
                       <FormDescription className="md:basis-10 md:overflow-y-auto">
                         Choose a strong password.
                       </FormDescription>
@@ -255,30 +257,32 @@ export function UserVet() {
                   )}
                 />
               </div>
-              <div className="mt-4 md:mt-0 md:grow md:basis-0">
+              <div className="mt-cspace-xs md:mt-0 md:grow md:basis-0">
                 <FormField
                   control={control}
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem className="md:flex md:h-[100%] md:flex-col">
                       <FormLabel
-                        className="block text-sm font-bold text-gray-700 md:grow md:basis-0"
+                        className="block text-sm font-bold text-gray-700 md:overflow-y-auto"
                         htmlFor="c_password"
                       >
                         Confirm password
                       </FormLabel>
-                      <FormControl className="mt-2">
-                        <input
-                          {...field}
-                          type="password"
-                          className={`w-full border px-3 py-2 text-sm leading-tight text-gray-700 ${
-                            errors.confirmPassword && 'border-red-500'
-                          } focus:shadow-outline appearance-none rounded focus:outline-none`}
-                          id="c_password"
-                          autoComplete="new-password"
-                          defaultValue=""
-                        />
-                      </FormControl>
+                      <div className="md:grow md:basis-0">
+                        <FormControl className="mt-2">
+                          <input
+                            {...field}
+                            type="password"
+                            className={`w-full border px-3 py-2 text-sm leading-tight text-gray-700 ${
+                              errors.confirmPassword && 'border-red-500'
+                            } focus:shadow-outline appearance-none rounded focus:outline-none`}
+                            id="c_password"
+                            autoComplete="new-password"
+                            defaultValue=""
+                          />
+                        </FormControl>
+                      </div>
                       <FormDescription className="md:basis-10 md:overflow-y-auto">
                         Choose the same password.
                       </FormDescription>
@@ -291,7 +295,7 @@ export function UserVet() {
                 />
               </div>
             </div>
-            <div className="mt-6">
+            <div className="mt-cspace-m">
               <FormField
                 control={control}
                 name="terms"
@@ -330,7 +334,7 @@ export function UserVet() {
               />
             </div>
 
-            <div className="mt-6 text-center">
+            <div className="mt-cspace-m text-center">
               <Button
                 className="focus:shadow-outline w-full rounded-full bg-blue-500 px-4 py-2 font-bold text-[rgb(28,28,28)] hover:bg-blue-700 hover:text-white focus:outline-none"
                 type="submit"
@@ -341,8 +345,8 @@ export function UserVet() {
           </form>
         </Form>
 
-        <hr className="mt-6 border-t" />
-        <div className="mt-6 text-center">
+        <hr className="mt-cspace-m border-t" />
+        <div className="mt-cspace-m text-center">
           <a
             className="inline-block align-baseline text-sm text-[rgb(39,86,163)] hover:text-blue-800"
             href="#test"

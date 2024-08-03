@@ -136,7 +136,7 @@
     */
     --ugrid-max-width: 112.5rem;
     --ugrid-gutter: var(
-      --space-s-xl,
+      --vspace-s-xl,
       clamp(1rem, 0.2547rem + 3.7736vw, 4.5rem)
     );
     --ugrid-columns: 12;
