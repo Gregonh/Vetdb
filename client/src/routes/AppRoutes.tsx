@@ -1,9 +1,11 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { MainLayout } from '../Layouts/MainLayout';
+import { ChangePassword } from '../pages/ChangePassword';
 import { ErrorPage } from '../pages/ErrorPage';
 import { Home } from '../pages/Home';
-import { UserVet } from '../pages/TestCreateUser';
+import { LoginUser } from '../pages/LoginUser';
+import { RegisterUser } from '../pages/RegisterUser';
 import { ProfilerComponent } from '../utils/ProfilerComponent';
 
 const router = createBrowserRouter([
@@ -20,11 +22,26 @@ const router = createBrowserRouter([
           </ProfilerComponent>
         ),
       },
+      {
+        path: '/user',
+        element: <RegisterUser />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: '/changePassword/:id',
+        element: <ChangePassword />,
+        errorElement: <ErrorPage />,
+      },
     ],
   },
   {
     path: '/user',
-    element: <UserVet />,
+    element: <RegisterUser />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/login',
+    element: <LoginUser />,
     errorElement: <ErrorPage />,
   },
 ]);

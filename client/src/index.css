@@ -3,149 +3,270 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    /*font root to fix rem in tailwind default classes*/
+  @font-face {
+    font-family: 'Roboto-SemiBold';
+    font-weight: 600;
+    font-style: normal;
+    src: url('./assets/fonts/linotte-semibold-webfont.woff2') format('woff2');
+  }
+
+  @font-face {
+    font-family: 'Inter-Regular';
+    font-weight: 400;
+    font-style: normal;
+    src: url('./assets/fonts/Inter-Regular.woff2') format('woff2');
+  }
+
+  @font-face {
+    font-family: 'Inter-Bold';
+    font-weight: 700;
+    font-style: normal;
+    src: url('./assets/fonts/Inter-Bold.woff2') format('woff2');
+  }
+
+  @font-face {
+    font-family: 'Inter-Light';
+    font-weight: 300;
+    font-style: normal;
+    src: url('./assets/fonts/Inter-Light.woff2') format('woff2');
+  }
+
+  @font-face {
+    font-family: 'OpenSans-SemiBold';
+    font-weight: 600;
+    font-style: normal;
+    src: url('./assets/fonts/OpenSans-SemiBold.woff2') format('woff2');
+  }
+
+  body {
     font-size: 16px;
+    font-family: 'Inter-Regular', system-ui, sans-serif;
+    font-feature-settings:
+      'liga' 1,
+      'calt' 1; /* fix for Chrome */
   }
 
   /*utopia type scale and spacing (for viewport and container).
   Viewport clamp for root elements and container´s units for inner elements*/
   :root {
-    /* Step -2: 12.642px → 16.6667px */
-    --vfont--2: clamp(0.7901rem, 0.7366rem + 0.2712vw, 1.0417rem);
-    /* Step -1: 14.2222px → 20px */
-    --vfont--1: clamp(0.8889rem, 0.812rem + 0.3893vw, 1.25rem);
-    /* Step 0: 16px → 24px */
-    --vfont-0: clamp(1rem, 0.8935rem + 0.5391vw, 1.5rem);
-    /* Step 1: 18px → 28.8px */
-    --vfont-1: clamp(1.125rem, 0.9813rem + 0.7278vw, 1.8rem);
-    /* Step 2: 20.25px → 34.56px */
-    --vfont-2: clamp(1.2656rem, 1.0752rem + 0.9643vw, 2.16rem);
-    /* Step 3: 22.7813px → 41.472px */
-    --vfont-3: clamp(1.4238rem, 1.1751rem + 1.2595vw, 2.592rem);
-    /* Step 4: 25.6289px → 49.7664px */
-    --vfont-4: clamp(1.6018rem, 1.2806rem + 1.6265vw, 3.1104rem);
-    /* Step 5: 28.8325px → 59.7197px */
-    --vfont-5: clamp(1.802rem, 1.391rem + 2.0813vw, 3.7325rem);
+    --vfont--1: clamp(0.9377rem, 0.048rem + 0.7437vw, 1.2389rem);
+    --vfont-0: clamp(1.25rem, -0.2324rem + 1.2392vw, 1.7519rem);
+    --vfont-1: clamp(1.6663rem, -0.7289rem + 2.0022vw, 2.4772rem);
+    --vfont-2: clamp(2.2211rem, -1.5643rem + 3.1644vw, 3.5027rem);
+    --vfont-3: clamp(2.9607rem, -2.9232rem + 4.9187vw, 4.9528rem);
 
-    /* Step -2: 12.642px → 16.6667px */
-    --cfont--2: clamp(0.7901rem, 0.7366rem + 0.2712vw, 1.0417rem);
-    /* Step -1: 14.2222px → 20px */
-    --cfont--1: clamp(0.8889rem, 0.812rem + 0.3893vw, 1.25rem);
-    /* Step 0: 16px → 24px */
-    --cfont-0: clamp(1rem, 0.8935rem + 0.5391vw, 1.5rem);
-    /* Step 1: 18px → 28.8px */
-    --cfont-1: clamp(1.125rem, 0.9813rem + 0.7278vw, 1.8rem);
-    /* Step 2: 20.25px → 34.56px */
-    --cfont-2: clamp(1.2656rem, 1.0752rem + 0.9643vw, 2.16rem);
-    /* Step 3: 22.7813px → 41.472px */
-    --cfont-3: clamp(1.4238rem, 1.1751rem + 1.2595vw, 2.592rem);
-    /* Step 4: 25.6289px → 49.7664px */
-    --cfont-4: clamp(1.6018rem, 1.2806rem + 1.6265vw, 3.1104rem);
-    /* Step 5: 28.8325px → 59.7197px */
-    --cfont-5: clamp(1.802rem, 1.391rem + 2.0813vw, 3.7325rem);
+    --cfont--1: clamp(0.9377rem, 0.048rem + 0.7437cqi, 1.2389rem);
+    --cfont-0: clamp(1.25rem, -0.2324rem + 1.2392cqi, 1.7519rem);
+    --cfont-1: clamp(1.6663rem, -0.7289rem + 2.0022cqi, 2.4772rem);
+    --cfont-2: clamp(2.2211rem, -1.5643rem + 3.1644cqi, 3.5027rem);
+    --cfont-3: clamp(2.9607rem, -2.9232rem + 4.9187cqi, 4.9528rem);
 
-    /*viewport spacing*/
-    /* Space 3xs: 4px → 6px */
-    --vspace-3xs: clamp(0.25rem, 0.2234rem + 0.1348vw, 0.375rem);
-    /* Space 2xs: 8px → 12px */
-    --vspace-2xs: clamp(0.5rem, 0.4468rem + 0.2695vw, 0.75rem);
-    /* Space xs: 12px → 18px */
-    --vspace-xs: clamp(0.75rem, 0.6701rem + 0.4043vw, 1.125rem);
-    /* Space s: 16px → 24px */
-    --vspace-s: clamp(1rem, 0.8935rem + 0.5391vw, 1.5rem);
-    /* Space m: 24px → 36px */
-    --vspace-m: clamp(1.5rem, 1.3403rem + 0.8086vw, 2.25rem);
-    /* Space l: 32px → 48px */
-    --vspace-l: clamp(2rem, 1.7871rem + 1.0782vw, 3rem);
-    /* Space xl: 48px → 72px */
-    --vspace-xl: clamp(3rem, 2.6806rem + 1.6173vw, 4.5rem);
-    /* Space 2xl: 64px → 96px */
-    --vspace-2xl: clamp(4rem, 3.5741rem + 2.1563vw, 6rem);
-    /* Space 3xl: 96px → 144px */
-    --vspace-3xl: clamp(6rem, 5.3612rem + 3.2345vw, 9rem);
-
-    /* One-up pairs: better for drastic space change between viewport */
-    /* Space 3xs-2xs: 4px → 12px */
-    --vspace-3xs-2xs: clamp(0.25rem, 0.1435rem + 0.5391vw, 0.75rem);
-    /* Space 2xs-xs: 8px → 18px */
-    --vspace-2xs-xs: clamp(0.5rem, 0.3669rem + 0.6739vw, 1.125rem);
-    /* Space xs-s: 12px → 24px */
-    --vspace-xs-s: clamp(0.75rem, 0.5903rem + 0.8086vw, 1.5rem);
-    /* Space s-m: 16px → 36px */
-    --vspace-s-m: clamp(1rem, 0.7338rem + 1.3477vw, 2.25rem);
-    /* Space m-l: 24px → 48px */
-    --vspace-m-l: clamp(1.5rem, 1.1806rem + 1.6173vw, 3rem);
-    /* Space l-xl: 32px → 72px */
-    --vspace-l-xl: clamp(2rem, 1.4677rem + 2.6954vw, 4.5rem);
-    /* Space xl-2xl: 48px → 96px */
-    --vspace-xl-2xl: clamp(3rem, 2.3612rem + 3.2345vw, 6rem);
-    /* Space 2xl-3xl: 64px → 144px */
-    --vspace-2xl-3xl: clamp(4rem, 2.9353rem + 5.3908vw, 9rem);
-
-    /* Custom pairs */
-    /* Space s-l: 16px → 48px */
-    --vspace-s-l: clamp(1rem, 0.5741rem + 2.1563vw, 3rem);
-    /* Space s-xl: 16px → 72px */
-    --vspace-s-xl: clamp(1rem, 0.2547rem + 3.7736vw, 4.5rem);
-
-    /* container space */
-    --cspace-3xs: clamp(0.25rem, 0.2234rem + 0.1348cqi, 0.375rem);
-    --cspace-2xs: clamp(0.5rem, 0.4468rem + 0.2695cqi, 0.75rem);
-    --cspace-xs: clamp(0.75rem, 0.6701rem + 0.4043cqi, 1.125rem);
-    --cspace-s: clamp(1rem, 0.8935rem + 0.5391cqi, 1.5rem);
-    --cspace-m: clamp(1.5rem, 1.3403rem + 0.8086cqi, 2.25rem);
-    --cspace-l: clamp(2rem, 1.7871rem + 1.0782cqi, 3rem);
-    --cspace-xl: clamp(3rem, 2.6806rem + 1.6173cqi, 4.5rem);
-    --cspace-2xl: clamp(4rem, 3.5741rem + 2.1563cqi, 6rem);
-    --cspace-3xl: clamp(6rem, 5.3612rem + 3.2345cqi, 9rem);
+    --vspace-3xs: clamp(0.3125rem, -0.0567rem + 0.3086vw, 0.4375rem);
+    --vspace-2xs: clamp(0.625rem, -0.1134rem + 0.6173vw, 0.875rem);
+    --vspace-xs: clamp(0.9375rem, -0.1701rem + 0.9259vw, 1.3125rem);
+    --vspace-s: clamp(1.25rem, -0.2269rem + 1.2346vw, 1.75rem);
+    --vspace-m: clamp(1.5625rem, -0.2836rem + 1.5432vw, 2.1875rem);
+    --vspace-l: clamp(1.875rem, -0.3403rem + 1.8519vw, 2.625rem);
+    --vspace-xl: clamp(2.5rem, -0.4537rem + 2.4691vw, 3.5rem);
+    --vspace-2xl: clamp(3.75rem, -0.6806rem + 3.7037vw, 5.25rem);
+    --vspace-3xl: clamp(5rem, -0.9074rem + 4.9383vw, 7rem);
+    --vspace-4xl: clamp(7.4375rem, -1.6082rem + 7.5617vw, 10.5rem);
 
     /* One-up pairs */
-    --cspace-3xs-2xs: clamp(0.25rem, 0.1435rem + 0.5391cqi, 0.75rem);
-    --cspace-2xs-xs: clamp(0.5rem, 0.3669rem + 0.6739cqi, 1.125rem);
-    --cspace-xs-s: clamp(0.75rem, 0.5903rem + 0.8086cqi, 1.5rem);
-    --cspace-s-m: clamp(1rem, 0.7338rem + 1.3477cqi, 2.25rem);
-    --cspace-m-l: clamp(1.5rem, 1.1806rem + 1.6173cqi, 3rem);
-    --cspace-l-xl: clamp(2rem, 1.4677rem + 2.6954cqi, 4.5rem);
-    --cspace-xl-2xl: clamp(3rem, 2.3612rem + 3.2345cqi, 6rem);
-    --cspace-2xl-3xl: clamp(4rem, 2.9353rem + 5.3908cqi, 9rem);
+    --vspace-3xs-2xs: clamp(0.3125rem, -1.349rem + 1.3889vw, 0.875rem);
+    --vspace-2xs-xs: clamp(0.625rem, -1.4057rem + 1.6975vw, 1.3125rem);
+    --vspace-xs-s: clamp(0.9375rem, -1.4624rem + 2.0062vw, 1.75rem);
+    --vspace-s-m: clamp(1.25rem, -1.5191rem + 2.3148vw, 2.1875rem);
+    --vspace-m-l: clamp(1.5625rem, -1.5758rem + 2.6235vw, 2.625rem);
+    --vspace-l-xl: clamp(1.875rem, -2.9248rem + 4.0123vw, 3.5rem);
+    --vspace-xl-2xl: clamp(2.5rem, -5.6227rem + 6.7901vw, 5.25rem);
+    --vspace-2xl-3xl: clamp(3.75rem, -5.8495rem + 8.0247vw, 7rem);
+    --vspace-3xl-4xl: clamp(5rem, -11.2454rem + 13.5802vw, 10.5rem);
 
     /* Custom pairs */
-    --cspace-s-l: clamp(1rem, 0.5741rem + 2.1563cqi, 3rem);
-    --cspace-s-xl: clamp(1rem, 0.2547rem + 3.7736cqi, 4.5rem);
+    --vspace-3xs-m: clamp(0.3125rem, -5.2257rem + 4.6296vw, 2.1875rem);
+    --vspace-s-xl: clamp(1.25rem, -5.3958rem + 5.5556vw, 3.5rem);
+    /* grid gutter */
+    --vspace-s-l: clamp(1.25rem, -2.8113rem + 3.3951vw, 2.625rem);
+
+    --cspace-3xs: clamp(0.3125rem, -0.0567rem + 0.3086cqi, 0.4375rem);
+    --cspace-2xs: clamp(0.625rem, -0.1134rem + 0.6173cqi, 0.875rem);
+    --cspace-xs: clamp(0.9375rem, -0.1701rem + 0.9259cqi, 1.3125rem);
+    --cspace-s: clamp(1.25rem, -0.2269rem + 1.2346cqi, 1.75rem);
+    --cspace-m: clamp(1.5625rem, -0.2836rem + 1.5432cqi, 2.1875rem);
+    --cspace-l: clamp(1.875rem, -0.3403rem + 1.8519cqi, 2.625rem);
+    --cspace-xl: clamp(2.5rem, -0.4537rem + 2.4691cqi, 3.5rem);
+    --cspace-2xl: clamp(3.75rem, -0.6806rem + 3.7037cqi, 5.25rem);
+    --cspace-3xl: clamp(5rem, -0.9074rem + 4.9383cqi, 7rem);
+    --cspace-4xl: clamp(7.4375rem, -1.6082rem + 7.5617cqi, 10.5rem);
+
+    /* One-up pairs */
+    --cspace-3xs-2xs: clamp(0.3125rem, -1.349rem + 1.3889cqi, 0.875rem);
+    --cspace-2xs-xs: clamp(0.625rem, -1.4057rem + 1.6975cqi, 1.3125rem);
+    --cspace-xs-s: clamp(0.9375rem, -1.4624rem + 2.0062cqi, 1.75rem);
+    --cspace-s-m: clamp(1.25rem, -1.5191rem + 2.3148cqi, 2.1875rem);
+    --cspace-m-l: clamp(1.5625rem, -1.5758rem + 2.6235cqi, 2.625rem);
+    --cspace-l-xl: clamp(1.875rem, -2.9248rem + 4.0123cqi, 3.5rem);
+    --cspace-xl-2xl: clamp(2.5rem, -5.6227rem + 6.7901cqi, 5.25rem);
+    --cspace-2xl-3xl: clamp(3.75rem, -5.8495rem + 8.0247cqi, 7rem);
+    --cspace-3xl-4xl: clamp(5rem, -11.2454rem + 13.5802cqi, 10.5rem);
+
+    /* Custom pairs */
+    --cspace-3xs-m: clamp(0.3125rem, -5.2257rem + 4.6296cqi, 2.1875rem);
+    --cspace-s-xl: clamp(1.25rem, -5.3958rem + 5.5556cqi, 3.5rem);
+    /* Grid gutter */
+    --cspace-s-l: clamp(1.25rem, -2.8113rem + 3.3951cqi, 2.625rem);
+
+    /* Custom pairs
+    /* Space s-l: 16px → 48px */
+    /* --vspace-s-l: clamp(1rem, 0.5741rem + 2.1563vw, 3rem);
+    Space s-xl: 16px → 72px */
+    /* --vspace-s-xl: clamp(1rem, 0.2547rem + 3.7736vw, 4.5rem); */
   }
 
+  @media (width <= 1914px) {
+    :root {
+      --vfont--1: clamp(0.8889rem, 0.8589rem + 0.1518vw, 1.0417rem);
+      --vfont-0: clamp(1rem, 0.9509rem + 0.2484vw, 1.25rem);
+      --vfont-1: clamp(1.125rem, 1.0514rem + 0.3727vw, 1.5rem);
+      --vfont-2: clamp(1.2656rem, 1.1607rem + 0.5311vw, 1.8rem);
+      --vfont-3: clamp(1.4238rem, 1.2793rem + 0.7316vw, 2.16rem);
+
+      --cfont--1: clamp(0.8889rem, 0.8589rem + 0.1518cqi, 1.0417rem);
+      --cfont-0: clamp(1rem, 0.9509rem + 0.2484cqi, 1.25rem);
+      --cfont-1: clamp(1.125rem, 1.0514rem + 0.3727cqi, 1.5rem);
+      --cfont-2: clamp(1.2656rem, 1.1607rem + 0.5311cqi, 1.8rem);
+      --cfont-3: clamp(1.4238rem, 1.2793rem + 0.7316cqi, 2.16rem);
+
+      /* SPACE SYSTEM */
+      /* Space 3xs: 4px → 5px */
+      --vspace-3xs: clamp(0.25rem, 0.2377rem + 0.0621vw, 0.3125rem);
+      /* Space 2xs: 8px → 10px */
+      --vspace-2xs: clamp(0.5rem, 0.4755rem + 0.1242vw, 0.625rem);
+      /* Space xs: 12px → 15px */
+      --vspace-xs: clamp(0.75rem, 0.7132rem + 0.1863vw, 0.9375rem);
+      /* Space s: 16px → 20px */
+      --vspace-s: clamp(1rem, 0.9509rem + 0.2484vw, 1.25rem);
+      /* Space m: 24px → 30px */
+      --vspace-m: clamp(1.5rem, 1.4264rem + 0.3727vw, 1.875rem);
+      /* Space l: 32px → 40px */
+      --vspace-l: clamp(2rem, 1.9019rem + 0.4969vw, 2.5rem);
+      /* Space xl: 48px → 60px */
+      --vspace-xl: clamp(3rem, 2.8528rem + 0.7453vw, 3.75rem);
+      /* Space 2xl: 64px → 80px */
+      --vspace-2xl: clamp(4rem, 3.8037rem + 0.9938vw, 5rem);
+      /* Space 3xl: 96px → 120px */
+      --vspace-3xl: clamp(6rem, 5.7056rem + 1.4907vw, 7.5rem);
+      /* Space 4xl: 102px → 128px */
+      --vspace-4xl: clamp(6.375rem, 6.0561rem + 1.6149vw, 8rem);
+
+      /* One-up pairs */
+      /* Space 3xs-2xs: 4px → 10px */
+      --vspace-3xs-2xs: clamp(0.25rem, 0.1764rem + 0.3727vw, 0.625rem);
+      /* Space 2xs-xs: 8px → 15px */
+      --vspace-2xs-xs: clamp(0.5rem, 0.4141rem + 0.4348vw, 0.9375rem);
+      /* Space xs-s: 12px → 20px */
+      --vspace-xs-s: clamp(0.75rem, 0.6519rem + 0.4969vw, 1.25rem);
+      /* Space s-m: 16px → 30px */
+      --vspace-s-m: clamp(1rem, 0.8283rem + 0.8696vw, 1.875rem);
+      /* Space m-l: 24px → 40px */
+      --vspace-m-l: clamp(1.5rem, 1.3037rem + 0.9938vw, 2.5rem);
+      /* Space l-xl: 32px → 60px */
+      --vspace-l-xl: clamp(2rem, 1.6565rem + 1.7391vw, 3.75rem);
+      /* Space xl-2xl: 48px → 80px */
+      --vspace-xl-2xl: clamp(3rem, 2.6075rem + 1.9876vw, 5rem);
+      /* Space 2xl-3xl: 64px → 120px */
+      --vspace-2xl-3xl: clamp(4rem, 3.313rem + 3.4783vw, 7.5rem);
+      /* Space 3xl-4xl: 96px → 128px */
+      --vspace-3xl-4xl: clamp(6rem, 5.6075rem + 1.9876vw, 8rem);
+
+      /* Custom pairs */
+      /* Space s-l: 16px → 40px */
+      --vspace-s-l: clamp(1rem, 0.7056rem + 1.4907vw, 2.5rem);
+      --vspace-s-xl: clamp(1rem, 0.4602rem + 2.7329vw, 3.75rem);
+      /* GRID GUTTER Space 3xs-m: 4px → 30px */
+      --vspace-3xs-m: clamp(0.25rem, -0.0689rem + 1.6149vw, 1.875rem);
+
+      --cspace-3xs: clamp(0.25rem, 0.2377rem + 0.0621cqi, 0.3125rem);
+      --cspace-2xs: clamp(0.5rem, 0.4755rem + 0.1242cqi, 0.625rem);
+      --cspace-xs: clamp(0.75rem, 0.7132rem + 0.1863cqi, 0.9375rem);
+      --cspace-s: clamp(1rem, 0.9509rem + 0.2484cqi, 1.25rem);
+      --cspace-m: clamp(1.5rem, 1.4264rem + 0.3727cqi, 1.875rem);
+      --cspace-l: clamp(2rem, 1.9019rem + 0.4969cqi, 2.5rem);
+      --cspace-xl: clamp(3rem, 2.8528rem + 0.7453cqi, 3.75rem);
+      --cspace-2xl: clamp(4rem, 3.8037rem + 0.9938cqi, 5rem);
+      --cspace-3xl: clamp(6rem, 5.7056rem + 1.4907cqi, 7.5rem);
+      --cspace-4xl: clamp(6.375rem, 6.0561rem + 1.6149cqi, 8rem);
+
+      /* One-up pairs */
+      --cspace-3xs-2xs: clamp(0.25rem, 0.1764rem + 0.3727cqi, 0.625rem);
+      --cspace-2xs-xs: clamp(0.5rem, 0.4141rem + 0.4348cqi, 0.9375rem);
+      --cspace-xs-s: clamp(0.75rem, 0.6519rem + 0.4969cqi, 1.25rem);
+      --cspace-s-m: clamp(1rem, 0.8283rem + 0.8696cqi, 1.875rem);
+      --cspace-m-l: clamp(1.5rem, 1.3037rem + 0.9938cqi, 2.5rem);
+      --cspace-l-xl: clamp(2rem, 1.6565rem + 1.7391cqi, 3.75rem);
+      --cspace-xl-2xl: clamp(3rem, 2.6075rem + 1.9876cqi, 5rem);
+      --cspace-2xl-3xl: clamp(4rem, 3.313rem + 3.4783cqi, 7.5rem);
+      --cspace-3xl-4xl: clamp(6rem, 5.6075rem + 1.9876cqi, 8rem);
+
+      /* Custom pairs */
+      --cspace-s-l: clamp(1rem, 0.7056rem + 1.4907cqi, 2.5rem);
+      --cspace-s-xl: clamp(1rem, 0.4602rem + 2.7329cqi, 3.75rem);
+      --cspace-3xs-m: clamp(0.25rem, -0.0689rem + 1.6149cqi, 1.875rem);
+    }
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: 'Roboto-SemiBold', ui-serif;
+  }
+}
+
+@layer components {
   /* at least as height the viewport height - var used with margin bottom
   in a root container. At big viewport the container is totally showed,
   in little viewport the content is bigger than the viewport height so 
   the min height resolve that problem.
+  Used in combination with flex, grow and center to align container 
+  content vertically.
    */
   .v-full-height {
     min-height: calc(100vh - var(--vspace-s-xl));
     min-height: calc(100dvh - var(--vspace-s-xl));
   }
-}
 
-@layer components {
   :root {
     /*
     Stablish a fluid grid to work as visual align tester, also
     to get the ugrid-gutter. This gutter can be used inside grid,
     but also as padding for root element that are not full width.
-    Min viewport of 316px and max viewport of 1800px.
+    Min viewport of 1914px and max viewport of 2562px.
     */
-    --ugrid-max-width: 112.5rem;
+    --ugrid-max-width: 160.13rem;
     --ugrid-gutter: var(
-      --vspace-s-xl,
-      clamp(1rem, 0.2547rem + 3.7736vw, 4.5rem)
+      --vspace-l,
+      clamp(1.875rem, -0.3403rem + 1.8519vw, 2.625rem)
     );
-    --ugrid-columns: 12;
   }
+
+  @media (width <= 1914px) {
+    /* Min viewport of 316px and max viewport of 1926px.
+    but at 1914 we will use the other root system.*/
+    :root {
+      --ugrid-max-width: 120.38rem;
+      --ugrid-gutter: var(
+        --vspace-3xs-m,
+        clamp(0.25rem, -0.0689rem + 1.6149vw, 1.875rem)
+      );
+    }
+  }
+
   /*the wrapper for the grid*/
   .u-container {
     max-width: var(--ugrid-max-width);
-    /*over 1800 width, add fluid padding and horizontally center */
     padding-inline: var(--ugrid-gutter);
+    /*over 2562px width use horizontally center */
     margin-inline: auto;
     /* height: 100vh; */
   }
@@ -153,6 +274,7 @@
   .u-grid {
     display: grid;
     gap: var(--ugrid-gutter);
+    --ugrid-columns: 12;
     /*change the next according our needs*/
     height: 100%;
     grid-template-columns: repeat(var(--ugrid-columns), 1fr);

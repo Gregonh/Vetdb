@@ -44,6 +44,7 @@ app.get('/', (_req, response: Response) => {
 //routes with callback queries
 app.get('/users', db.getUsers);
 app.get('/users/:id', db.getUserById);
+app.get('/users/email/:id', db.getEmailById);
 app.post('/users', db.createUser);
 app.put('/users/:id', db.updateUser);
 app.delete('/users/:id', db.deleteUser);

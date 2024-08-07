@@ -13,44 +13,27 @@ module.exports = {
       base: '1rem', // Set the base font size to 16px
     },
     extend: {
+      fontFamily: {
+        display: 'Roboto-SemiBold, ui-serif',
+        secondary: 'OpenSans-SemiBold, ui-sans-serif',
+        bodybold: 'Inter-Bold, system-ui',
+        bodythin: 'Inter-Light, system-ui',
+      },
       fontSize: {
         //for viewport
-        'vfont--2': 'var(--vfont--2)',
         'vfont--1': 'var(--vfont--1)',
         'vfont-0': 'var(--vfont-0)',
         'vfont-1': 'var(--vfont-1)',
         'vfont-2': 'var(--vfont-2)',
         'vfont-3': 'var(--vfont-3)',
-        'vfont-4': 'var(--vfont-4)',
-        'vfont-5': 'var(--vfont-5)',
         //for container
-        'cfont--2': 'var(--cfont--2)',
         'cfont--1': 'var(--cfont--1)',
         'cfont-0': 'var(--cfont-0)',
         'cfont-1': 'var(--cfont-1)',
         'cfont-2': 'var(--cfont-2)',
         'cfont-3': 'var(--cfont-3)',
-        'cfont-4': 'var(--cfont-4)',
-        'cfont-5': 'var(--cfont-5)',
       },
       spacing: {
-        //fixed space following a scale
-        custom1: '0.25rem',
-        custom2: '0.5rem',
-        custom3: '0.75rem',
-        custom4: '1rem',
-        custom6: '1.5rem',
-        custom8: '2rem',
-        custom12: '3rem',
-        custom16: '4rem',
-        custom24: '6rem',
-        custom32: '8rem',
-        custom48: '12rem',
-        custom64: '16rem',
-        custom96: '24rem',
-        custom128: '32rem',
-        custom192: '40rem',
-        custom256: '48rem',
         //utopia responsive scale according viewport
         'vspace-3xs': 'var(--vspace-3xs)',
         'vspace-2xs': 'var(--vspace-2xs)',
@@ -61,6 +44,7 @@ module.exports = {
         'vspace-xl': 'var(--vspace-xl)',
         'vspace-2xl': 'var(--vspace-2xl)',
         'vspace-3xl': 'var(--vspace-3xl)',
+        'vspace-4xl': 'var(--vspace-4xl)',
 
         'vspace-3xs-2xs': 'var(--vspace-3xs-2xs)',
         'vspace-2xs-xs': 'var( --vspace-2xs-xs)',
@@ -70,7 +54,9 @@ module.exports = {
         'vspace-l-xl': 'var( --vspace-l-xl)',
         'vspace-xl-2xl': 'var(--vspace-xl-2xl)',
         'vspace-2xl-3xl': 'var(--vspace-2xl-3xl)',
+        'vspace-3xl-4xl': 'var(--vspace-3xl-4xl)',
         'vspace-s-l': 'var(--vspace-s-l)',
+        'vspace-3xs-m': 'var(--vspace-3xs-m)',
         'vspace-s-xl': 'var(--vspace-s-xl)',
 
         //utopia responsive scale according container
@@ -83,6 +69,7 @@ module.exports = {
         'cspace-xl': 'var(--cspace-xl)',
         'cspace-2xl': 'var(--cspace-2xl)',
         'cspace-3xl': 'var(--cspace-3xl)',
+        'cspace-4xl': 'var(--cspace-4xl)',
 
         'cspace-3xs-2xs': 'var(--cspace-3xs-2xs)',
         'cspace-2xs-xs': 'var( --cspace-2xs-xs)',
@@ -92,7 +79,9 @@ module.exports = {
         'cspace-l-xl': 'var( --cspace-l-xl)',
         'cspace-xl-2xl': 'var(--cspace-xl-2xl)',
         'cspace-2xl-3xl': 'var(--cspace-2xl-3xl)',
+        'cspace-3xl-4xl': 'var(--cspace-3xl-4xl)',
         'cspace-s-l': 'var(--cspace-s-l)',
+        'cspace-3xs-m': 'var(--cspace-3xs-m)',
         'cspace-s-xl': 'var(--cspace-s-xl)',
       },
       keyframes: {
