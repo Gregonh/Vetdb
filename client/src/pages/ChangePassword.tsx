@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios, { AxiosError } from 'axios';
-import { useState, useEffect } from 'react';
+import axios, { AxiosError, isAxiosError } from 'axios';
+import { useState, useEffect, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
+import { redirect, useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 
 import { Button } from '../components/ui/button';
@@ -24,6 +24,16 @@ import {
   FormMessage,
 } from '../components/ui/form';
 import { Input } from '../components/ui/input';
+
+/**
+ * TODO: error boundary
+ * TODO: match password time problem
+ * TODO: combine with email service
+ * TODO: catch error better, like in getIdParam function
+ * TODO: improve styles
+ * TODO: check if loader is needed for useEffect
+ *
+ */
 
 const changePasswordValidationSchema = z
   .object({
@@ -50,31 +60,37 @@ interface EmailResponse {
 
 function ChangePassword() {
   const [userEmail, setUserEmail] = useState('');
+  const params = useParams();
   /**
    * get the user email for the hidden input,
    * to improve accessibility
    */
+  const getIdParam = useCallback(() => {
+    if (!params['id']) {
+      throw new Error('id param is undefined');
+    }
+    return params['id'];
+  }, [params]);
+
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const id = getIdParam();
     axios
       .get<EmailResponse>(`http://localhost:4001/users/email/${id}`)
       .then((res) => {
         if (res) {
-          console.log({ res });
           setUserEmail(res.data?.email);
         }
       })
       .catch((error: unknown) => {
-        if (axios.isAxiosError(error)) {
+        if (isAxiosError(error)) {
           console.error(error.message);
         }
         if (error instanceof Error) {
           console.error(error.message);
         }
       });
-  }, []);
-  const params = useParams();
+  }, [getIdParam]);
+
   const navigate = useNavigate();
   const form = useForm<PasswordValidation>({
     resolver: zodResolver(changePasswordValidationSchema),
@@ -85,13 +101,6 @@ function ChangePassword() {
     formState: { errors },
     control,
   } = form;
-
-  const getIdParam = () => {
-    if (!params['id']) {
-      throw new Error('id param is undefined');
-    }
-    return params['id'];
-  };
 
   const updatePassword = async (newPassword: PasswordValidation) => {
     // eslint-disable-next-line no-useless-catch
@@ -109,7 +118,7 @@ function ChangePassword() {
       const data = {
         password: newPassword.password,
       };
-      await client.put(baseURL, data).then((res) => console.log(res));
+      await client.put(baseURL, data);
     } catch (error) {
       throw new AxiosError('axios error in put');
     }
@@ -119,8 +128,9 @@ function ChangePassword() {
     try {
       const newPassword = changePasswordValidationSchema.parse(formData);
       await updatePassword(newPassword);
+      redirect("/login");
     } catch (err: unknown) {
-      if (axios.isAxiosError(err)) {
+      if (isAxiosError(err)) {
         console.error(err.message);
       }
       if (err instanceof z.ZodError) {
@@ -159,7 +169,7 @@ function ChangePassword() {
                   type="text"
                   name="email"
                   readOnly={true}
-                  value={userEmail ? userEmail : ''}
+                  value={userEmail ?? ''}
                   autoComplete="username email"
                   className="hidden"
                 />
@@ -239,7 +249,7 @@ function ChangePassword() {
           </Form>
         </CardContent>
         <CardFooter>
-          <Button type="submit" form="passwordForm">
+          <Button type="submit" form="passwordForm" disabled={!userEmail}>
             Save password
           </Button>
         </CardFooter>

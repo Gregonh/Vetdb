@@ -38,7 +38,7 @@ module.exports = {
     'scripts',
   ],
   rules: {
-    'no-console': 'warn', //don't use console.log
+    'no-console': ['warn', { allow: ['warn', 'error'] }], //don't use console.log
     'no-debugger': 'warn', //don't use debug
     'no-warning-comments': 'warn', //don't add in a comment the word warn
     'object-shorthand': 'error', //shorthand syntax

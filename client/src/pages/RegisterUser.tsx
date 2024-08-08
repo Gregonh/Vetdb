@@ -77,7 +77,7 @@ export function RegisterUser() {
   const createUser = async (user: UserValidation) => {
     // eslint-disable-next-line no-useless-catch
     try {
-      console.log({ user });
+      //console.log({ user });
       const client = axios.create({
         baseURL: 'http://localhost:4001/users',
         timeout: 40000,
@@ -93,7 +93,7 @@ export function RegisterUser() {
         email: user.email,
         password: user.password,
       };
-      await client.post(baseURL, data).then((res) => console.log(res));
+      await client.post(baseURL, data);
     } catch (error) {
       throw error;
     }
@@ -218,7 +218,7 @@ export function RegisterUser() {
                         />
                       </FormControl>
                       <FormDescription className="font-bodythin">
-                        &apoWes;ll never share your email with anyone else
+                        We&apos;ll never share your email with anyone else
                       </FormDescription>
                       <FormMessage>
                         {errors.email && errors.email?.message}

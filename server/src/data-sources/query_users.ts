@@ -11,21 +11,22 @@ interface VetUser {
   readonly password: string;
 }
 
-//query function to call in the endpoint
-const getUsers = (
-  _request: Request,
+const returnUserIdResponse = (
   response: Response,
-  next: NextFunction,
+  results: QueryResult<VetUser> | undefined | null,
+  id: number,
 ) => {
-  pool.query(
-    'SELECT * FROM users ORDER BY id ASC',
-    (error, results: QueryResult<VetUser>) => {
-      if (error) {
-        return next(error);
-      }
-      response.status(200).json(results.rows);
-    },
-  );
+  //results.rows.length > 0
+  if (results?.rows[0]) {
+    const updatedUser = results.rows[0];
+    response
+      .status(200)
+      .json({ message: `User modified with ID: ${updatedUser.id}` });
+  }
+
+  response
+    .status(404)
+    .json({ message: `User not found or not modified with id: ${id} ` });
 };
 
 const checkParamIdIsString = (
@@ -41,6 +42,42 @@ const checkParamIdIsString = (
   }
 };
 
+//query function to call in the endpoint
+const getUsers = (
+  _request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  pool.query(
+    'SELECT * FROM users ORDER BY id ASC',
+    (error, results: QueryResult<VetUser>) => {
+      if (error) {
+        return next(error);
+      }
+      if (results.rows) {
+        response.status(200).json(results.rows);
+      }
+
+      response.status(404).json({ message: `Users not found` });
+    },
+  );
+};
+
+function getUserByField(
+  queryField: string,
+  value: string | number,
+  callback: (error: Error | null, result: QueryResult<VetUser> | null) => void,
+) {
+  const query = `SELECT * FROM users WHERE ${queryField} = $1`;
+  pool.query(query, [value], (error, results) => {
+    if (error) {
+      callback(error, null);
+    } else {
+      callback(null, results);
+    }
+  });
+}
+
 /*get one user by id
 get the custom id parameter by the URL
 $1 is a numbered placeholder that PostgreSQL uses natively instead of the ?
@@ -53,18 +90,15 @@ const getUserById = (
   const requestId = request.params['id'];
   checkParamIdIsString(requestId, next);
   const id = parseInt(requestId as string);
-
-  pool.query(
-    'SELECT * FROM users WHERE id = $1',
-    [id],
-    (error, results: QueryResult<VetUser>) => {
-      if (error) {
-        return next(error);
-      }
-      response.status(200).json(results.rows);
-    },
-  );
+  getUserByField('id', id, (error, results) => {
+    if (error) {
+      return next(error);
+    }
+    returnUserIdResponse(response, results, id);
+  });
 };
+
+// TODO: decide approach  in getEmail and in the post, between CreateUser and returnUserIdResponse
 
 const getEmailById = (
   request: Request,
@@ -74,7 +108,12 @@ const getEmailById = (
   const requestId = request.params['id'];
   checkParamIdIsString(requestId, next);
   const id = parseInt(requestId as string);
-
+  getUserByField('id', id, (error, results) => {
+    if (error) {
+      return next(error);
+    }
+    response.status(200).json({ email: results?.rows[0]?.email });
+  });
   pool.query(
     'SELECT email FROM users WHERE id = $1',
     [id],
@@ -87,13 +126,8 @@ const getEmailById = (
   );
 };
 
-//post
-const createUser = (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
-  console.log(request.body);
+const postUser = (request: Request, response: Response, next: NextFunction) => {
+  //console.log(request.body);
   const { name, lastName, email, password } = <VetUser>request.body;
 
   pool.query(
@@ -112,7 +146,6 @@ const createUser = (
   );
 };
 
-//put
 /**
  * The /users/:id endpoint will also take two HTTP requests,
  * the GET we created for getUserById and a PUT to modify an existing user.
@@ -134,13 +167,11 @@ const updateUserPassword = (
       if (error) {
         return next(error);
       }
-      console.log(results);
-      response.status(200).json({ message: `User modified with ID: ${id}` });
+      returnUserIdResponse(response, results, id);
     },
   );
 };
 
-//delete
 const deleteUser = (
   request: Request,
   response: Response,
@@ -157,17 +188,16 @@ const deleteUser = (
       if (error) {
         return next(error);
       }
-      console.log('number of users' + results.rows.length);
-      response.status(200).json({ message: `User deleted with ID: ${id}` });
+      returnUserIdResponse(response, results, id);
     },
   );
 };
 
 export const db = {
   getUsers,
-  createUser,
+  createUser: postUser,
   getUserById,
-  updateUser: updateUserPassword,
+  putUser: updateUserPassword,
   deleteUser,
   getEmailById,
 };
