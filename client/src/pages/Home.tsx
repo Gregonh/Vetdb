@@ -11,17 +11,12 @@ import {
 } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '../components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 
 function Home() {
   return (
     <>
-      <Link to="/user">About</Link>
+      <Link to="/register">About</Link>
       <Tabs defaultValue="login" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="login">Login</TabsTrigger>
@@ -32,8 +27,7 @@ function Home() {
             <CardHeader>
               <CardTitle>Welcome to VetApp</CardTitle>
               <CardDescription>
-                Make changes to your account here. Click save when you&apos;re
-                done.
+                Make changes to your account here. Click save when you&apos;re done.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -56,8 +50,7 @@ function Home() {
             <CardHeader>
               <CardTitle>Password</CardTitle>
               <CardDescription>
-                Change your password here. After saving, you&apos;ll be logged
-                out.
+                Change your password here. After saving, you&apos;ll be logged out.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">

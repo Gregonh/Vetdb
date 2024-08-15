@@ -3,6 +3,9 @@ import { QueryResult } from 'pg';
 
 import { pool } from '../dotConfig';
 
+interface VetUserId {
+  readonly id: number;
+}
 interface VetUser {
   readonly id: number;
   readonly name: string;
@@ -11,28 +14,9 @@ interface VetUser {
   readonly password: string;
 }
 
-const returnUserIdResponse = (
-  response: Response,
-  results: QueryResult<VetUser> | undefined | null,
-  id: number,
-) => {
-  //results.rows.length > 0
-  if (results?.rows[0]) {
-    const updatedUser = results.rows[0];
-    response
-      .status(200)
-      .json({ message: `User modified with ID: ${updatedUser.id}` });
-  }
+type PartialVetUserWithId = Partial<VetUser> & VetUserId;
 
-  response
-    .status(404)
-    .json({ message: `User not found or not modified with id: ${id} ` });
-};
-
-const checkParamIdIsString = (
-  requestId: string | undefined,
-  next: NextFunction,
-) => {
+const checkIdIsValid = (requestId: string | undefined, next: NextFunction) => {
   if (requestId === '') {
     const emptyError = new Error('empty id');
     return next(emptyError);
@@ -42,12 +26,33 @@ const checkParamIdIsString = (
   }
 };
 
-//query function to call in the endpoint
-const getUsers = (
-  _request: Request,
+function tryGetParamOrBodyId(next: NextFunction, request: Request): number;
+function tryGetParamOrBodyId(next: NextFunction, bodyId: string): number;
+function tryGetParamOrBodyId(next: NextFunction, requestOrBodyId?: Request | string) {
+  const isString = typeof requestOrBodyId === 'string';
+  const requestId = isString ? requestOrBodyId : requestOrBodyId?.params['id'];
+  checkIdIsValid(requestId, next);
+  const id = parseInt(requestId as string);
+  return id;
+}
+
+const returnUserIdResponse = <T extends PartialVetUserWithId>(
   response: Response,
-  next: NextFunction,
+  results: QueryResult<T> | undefined | null,
+  idForSearch: number,
 ) => {
+  //results.rows.length > 0
+  if (results?.rows[0] && results.rows.length > 0) {
+    const updatedUserId = results.rows[0].id;
+    response.status(200).json({ message: `User modified with ID: ${updatedUserId}` });
+  }
+
+  response
+    .status(404)
+    .json({ message: `User not found or not modified with id: ${idForSearch} ` });
+};
+
+const getUsers = (_request: Request, response: Response, next: NextFunction) => {
   pool.query(
     'SELECT * FROM users ORDER BY id ASC',
     (error, results: QueryResult<VetUser>) => {
@@ -62,14 +67,29 @@ const getUsers = (
     },
   );
 };
-
-function getUserByField(
-  queryField: string,
-  value: string | number,
-  callback: (error: Error | null, result: QueryResult<VetUser> | null) => void,
+/**
+ * The result is a partial VetUser because we don´t want
+ * always all the fields but at least the id.
+ *
+ * @param query
+ * must be send in the specific route and determinate the type of select,
+ * and the number of where´s fields must match with the number of elements
+ * in array values
+ * @param value
+ * an array of string or number, the length must be equal to the number
+ * of fields passed in the where clause
+ * @param callback
+ * call a different path according if we receive an error or a resolve
+ */
+function getUserByDynamicsField(
+  query: string,
+  value: (string | number)[],
+  callback: (
+    error: Error | null,
+    result: QueryResult<PartialVetUserWithId> | null,
+  ) => void,
 ) {
-  const query = `SELECT * FROM users WHERE ${queryField} = $1`;
-  pool.query(query, [value], (error, results) => {
+  pool.query(query, value, (error, results) => {
     if (error) {
       callback(error, null);
     } else {
@@ -82,15 +102,10 @@ function getUserByField(
 get the custom id parameter by the URL
 $1 is a numbered placeholder that PostgreSQL uses natively instead of the ?
 */
-const getUserById = (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
-  const requestId = request.params['id'];
-  checkParamIdIsString(requestId, next);
-  const id = parseInt(requestId as string);
-  getUserByField('id', id, (error, results) => {
+const getUserById = (request: Request, response: Response, next: NextFunction) => {
+  const id = tryGetParamOrBodyId(next, request);
+  const query = `SELECT * FROM users WHERE id = $1`;
+  getUserByDynamicsField(query, [id], (error, results) => {
     if (error) {
       return next(error);
     }
@@ -99,36 +114,28 @@ const getUserById = (
 };
 
 // TODO: decide approach  in getEmail and in the post, between CreateUser and returnUserIdResponse
+type FrontConfirmEmail = { id: string; email: string };
+const getConfirmEmail = (request: Request, response: Response, next: NextFunction) => {
+  const { id, email } = <FrontConfirmEmail>request.body;
+  if (!id || !email) return next(new Error('incorrect body request'));
 
-const getEmailById = (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
-  const requestId = request.params['id'];
-  checkParamIdIsString(requestId, next);
-  const id = parseInt(requestId as string);
-  getUserByField('id', id, (error, results) => {
+  const query = `SELECT id, email FROM users WHERE id = $1 and email = $2`;
+  getUserByDynamicsField(query, [id, email], (error, results) => {
     if (error) {
       return next(error);
     }
-    response.status(200).json({ email: results?.rows[0]?.email });
+
+    if (email === results?.rows[0]?.email?.toLowerCase()) {
+      response.status(200).json({ email: results.rows[0].email });
+    }
+    response.status(200).json({ email: false });
   });
-  pool.query(
-    'SELECT email FROM users WHERE id = $1',
-    [id],
-    (error, results: QueryResult<VetUser>) => {
-      if (error) {
-        return next(error);
-      }
-      response.status(200).json({ email: results.rows[0]?.email });
-    },
-  );
 };
 
+type FrontNewUser = { name: string; lastName: string; email: string; password: string };
 const postUser = (request: Request, response: Response, next: NextFunction) => {
   //console.log(request.body);
-  const { name, lastName, email, password } = <VetUser>request.body;
+  const { name, lastName, email, password } = <FrontNewUser>request.body;
 
   pool.query(
     'INSERT INTO users (name, lastname, email, password) VALUES ($1, $2, $3, $4) RETURNING *',
@@ -146,41 +153,32 @@ const postUser = (request: Request, response: Response, next: NextFunction) => {
   );
 };
 
-/**
- * The /users/:id endpoint will also take two HTTP requests,
- * the GET we created for getUserById and a PUT to modify an existing user.
- */
-const updateUserPassword = (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
-  const requestId = request.params['id'];
-  checkParamIdIsString(requestId, next);
-  const id = parseInt(requestId as string);
-  const { password } = <VetUser>request.body;
+const updateUserPassword = (request: Request, response: Response, next: NextFunction) => {
+  const { id, newPassword } = <
+    {
+      id: string;
+      newPassword: string;
+    }
+  >request.body;
+  if (!id || !newPassword) {
+    return response.status(400).json({ message: 'Invalid input' });
+  }
+  const checkId = tryGetParamOrBodyId(next, id);
 
   pool.query(
     'UPDATE users SET password = $1 WHERE id = $2',
-    [password, id],
-    (error, results: QueryResult<VetUser>) => {
+    [newPassword, checkId],
+    (error, results: QueryResult<PartialVetUserWithId>) => {
       if (error) {
         return next(error);
       }
-      returnUserIdResponse(response, results, id);
+      returnUserIdResponse(response, results, checkId);
     },
   );
 };
 
-const deleteUser = (
-  request: Request,
-  response: Response,
-  next: NextFunction,
-) => {
-  const requestId = request.params['id'];
-  checkParamIdIsString(requestId, next);
-  const id = parseInt(requestId as string);
-
+const deleteUser = (request: Request, response: Response, next: NextFunction) => {
+  const id = tryGetParamOrBodyId(next, request);
   pool.query(
     'DELETE FROM users WHERE id = $1',
     [id],
@@ -199,5 +197,5 @@ export const db = {
   getUserById,
   putUser: updateUserPassword,
   deleteUser,
-  getEmailById,
+  getConfirmEmail,
 };

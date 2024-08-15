@@ -1,12 +1,7 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import errorHandler from 'errorhandler';
-import express, {
-  Request,
-  Response,
-  NextFunction,
-  ErrorRequestHandler,
-} from 'express';
+import express, { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 import helmet from 'helmet';
 
 import { db } from './data-sources/query_users';
@@ -43,11 +38,11 @@ app.get('/', (_req, response: Response) => {
 
 //routes with callback queries
 app.get('/users', db.getUsers);
-app.get('/users/:id', db.getUserById);
-app.get('/users/email/:id', db.getEmailById);
-app.post('/users', db.createUser);
-app.put('/users/:id', db.putUser);
-app.delete('/users/:id', db.deleteUser);
+app.get('/user/:id', db.getUserById);
+app.get('/user/confirmEmail', db.getConfirmEmail);
+app.post('/user', db.createUser);
+app.put('/user', db.putUser);
+app.delete('/user/:id', db.deleteUser);
 // Route that throws an error
 app.get('/error', () => {
   throw new Error('This is a test error!');

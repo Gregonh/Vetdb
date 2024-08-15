@@ -51,7 +51,7 @@ export function LoginUser() {
     // eslint-disable-next-line no-useless-catch
     try {
       const client = axios.create({
-        baseURL: 'http://localhost:4001/users',
+        baseURL: 'http://localhost:4001/user',
         timeout: 40000,
         headers: {
           Accept: 'application/json',

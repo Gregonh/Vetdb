@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import { MainLayout } from '../Layouts/MainLayout';
 import { ChangePassword } from '../pages/ChangePassword';
+import { ConfirmEmail } from '../pages/ConfirmEmail';
 import { ErrorPage } from '../pages/ErrorPage';
 import { Home } from '../pages/Home';
 import { LoginUser } from '../pages/LoginUser';
@@ -30,6 +31,11 @@ const router = createBrowserRouter([
       {
         path: '/login',
         element: <LoginUser />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: '/confirmEmail/:id',
+        element: <ConfirmEmail />,
         errorElement: <ErrorPage />,
       },
       {

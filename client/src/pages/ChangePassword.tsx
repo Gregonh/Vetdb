@@ -32,7 +32,9 @@ import { Input } from '../components/ui/input';
  * TODO: catch error better, like in getIdParam function
  * TODO: improve styles
  * TODO: check if loader is needed for useEffect
- *
+ * TODO: hashing password on the client before send, hashing in server
+ * TODO: rate limiting prevent abuse of the endpoint
+ * TODO: resolve what do with an incorrect param id, redirect or create error
  */
 
 const changePasswordValidationSchema = z
@@ -74,8 +76,9 @@ function ChangePassword() {
 
   useEffect(() => {
     const id = getIdParam();
+    console.warn({ id });
     axios
-      .get<EmailResponse>(`http://localhost:4001/users/email/${id}`)
+      .get<EmailResponse>('http://localhost:4001/user/confirmEmail')
       .then((res) => {
         if (res) {
           setUserEmail(res.data?.email);
@@ -102,12 +105,16 @@ function ChangePassword() {
     control,
   } = form;
 
+  if (!params['id']) {
+    navigate('/login');
+  }
+
   const updatePassword = async (newPassword: PasswordValidation) => {
     // eslint-disable-next-line no-useless-catch
     try {
       const id = getIdParam();
       const client = axios.create({
-        baseURL: `http://localhost:4001/users/${id}`,
+        baseURL: `http://localhost:4001/user`,
         timeout: 40000,
         headers: {
           Accept: 'application/json',
@@ -116,7 +123,8 @@ function ChangePassword() {
       });
       const baseURL = client.defaults.baseURL as string;
       const data = {
-        password: newPassword.password,
+        id,
+        newPassword: newPassword.password,
       };
       await client.put(baseURL, data);
     } catch (error) {
@@ -128,7 +136,8 @@ function ChangePassword() {
     try {
       const newPassword = changePasswordValidationSchema.parse(formData);
       await updatePassword(newPassword);
-      redirect("/login");
+      //or navigate('/login'); ??
+      redirect('/login');
     } catch (err: unknown) {
       if (isAxiosError(err)) {
         console.error(err.message);
@@ -142,10 +151,6 @@ function ChangePassword() {
       }
     }
   };
-
-  if (!params['id'] || params['id'] == null) {
-    navigate('/login');
-  }
 
   return (
     <>
@@ -237,8 +242,7 @@ function ChangePassword() {
                           Choose the same password
                         </FormDescription>
                         <FormMessage className="small-text">
-                          {errors.confirmPassword &&
-                            errors.confirmPassword?.message}
+                          {errors.confirmPassword && errors.confirmPassword?.message}
                         </FormMessage>
                       </FormItem>
                     )}

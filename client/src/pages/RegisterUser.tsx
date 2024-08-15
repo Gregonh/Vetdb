@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
 import { Button } from '../components/ui/button';
@@ -16,6 +16,8 @@ import {
   FormMessage,
 } from '../components/ui/form';
 import { Input } from '../components/ui/input';
+import { useMutationRequest } from '../data-sources/useMutationRequest';
+import { type GetRequest } from '../data-sources/useRequest';
 
 const userValidationSchema = z
   .object({
@@ -27,12 +29,9 @@ const userValidationSchema = z
       .string()
       .min(2, { message: 'Lastname is required' })
       .max(15, { message: 'Last name must be no more than 15 characters' }),
-    email: z
-      .string()
-      .min(9, { message: 'must be at least 9 characters' })
-      .email({
-        message: 'Must be a valid email',
-      }),
+    email: z.string().min(9, { message: 'must be at least 9 characters' }).email({
+      message: 'Must be a valid email',
+    }),
     password: z
       .string()
       .min(6, {
@@ -62,11 +61,28 @@ const userValidationSchema = z
  */
 
 type UserValidation = z.infer<typeof userValidationSchema>;
+type CreateUserResponse = {
+  message: string;
+};
+type RequestBody = {
+  name: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
+
+const requestConfiguration: NonNullable<GetRequest> = {
+  url: 'http://localhost:4001/user',
+};
 
 export function RegisterUser() {
   const form = useForm<UserValidation>({
     resolver: zodResolver(userValidationSchema),
   });
+  const { trigger, data } = useMutationRequest<CreateUserResponse, RequestBody>(
+    requestConfiguration,
+  );
+  const navigate = useNavigate();
 
   const {
     handleSubmit,
@@ -77,9 +93,32 @@ export function RegisterUser() {
   const createUser = async (user: UserValidation) => {
     // eslint-disable-next-line no-useless-catch
     try {
-      //console.log({ user });
+      const bodyData = {
+        name: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        password: user.password,
+      };
+
+      const result = await trigger({
+        request: requestConfiguration,
+        methodType: 'POST',
+        requestBody: bodyData,
+        queryParams: undefined,
+      });
+
+      console.log(result);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const createUser2 = async (user: UserValidation) => {
+    // eslint-disable-next-line no-useless-catch
+    try {
       const client = axios.create({
-        baseURL: 'http://localhost:4001/users',
+        baseURL: 'http://localhost:4001/user',
         timeout: 40000,
         headers: {
           Accept: 'application/json',
@@ -103,9 +142,14 @@ export function RegisterUser() {
     try {
       const user = userValidationSchema.parse(data);
       await createUser(user);
+      navigate('/login');
     } catch (err: unknown) {
       if (err instanceof z.ZodError) {
         console.error(err.issues);
+      }
+      // eslint-disable-next-line import/no-named-as-default-member
+      if (axios.isAxiosError(err)) {
+        console.error(err.message);
       }
       if (err instanceof Error) {
         console.error(err.message);
@@ -119,7 +163,7 @@ export function RegisterUser() {
       <div className="u-container v-full-height mb-vspace-s-xl text-cfont-0 md:flex md:items-center">
         <div className="md:grow">
           <h1 className="font-display text-cfont-3 px-cspace-s-l pt-cspace-s-l">
-            Registro de usuario
+            {!data ? `Registro de usuario` : data.message}
           </h1>
           <Form {...form}>
             <form onSubmit={handleSubmit(onSubmit)} className="p-cspace-s-l">
@@ -146,6 +190,7 @@ export function RegisterUser() {
                             } focus:shadow-outline appearance-none rounded focus:outline-none`}
                             id="firstName"
                             defaultValue=""
+                            autoComplete="username"
                           />
                         </FormControl>
                         <FormDescription className="font-bodythin">
@@ -220,9 +265,7 @@ export function RegisterUser() {
                       <FormDescription className="font-bodythin">
                         We&apos;ll never share your email with anyone else
                       </FormDescription>
-                      <FormMessage>
-                        {errors.email && errors.email?.message}
-                      </FormMessage>
+                      <FormMessage>{errors.email && errors.email?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -294,8 +337,7 @@ export function RegisterUser() {
                           Choose the same password
                         </FormDescription>
                         <FormMessage className="small-text md:basis-10 md:overflow-y-auto">
-                          {errors.confirmPassword &&
-                            errors.confirmPassword?.message}
+                          {errors.confirmPassword && errors.confirmPassword?.message}
                         </FormMessage>
                       </FormItem>
                     )}
@@ -326,8 +368,7 @@ export function RegisterUser() {
                           </FormLabel>
                           {!errors.terms ? (
                             <FormDescription className="font-bodythin">
-                              You agree to our Terms of Service and Privacy
-                              Policy
+                              You agree to our Terms of Service and Privacy Policy
                             </FormDescription>
                           ) : (
                             <FormMessage className="small-text italic">

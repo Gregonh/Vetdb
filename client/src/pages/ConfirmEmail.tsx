@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 
 import { Button } from '../components/ui/button';
@@ -24,18 +24,12 @@ import { Input } from '../components/ui/input';
 
 const emailValidationSchema = z
   .object({
-    email: z
-      .string()
-      .min(9, { message: 'must be at least 9 characters' })
-      .email({
-        message: 'Must be a valid email',
-      }),
-    confirmEmail: z
-      .string()
-      .min(9, { message: 'must be at least 9 characters' })
-      .email({
-        message: 'Must be a valid email',
-      }),
+    email: z.string().min(9, { message: 'must be at least 9 characters' }).email({
+      message: 'Must be a valid email',
+    }),
+    confirmEmail: z.string().min(9, { message: 'must be at least 9 characters' }).email({
+      message: 'Must be a valid email',
+    }),
   })
   .refine((data) => data.email === data.confirmEmail, {
     path: ['confirmEmail'],
@@ -45,6 +39,8 @@ const emailValidationSchema = z
 type EmailValidation = z.infer<typeof emailValidationSchema>;
 
 export function ConfirmEmail() {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const form = useForm<EmailValidation>({
     resolver: zodResolver(emailValidationSchema),
   });
@@ -55,11 +51,15 @@ export function ConfirmEmail() {
     control,
   } = form;
 
-  const loginUser = async (user: EmailValidation) => {
+  if (!id || id == null) {
+    navigate('/login');
+  }
+
+  const confirmEmailExist = async (user: EmailValidation) => {
     // eslint-disable-next-line no-useless-catch
     try {
       const client = axios.create({
-        baseURL: 'http://localhost:4001/users',
+        baseURL: 'http://localhost:4001/user/confirmEmail',
         timeout: 40000,
         headers: {
           Accept: 'application/json',
@@ -68,7 +68,8 @@ export function ConfirmEmail() {
       });
       const baseURL = client.defaults.baseURL as string;
       const data = {
-        name: user.email,
+        id: id as string,
+        email: user.email.toLowerCase(),
       };
       await client.post(baseURL, data);
     } catch (error) {
@@ -79,7 +80,12 @@ export function ConfirmEmail() {
   const onSubmit = async (data: EmailValidation) => {
     try {
       const userEmail = emailValidationSchema.parse(data);
-      await loginUser(userEmail);
+      if (!id) {
+        navigate('/login');
+      }
+      await confirmEmailExist(userEmail);
+      //TODO: learn how to dealt with axios response
+      navigate(`/changePassword/${id}`);
     } catch (err: unknown) {
       if (err instanceof z.ZodError) {
         console.error(err.issues);
@@ -87,6 +93,8 @@ export function ConfirmEmail() {
       if (err instanceof Error) {
         console.error(err.message);
       }
+
+      navigate('/login');
     }
   };
 
@@ -120,9 +128,7 @@ export function ConfirmEmail() {
                           defaultValue=""
                         />
                       </FormControl>
-                      <FormMessage>
-                        {errors.email && errors.email?.message}
-                      </FormMessage>
+                      <FormMessage>{errors.email && errors.email?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -130,31 +136,29 @@ export function ConfirmEmail() {
               <div className="mt-cspace-xs">
                 <FormField
                   control={control}
-                  name="password"
+                  name="confirmEmail"
                   render={({ field }) => (
-                    <FormItem className="md:flex md:h-[100%] md:flex-col">
+                    <FormItem>
                       <FormLabel
-                        className="font-bodybold block text-sm text-gray-700 md:overflow-y-auto"
-                        htmlFor="password"
+                        className="font-bodybold block text-sm text-gray-700"
+                        htmlFor="c_email"
                       >
-                        Password
+                        Confirm Email
                       </FormLabel>
-                      <div className="md:grow md:basis-0">
-                        <FormControl className="mt-2">
-                          <Input
-                            {...field}
-                            type="password"
-                            className={`w-full border px-3 py-2 text-sm leading-tight text-gray-700 ${
-                              errors.password && 'border-red-500'
-                            } focus:shadow-outline appearance-none rounded focus:outline-none`}
-                            id="password"
-                            autoComplete="new-password"
-                            defaultValue=""
-                          />
-                        </FormControl>
-                      </div>
-                      <FormMessage className="md:basis-10 md:overflow-y-auto">
-                        {errors.password && errors.password?.message}
+                      <FormControl>
+                        <Input
+                          {...field}
+                          className={`w-full border px-3 py-2 text-sm leading-tight text-gray-700 ${
+                            errors.confirmEmail && 'border-red-500'
+                          } focus:shadow-outline appearance-none rounded focus:outline-none`}
+                          id="c_email"
+                          type="email"
+                          autoComplete="email"
+                          defaultValue=""
+                        />
+                      </FormControl>
+                      <FormMessage>
+                        {errors.confirmEmail && errors.confirmEmail?.message}
                       </FormMessage>
                     </FormItem>
                   )}
