@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "start": "json-server --watch ./src/datasources/db.json --port 3003"
+    "mock": "json-server --watch ./src/datasources/db.json --port 3003"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

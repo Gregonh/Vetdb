@@ -4,15 +4,14 @@
   "description": "A template for a project : vite, typescript, react, react-router, tailwind, node, express, zustand, swr, eslint and prettier",
   "main": "index.js",
   "scripts": {
-    "client:dev": "npm --prefix client run dev",
-    "client": "npm --prefix client start",
-    "client:build": "npm --prefix client run build",
-    "client:preview": "npm --prefix client run preview",
-    "server": "npm --prefix server start",
-    "start": "npm run client:build && npm run server",
+    "client:dev": "pnpm --prefix client run dev",
+    "client:build": "pnpm --prefix client run build",
+    "client:preview": "pnpm --prefix client run preview",
+    "server:dev": "pnpm --prefix server dev",
+    "build": "pnpm run client:build && pnpm run server:dev",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --ignore-path .gitignore",
     "lint-fix": "pnpm lint -- --fix",
-    "dev": "concurrently \"npm run client:dev\" \"npm run server\""
+    "dev": "concurrently \"pnpm run client:dev\" \"pnpm run server:dev\""
   },
   "keywords": [],
   "author": "Grego Nunez",
