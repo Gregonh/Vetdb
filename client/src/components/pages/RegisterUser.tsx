@@ -4,8 +4,8 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
-import { Button } from '../components/ui/button';
-import { Checkbox } from '../components/ui/checkbox';
+import { Button } from '../ui/button';
+import { Checkbox } from '../ui/checkbox';
 import {
   Form,
   FormControl,
@@ -14,10 +14,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../components/ui/form';
-import { Input } from '../components/ui/input';
-import { useMutationRequest } from '../data-sources/useMutationRequest';
-import { type GetRequest } from '../data-sources/useRequest';
+} from '../ui/form';
+import { Input } from '../ui/input';
+import { useMutationRequest } from '../../data-sources/useMutationRequest';
+import { type GetRequest } from '../../data-sources/useRequest';
 
 const userValidationSchema = z
   .object({

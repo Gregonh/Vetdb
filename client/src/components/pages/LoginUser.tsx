@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { z } from 'zod';
 
-import { Button } from '../components/ui/button';
+import { Button } from '../ui/button';
 import {
   Form,
   FormControl,
@@ -12,8 +12,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../components/ui/form';
-import { Input } from '../components/ui/input';
+} from '../ui/form';
+import { Input } from '../ui/input';
 
 /**
  * TODO: error boundary
@@ -87,9 +87,7 @@ export function LoginUser() {
     <>
       <div className="u-container v-full-height mb-vspace-s-xl text-cfont-0 md:flex md:items-center">
         <div className="md:grow">
-          <h1 className="text-cfont-3 px-cspace-s-l pt-cspace-s-l">
-            Login de usuario
-          </h1>
+          <h1 className="text-cfont-3 px-cspace-s-l pt-cspace-s-l">Login de usuario</h1>
           <Form {...form}>
             <form onSubmit={handleSubmit(onSubmit)} className="p-cspace-s-l">
               <div>
@@ -116,9 +114,7 @@ export function LoginUser() {
                           defaultValue=""
                         />
                       </FormControl>
-                      <FormMessage>
-                        {errors.email && errors.email?.message}
-                      </FormMessage>
+                      <FormMessage>{errors.email && errors.email?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
