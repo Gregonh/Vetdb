@@ -1,9 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
+import { useErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 
+import { useMutationRequest } from '../../data-sources/useMutationRequest';
+import { type GetRequest } from '../../data-sources/useRequest';
+import { dealWithErrors } from '../errors/dealWithError';
 import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
 import {
@@ -16,8 +19,6 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
-import { useMutationRequest } from '../../data-sources/useMutationRequest';
-import { type GetRequest } from '../../data-sources/useRequest';
 
 const userValidationSchema = z
   .object({
@@ -71,13 +72,21 @@ type RequestBody = {
   password: string;
 };
 
-const requestConfiguration: NonNullable<GetRequest> = {
+const requestConfiguration: NonNullable<GetRequest<RequestBody>> = {
   url: 'http://localhost:4001/user',
 };
 
 export function RegisterUser() {
+  const { showBoundary } = useErrorBoundary();
   const form = useForm<UserValidation>({
     resolver: zodResolver(userValidationSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   });
   const { trigger, data } = useMutationRequest<CreateUserResponse, RequestBody>(
     requestConfiguration,
@@ -91,7 +100,6 @@ export function RegisterUser() {
   } = form;
 
   const createUser = async (user: UserValidation) => {
-    // eslint-disable-next-line no-useless-catch
     try {
       const bodyData = {
         name: user.firstName,
@@ -100,60 +108,26 @@ export function RegisterUser() {
         password: user.password,
       };
 
-      const result = await trigger({
+      const response = await trigger({
         request: requestConfiguration,
         methodType: 'POST',
         requestBody: bodyData,
-        queryParams: undefined,
       });
-
-      console.log(result);
+      return response;
     } catch (error) {
-      throw error;
-    }
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const createUser2 = async (user: UserValidation) => {
-    // eslint-disable-next-line no-useless-catch
-    try {
-      const client = axios.create({
-        baseURL: 'http://localhost:4001/user',
-        timeout: 40000,
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json; charset=utf-8',
-        },
-      });
-      const baseURL = client.defaults.baseURL as string;
-      const data = {
-        name: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        password: user.password,
-      };
-      await client.post(baseURL, data);
-    } catch (error) {
-      throw error;
+      dealWithErrors(error, showBoundary);
     }
   };
 
   const onSubmit = async (data: UserValidation) => {
     try {
       const user = userValidationSchema.parse(data);
-      await createUser(user);
-      navigate('/login');
-    } catch (err: unknown) {
-      if (err instanceof z.ZodError) {
-        console.error(err.issues);
+      const response = await createUser(user);
+      if (response) {
+        navigate('/login');
       }
-      // eslint-disable-next-line import/no-named-as-default-member
-      if (axios.isAxiosError(err)) {
-        console.error(err.message);
-      }
-      if (err instanceof Error) {
-        console.error(err.message);
-      }
+    } catch (error: unknown) {
+      dealWithErrors(error, showBoundary);
     }
   };
 
@@ -189,7 +163,6 @@ export function RegisterUser() {
                               errors.firstName && 'border-red-500'
                             } focus:shadow-outline appearance-none rounded focus:outline-none`}
                             id="firstName"
-                            defaultValue=""
                             autoComplete="username"
                           />
                         </FormControl>
@@ -224,7 +197,7 @@ export function RegisterUser() {
                             } focus:shadow-outline appearance-none rounded focus:outline-none`}
                             id="lastName"
                             type="text"
-                            defaultValue=""
+                            autoComplete="additional-name"
                           />
                         </FormControl>
                         <FormDescription className="font-bodythin">
@@ -259,7 +232,6 @@ export function RegisterUser() {
                           id="email"
                           type="email"
                           autoComplete="email"
-                          defaultValue=""
                         />
                       </FormControl>
                       <FormDescription className="font-bodythin">
@@ -293,7 +265,6 @@ export function RegisterUser() {
                               } focus:shadow-outline appearance-none rounded focus:outline-none`}
                               id="password"
                               autoComplete="new-password"
-                              defaultValue=""
                             />
                           </FormControl>
                         </div>
@@ -329,7 +300,6 @@ export function RegisterUser() {
                               } focus:shadow-outline appearance-none rounded focus:outline-none`}
                               id="c_password"
                               autoComplete="new-password"
-                              defaultValue=""
                             />
                           </FormControl>
                         </div>

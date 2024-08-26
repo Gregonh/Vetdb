@@ -2,9 +2,11 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
+import { toast, Toaster } from 'react-hot-toast';
+import { ZodError } from 'zod';
 
+import { dealWithErrors } from './dealWithError';
 import { logger } from '../../utils/logger';
-
 
 function asyncError() {
   return new Promise((_resolve, reject) => {
@@ -28,7 +30,7 @@ export function MockError(props: any) {
           className="mb-5 w-full rounded-[10px] p-2.5"
           onClick={() => setRaiseError((error) => !error)}
         >
-          💥 Simulate Error
+          💥 Automatic Error Boundary
         </button>
         {/* "a" is undefined so "props.a.b" will result in an error */}
         {raiseError ? props.a.b : undefined}
@@ -43,7 +45,7 @@ export function MockError(props: any) {
               })
               .catch((error) => {
                 // propagate the error to the error boundary
-                showBoundary(error);
+                dealWithErrors(error, showBoundary);
               });
           }}
         >
@@ -58,12 +60,62 @@ export function MockError(props: any) {
               .get('https://nonexistent.url')
               .then((response) => logger.log(response))
               .catch((error) => {
-                showBoundary(error);
+                dealWithErrors(error, showBoundary);
               });
           }}
         >
           🎈 Simulate AxiosError
         </button>
+      </div>
+      <div>
+        <button
+          className="mb-5 w-full rounded-[10px] p-2.5"
+          onClick={() => {
+            try {
+              throw new Error('Papas fritas');
+            } catch (error: unknown) {
+              if (error instanceof Error) {
+                logger.error(error.stack);
+                toast.error(`Error:${error.message}`);
+              }
+            }
+          }}
+        >
+          🥪 Simulate Toast error
+        </button>
+        <Toaster />
+      </div>
+      <div>
+        <button
+          className="mb-5 w-full rounded-[10px] p-2.5"
+          onClick={() => {
+            try {
+              throw new ZodError([
+                {
+                  code: 'invalid_type',
+                  expected: 'string',
+                  received: 'number',
+                  path: ['names', 1],
+                  message: 'Invalid input: expected string, received number',
+                },
+                {
+                  code: 'invalid_type',
+                  expected: 'string',
+                  received: 'number',
+                  path: ['names', 1],
+                  message: 'Invalid input 2: expected string, received number',
+                },
+              ]);
+            } catch (error: unknown) {
+              // logger.error(error.issues);
+              // toast.error(`${error.name} : ${error.issues[0]?.message}`);
+              dealWithErrors(error, showBoundary);
+            }
+          }}
+        >
+          🟥 Simulate Zod error
+        </button>
+        <Toaster />
       </div>
     </div>
   );

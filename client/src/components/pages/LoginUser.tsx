@@ -1,9 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
+import { useErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { z } from 'zod';
 
+import { useMutationRequest } from '../../data-sources/useMutationRequest';
+import { dealWithErrors } from '../errors/dealWithError';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -16,8 +19,6 @@ import {
 import { Input } from '../ui/input';
 
 /**
- * TODO: error boundary
- * TODO: catch error better
  * TODO: improve styles
  * TODO: refactor
  */
@@ -37,6 +38,7 @@ const loginValidationSchema = z.object({
 type LoginValidation = z.infer<typeof loginValidationSchema>;
 
 export function LoginUser() {
+  const { showBoundary } = useErrorBoundary();
   const form = useForm<LoginValidation>({
     resolver: zodResolver(loginValidationSchema),
   });
@@ -48,7 +50,6 @@ export function LoginUser() {
   } = form;
 
   const loginUser = async (user: LoginValidation) => {
-    // eslint-disable-next-line no-useless-catch
     try {
       const client = axios.create({
         baseURL: 'http://localhost:4001/user',
@@ -65,7 +66,7 @@ export function LoginUser() {
       };
       await client.post(baseURL, data);
     } catch (error) {
-      throw error;
+      dealWithErrors(error, showBoundary);
     }
   };
 
@@ -73,13 +74,8 @@ export function LoginUser() {
     try {
       const user = loginValidationSchema.parse(data);
       await loginUser(user);
-    } catch (err: unknown) {
-      if (err instanceof z.ZodError) {
-        console.error(err.issues);
-      }
-      if (err instanceof Error) {
-        console.error(err.message);
-      }
+    } catch (error: unknown) {
+      dealWithErrors(error, showBoundary);
     }
   };
 

@@ -48,18 +48,21 @@ app.get('/error', () => {
   throw new Error('This is a test error!');
 });
 
+//catches any unhandled errors in development
 if (process.env['NODE_ENV'] === 'development') {
-  const typedErrorHandler: ErrorRequestHandler =
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    errorHandler();
+  const typedErrorHandler: ErrorRequestHandler = errorHandler();
   app.use(typedErrorHandler);
 }
 
-// General error handler middleware for production
-app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-  console.error(err);
-  res.status(500).send('Something broke!');
-  _next();
+// approach for production. It catches any errors not handled earlier
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
+  //delegate to the default Express error handler, when the headers have already been sent to the client
+  if (res.headersSent) {
+    return next(err);
+  }
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal Server Error' });
 });
 
 app.listen(PORT, () => {

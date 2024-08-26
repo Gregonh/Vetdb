@@ -44,7 +44,7 @@ const NO_OP: LogFn = (_message?: any, ..._optionalParams: any[]) => {};
  *- We use the environments to stablish that configuration
  *and avoid to have to track them down before building
  *a production app.
-  - All the message passed to a logger must be formatted 
+  - All the message passed to a logger can be formatted 
   with formatMessage and we can add css style to them.
  *- You can disable the log level in development too and 
  *use it only in the components you’re working on (by
@@ -164,7 +164,7 @@ export function formatMessage(message: any, isStyled: boolean = true): string | 
       if (!isStyled) return formattedMessage;
       return `%c${formattedMessage}`;
     } catch (error) {
-      return 'Error formatting message';
+      return 'Error formatting message: ';
     }
   }
   if (!isStyled) return message;

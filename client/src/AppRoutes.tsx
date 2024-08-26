@@ -1,12 +1,9 @@
+import { ErrorBoundary } from 'react-error-boundary';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 
 import { ErrorPage } from './components/errors/ErrorPage';
-import {
-  FallbackComponent,
-  logErrorToService,
-} from './components/errors/FallbackComponent';
+import { FallbackComponent } from './components/errors/FallbackComponent';
 import { MockError } from './components/errors/MockError';
-import { ReactErrorBoundary } from './components/errors/ReactErrorBoundary';
 import { MainLayout } from './components/layouts/MainLayout';
 import { ChangePassword } from './components/pages/ChangePassword';
 import { ConfirmEmail } from './components/pages/ConfirmEmail';
@@ -16,9 +13,9 @@ import { RegisterUser } from './components/pages/RegisterUser';
 import { ProfilerComponent } from './utils/ProfilerComponent';
 
 const ErrorBoundaryLayout = () => (
-  <ReactErrorBoundary FallbackComponent={FallbackComponent} onError={logErrorToService}>
+  <ErrorBoundary FallbackComponent={FallbackComponent}>
     <Outlet />
-  </ReactErrorBoundary>
+  </ErrorBoundary>
 );
 
 const router = createBrowserRouter([
@@ -39,14 +36,7 @@ const router = createBrowserRouter([
           },
           {
             path: '/register',
-            element: (
-              <ReactErrorBoundary
-                FallbackComponent={FallbackComponent}
-                onError={logErrorToService}
-              >
-                <RegisterUser />
-              </ReactErrorBoundary>
-            ),
+            element: <RegisterUser />,
           },
           {
             path: '/login',
@@ -65,20 +55,16 @@ const router = createBrowserRouter([
       {
         path: '/mock',
         element: (
-          <ReactErrorBoundary
-            FallbackComponent={FallbackComponent}
-            onError={logErrorToService}
-          >
-            <MockError />
-          </ReactErrorBoundary>
+          <>
+            <ErrorBoundary FallbackComponent={FallbackComponent}>
+              <MockError />
+            </ErrorBoundary>
+          </>
         ),
       },
-      // must be the last, to handle undefined route
-      {
-        path: '*',
-        element: <ErrorPage />,
-      },
     ],
+    // must be the last, to handle undefined route
+    errorElement: <ErrorPage />,
   },
 ]);
 

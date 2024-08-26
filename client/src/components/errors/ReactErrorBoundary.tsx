@@ -4,7 +4,7 @@ import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 interface BoundaryProps {
   FallbackComponent: ComponentType<FallbackProps>;
   children: ReactNode | undefined;
-  onError: (error: Error, info: ErrorInfo) => void;
+  onError?: (error: Error, info: ErrorInfo) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onReset?: (...args: any[]) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

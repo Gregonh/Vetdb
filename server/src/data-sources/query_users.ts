@@ -132,6 +132,25 @@ const getConfirmEmail = (request: Request, response: Response, next: NextFunctio
   });
 };
 
+type FrontLogin = { password: string; email: string };
+const getUserByEmailPassword = (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
+  const { password, email } = <FrontLogin>request.body;
+  if (!password || !email) return next(new Error('incorrect request'));
+  const query = `SELECT id, email FROM users WHERE email = $1 and password = $2`;
+  getUserByDynamicsField(query, [email, password], (error, results) => {
+    if (error) {
+      return next(error);
+    }
+    if (results?.rows[0]) {
+      response.status(200).json({ email: results.rows[0].email, id: results.rows[0].id });
+    }
+  });
+};
+
 type FrontNewUser = { name: string; lastName: string; email: string; password: string };
 const postUser = (request: Request, response: Response, next: NextFunction) => {
   //console.log(request.body);
@@ -198,4 +217,5 @@ export const db = {
   putUser: updateUserPassword,
   deleteUser,
   getConfirmEmail,
+  getUserByEmailPassword,
 };

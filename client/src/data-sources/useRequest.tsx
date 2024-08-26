@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 
-export type GetRequest = AxiosRequestConfig | null;
+export type GetRequest<TBody = undefined> = AxiosRequestConfig<TBody> | null;
 
 interface Return<Data, Error>
   extends Pick<
@@ -29,8 +29,8 @@ export interface Config<Data = unknown, Error = unknown>
  * mutate(key) as manually revalidation. The key must be the same
  * request.url used in the instance of this hook.
  */
-export function useRequest<Data = unknown, Error = unknown>(
-  request: NonNullable<GetRequest>,
+export function useRequest< Data = unknown, Error = unknown, TBody = undefined>(
+  request: NonNullable<GetRequest<TBody>>,
   { fallbackData, ...config }: Config<Data, Error> = {},
 ): Return<Data, Error> {
   const {

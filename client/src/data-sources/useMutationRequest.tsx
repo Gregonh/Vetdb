@@ -3,39 +3,58 @@ import useSWRMutation from 'swr/mutation';
 
 import { type GetRequest } from './useRequest';
 
-interface MutationRequestArgs<TBody, TParam> {
-  request: NonNullable<GetRequest>;
+interface MutationRequestArgs<TBody = undefined, TParam = undefined> {
+  //preventing conflicts or misuse when constructing the request.
+  request: NonNullable<Omit<GetRequest<TBody>, 'params' | 'data' | 'method'>>;
   methodType: 'delete' | 'DELETE' | 'post' | 'POST' | 'put' | 'PUT' | 'patch' | 'PATCH';
-  requestBody: TBody | undefined;
-  queryParams: TParam | undefined;
+  requestBody?: TBody;
+  queryParams?: TParam extends Record<string, string | number | boolean | undefined>
+    ? TParam
+    : undefined;
 }
-//as MutationFetcher<U, string | null, MutationRequestArgs<T, S>>
-const mutationFetcher = async <TData, TBody, TParam>(
+
+type ResponseType<TData> = TData | { error: unknown; message: string };
+
+const mutationFetcher = async <TData, TBody = undefined, TParam = undefined>(
   baseUrl: string,
   { arg }: { arg: MutationRequestArgs<TBody, TParam> },
-): Promise<TData> => {
-  const url = !arg.queryParams
-    ? baseUrl
-    : // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `${baseUrl}?${new URLSearchParams(arg.queryParams)}`;
+): Promise<ResponseType<TData>> => {
+  const url = new URL(baseUrl);
+
+  // eslint-disable-next-line no-useless-catch
+  try {
+    if (arg.queryParams) {
+      url.search = new URLSearchParams(
+        arg.queryParams as Record<string, string>,
+      ).toString();
+    }
+  } catch (error) {
+    throw new Error('queryParams must be a valid object');
+  }
 
   const config: AxiosRequestConfig<TBody> = {
-    ...arg.request,
-    url,
-    method: arg.methodType,
+    //Default config
     timeout: 40000,
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json; charset=utf-8',
     },
+    //update config
+    ...arg.request,
+    url: url.toString(),
+    method: arg.methodType,
   };
 
   if (arg.requestBody) {
     config.data = arg.requestBody;
   }
 
-  const response = await axios.request<TData>(config);
-  return response.data;
+  try {
+    const response = await axios.request<TData>(config);
+    return response.data;
+  } catch (error) {
+    return { error, message: 'Reject axios request' };
+  }
 };
 
 /**
@@ -52,10 +71,10 @@ const mutationFetcher = async <TData, TBody, TParam>(
  * as one used with useSWR hook.
  */
 export function useMutationRequest<TData, TBody = undefined, TParam = undefined>(
-  req: GetRequest,
+  req: GetRequest<TBody>,
 ) {
   const { trigger, data, isMutating, error } = useSWRMutation<
-    TData,
+    ResponseType<TData>,
     AxiosError | Error,
     string | null,
     MutationRequestArgs<TBody, TParam>
