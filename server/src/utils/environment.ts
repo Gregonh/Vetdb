@@ -4,7 +4,7 @@ import { LogLevel } from './logger';
 export type Environment = 'development' | 'production';
 
 export const APP_ENV: Environment =
-  import.meta.env['VITE_NODE_ENV'] === 'production' ? 'production' : 'development';
+  process.env['NODE_ENV'] === 'production' ? 'production' : 'development';
 
 export const LOG_LEVEL: LogLevel = APP_ENV === 'production' ? 'warn' : 'log';
 
@@ -15,5 +15,4 @@ export const LOG_LEVEL: LogLevel = APP_ENV === 'production' ? 'warn' : 'log';
  * When you run npm start, yarn start, or pnpm start,
  * NODE_ENV is automatically set to "development".
  * When you run npm run build, NODE_ENV is set to "production".
- * In this case we get the value for the env file.
  */

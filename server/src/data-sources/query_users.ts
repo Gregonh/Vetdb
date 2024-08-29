@@ -41,10 +41,9 @@ const returnUserIdResponse = <T extends PartialVetUserWithId>(
   results: QueryResult<T> | undefined | null,
   idForSearch: number,
 ) => {
-  //results.rows.length > 0
   if (results?.rows[0] && results.rows.length > 0) {
     const updatedUserId = results.rows[0].id;
-    response.status(200).json({ message: `User modified with ID: ${updatedUserId}` });
+    response.status(200).json({ message: `User with ID: ${updatedUserId}` });
   }
 
   response
