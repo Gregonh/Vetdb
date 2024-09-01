@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { RouteNotFound } from '../utils/errorClasses';
+import { RouteNotFound } from '../utils/CustomErrorClasses';
 
 /**
  * a middleware to send an error when no other routes
@@ -10,7 +10,7 @@ import { RouteNotFound } from '../utils/errorClasses';
  * @param _res
  * @param next
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 export const notFoundRouteHandler = (
   req: Request,
   _res: Response,

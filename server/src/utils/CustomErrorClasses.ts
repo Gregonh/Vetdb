@@ -1,13 +1,15 @@
-import { ErrorResponse } from './responses';
+import { ErrorResponseBody } from './IResponses';
 
 /**
  * It mimics the structure of the error response and will be
- * the base of the other custom errors.
+ * the base of the other subclasses custom errors.
  * We have to pass arg instance (using req.url) when we use subclasses
- * to have this information in the log. But when we return the response
+ * to have this information in the log. But when we return the response,
  * we use req.url to avoid manual error.
+ * All of these subclasses will be handle by our custom error middleware,
+ * to return an appropriate error response.
  */
-export abstract class BaseError extends Error implements ErrorResponse {
+export abstract class BaseError extends Error implements ErrorResponseBody {
   constructor(
     message: string,
     public status: number,
@@ -46,8 +48,6 @@ export class CustomError extends BaseError {
   }
 }
 
-//CLIENT ERRORS
-
 /**
  * For invalid user input or malformed requests.
  * Missing parameter.
@@ -62,7 +62,7 @@ export class BadRequestError extends BaseError {
       400,
       '/errors/bad-request-error',
       'BadRequestError',
-      'For invalid user input or malformed requests',
+      'Invalid user input or malformed requests',
       instance,
     );
   }
@@ -71,7 +71,7 @@ export class BadRequestError extends BaseError {
  * more specific than the last
  */
 export class ValidationError extends BaseError {
-  constructor(instance: string, field = 'Field') {
+  constructor(field = 'Field', instance: string) {
     super(
       `${field} validation failed`,
       400,
@@ -114,10 +114,12 @@ export class ForbiddenError extends BaseError {
 }
 
 /**
- * only indicates that the resource is missing without
+ * Indicates that the resource is missing without
  * indicating if this is temporary or permanent.
- * like dead links.
- *
+ * GET: You request a resource, but the resource doesn't exist.
+ * DELETE, PUT: You try to delete/update a resource that doesn't exist.
+ * result.rows.length === 0 or result.rows[0] === undefined),
+ * it's also appropriate to return 404 Not Found.
  */
 export class NotFoundError extends BaseError {
   constructor(instance: string, resource = 'Resource') {
@@ -160,6 +162,34 @@ export class ConflictError extends BaseError {
       '/errors/conflict',
       'Conflict',
       `The request conflict with the current state of the target resource`,
+      instance,
+    );
+  }
+}
+
+export enum OperationCanConflict {
+  INSERT,
+  UPDATE,
+  DELETE,
+}
+/**
+ * POST: You try to create a new resource, but the resource already exists, causing a conflict
+ * DELETE: You attempt to delete a resource,but there's a conflict (e.g.,
+ * the resource is referenced by other data).
+ * PUT/PATCH: You try to update a resource but the update violates a unique constraint
+ * (e.g., changing a user's email to one that another user already has).
+ * The result of the database operation was not the desired,
+ * like an empty result: result.rows.length === 0
+ * These operations can be: insert, update and delete.
+ */
+export class ConflictOperation extends BaseError {
+  constructor(instance: string, operation: OperationCanConflict) {
+    super(
+      `Conflict ${operation}`,
+      409,
+      '/errors/conflict-operation',
+      'Conflict operation in database',
+      `The request ${operation} operation in the database give not the desired result`,
       instance,
     );
   }

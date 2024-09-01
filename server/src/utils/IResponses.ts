@@ -1,5 +1,5 @@
 // Default Error response interface following RFC 9457
-export interface ErrorResponse {
+export interface ErrorResponseBody {
   status: number; //The HTTP status code
   type: string; //reference these URIs for documentation about the error, e.g., "https://example.com/probs/out-of-credit"
   title: string; // A short, human-readable summary of the problem. same across all instances, (e.g., "Validation Error")
@@ -9,21 +9,16 @@ export interface ErrorResponse {
 }
 
 //for not handling errors that have not status code
-export interface SecondaryErrorResponse {
+export interface SecondaryErrorResponseBody {
   status: 500;
   title: 'Internal Server Error';
   detail: string;
   instance: string;
 }
 
-export interface SuccessResponse<T> {
+export interface SuccessResponseBody<T> {
   data: T;
-  message: string;
+  message?: string;
 }
 
-export function createSuccessResponse<T>(data: T, message: string): SuccessResponse<T> {
-  return {
-    data,
-    message,
-  };
-}
+

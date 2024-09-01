@@ -110,7 +110,6 @@ function ChangePassword() {
   }
 
   const updatePassword = async (newPassword: PasswordValidation) => {
-    // eslint-disable-next-line no-useless-catch
     try {
       const id = getIdParam();
       const client = axios.create({

@@ -21,7 +21,6 @@ const mutationFetcher = async <TData, TBody = undefined, TParam = undefined>(
 ): Promise<ResponseType<TData>> => {
   const url = new URL(baseUrl);
 
-  // eslint-disable-next-line no-useless-catch
   try {
     if (arg.queryParams) {
       url.search = new URLSearchParams(

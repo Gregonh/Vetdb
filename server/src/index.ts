@@ -9,8 +9,9 @@ import { db } from './data-sources/query_users';
 import { customErrorHandler } from './middleware/errorMiddleware';
 import { logErrors } from './middleware/logErrors';
 import { notFoundRouteHandler } from './middleware/notFoundRouteHandler';
-import { ValidationError } from './utils/errorClasses';
-import { logger } from './utils/logger';
+import { asyncWrapper } from './utils/asyncHandler';
+import { ValidationError } from './utils/CustomErrorClasses';
+import { logger } from './utils/Logger';
 
 const app = express();
 const PORT = process.env['PORT'] || 4001;
@@ -46,10 +47,11 @@ app.get('/favicon.ico', (_req, res) => res.status(204));
 //routes with callback queries
 app.get('/users', db.getUsers);
 app.get('/user/:id', db.getUserById);
-app.get('/user/confirmEmail', db.getConfirmEmail);
-app.post('/user', db.createUser);
-app.put('/user', db.putUser);
-app.delete('/user/:id', db.deleteUser);
+app.post('/user', asyncWrapper(db.createUser));
+app.post('/user/confirmEmail', db.getConfirmEmail); //this is a post because we need the body to send sensible data
+app.post('/user/login', db.getLogin); //this is a post because we need the body to send sensible data
+app.put('/user', asyncWrapper(db.putUser));
+app.delete('/user/:id', asyncWrapper(db.deleteUser));
 
 // Route mock errors
 app.get('/error', (_req: Request, _res: Response, _next: NextFunction) => {
@@ -57,7 +59,7 @@ app.get('/error', (_req: Request, _res: Response, _next: NextFunction) => {
   throw new Error('This is a test error!');
 });
 app.get('/customerror', (req: Request, _res: Response, next: NextFunction) => {
-  next(new ValidationError(req.url));
+  next(new ValidationError(undefined, req.url));
 });
 app.get('/pgerror', (_req: Request, _res: Response, next: NextFunction) => {
   const pgError = new DatabaseError('Simulated database error', 123, 'error');

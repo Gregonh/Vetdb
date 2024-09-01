@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { useRouteError, isRouteErrorResponse, Link } from 'react-router-dom';
 
 import { logger } from '../../utils/logger';
