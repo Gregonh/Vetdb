@@ -3,17 +3,17 @@ import { Outlet, Link } from 'react-router-dom';
 const MainLayout = () => {
   return (
     <>
-      <nav>
+      <nav className="min-h-min-height-nav">
         <ul>
           <li>
             <Link to="/">Home</Link>
           </li>
         </ul>
       </nav>
-      <main>
+      <main className="mt-default-top-margin">
         <Outlet />
       </main>
-      <footer>
+      <footer className="mt-footer-top-margin">
         <p>Footer content</p>
       </footer>
     </>

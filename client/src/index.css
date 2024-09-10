@@ -3,41 +3,55 @@
 @tailwind utilities;
 
 @layer base {
+  /* #region Import fonts */
+  /* Use these font as tailwind classes (included as tailwind extend config)
+  and also are included in the layer component (in our custom font classes). */
+  /*Headers */
   @font-face {
-    font-family: 'Roboto-SemiBold';
+    font-family: 'Linotte-Semibold';
     font-weight: 600;
     font-style: normal;
     src: url('./assets/fonts/linotte-semibold-webfont.woff2') format('woff2');
   }
-
+  /* Body1, body2 */
   @font-face {
     font-family: 'Inter-Regular';
     font-weight: 400;
     font-style: normal;
     src: url('./assets/fonts/Inter-Regular.woff2') format('woff2');
   }
+  /* Subtitle1 (emphasize text less than a headline) */
+  @font-face {
+    font-family: 'Inter-SemiBold';
+    font-weight: 600;
+    font-style: normal;
+    src: url('./assets/fonts/Inter-SemiBold.woff2') format('woff2');
+  }
 
+  /* Overline(text introduce headline), subtitle2 (emphasize text less important than headline)*/
   @font-face {
     font-family: 'Inter-Bold';
     font-weight: 700;
     font-style: normal;
     src: url('./assets/fonts/Inter-Bold.woff2') format('woff2');
   }
-
+  /* Caption(text under img)*/
   @font-face {
     font-family: 'Inter-Light';
     font-weight: 300;
     font-style: normal;
     src: url('./assets/fonts/Inter-Light.woff2') format('woff2');
   }
-
+  /* Secondary: button and links */
   @font-face {
     font-family: 'OpenSans-SemiBold';
     font-weight: 600;
     font-style: normal;
     src: url('./assets/fonts/OpenSans-SemiBold.woff2') format('woff2');
   }
+  /* #endregion Import fonts */
 
+  /* Body1 or the default font style */
   body {
     font-size: 16px;
     font-family: 'Inter-Regular', system-ui, sans-serif;
@@ -46,246 +60,384 @@
       'calt' 1; /* fix for Chrome */
   }
 
-  /*utopia type scale and spacing (for viewport and container).
-  Viewport clamp for root elements and container´s units for inner elements*/
+  /* Utopia type scale and spacing (for viewport and container).
+  Min viewport 1920, máx viewport 2560. Use as tailwind classes 
+  (included in tailwind config) and in other custom vars.*/
   :root {
-    --vfont--1: clamp(0.9377rem, 0.048rem + 0.7437vw, 1.2389rem);
-    --vfont-0: clamp(1.25rem, -0.2324rem + 1.2392vw, 1.7519rem);
-    --vfont-1: clamp(1.6663rem, -0.7289rem + 2.0022vw, 2.4772rem);
-    --vfont-2: clamp(2.2211rem, -1.5643rem + 3.1644vw, 3.5027rem);
-    --vfont-3: clamp(2.9607rem, -2.9232rem + 4.9187vw, 4.9528rem);
+    /*overline*/
+    --vfont--3: clamp(0.5805rem, 0.4651rem + 0.0962vw, 0.619rem);
+    /*caption*/
+    --vfont--2: clamp(0.7738rem, 0.4695rem + 0.2536vw, 0.8753rem);
+    /*body2, subtitle2, secondary*/
+    --vfont--1: clamp(1.0315rem, 0.4132rem + 0.5153vw, 1.2376rem);
+    /*body, subtitle1, */
+    --vfont-0: clamp(1.375rem, 0.25rem + 0.9375vw, 1.75rem);
+    /* headers */
+    --vfont-1: clamp(1.8329rem, -0.092rem + 1.6041vw, 2.4745rem);
+    --vfont-2: clamp(2.4432rem, -0.7239rem + 2.6393vw, 3.4989rem);
+    --vfont-3: clamp(3.2568rem, -1.8153rem + 4.2267vw, 4.9475rem);
+    --vfont-4: clamp(4.3413rem, -3.622rem + 6.6361vw, 6.9958rem);
+    --vfont-5: clamp(5.787rem, -6.5281rem + 10.2626vw, 9.892rem);
 
-    --cfont--1: clamp(0.9377rem, 0.048rem + 0.7437cqi, 1.2389rem);
-    --cfont-0: clamp(1.25rem, -0.2324rem + 1.2392cqi, 1.7519rem);
-    --cfont-1: clamp(1.6663rem, -0.7289rem + 2.0022cqi, 2.4772rem);
-    --cfont-2: clamp(2.2211rem, -1.5643rem + 3.1644cqi, 3.5027rem);
-    --cfont-3: clamp(2.9607rem, -2.9232rem + 4.9187cqi, 4.9528rem);
+    /* Usually only add top and left margin */
+    --vspace-3xs: clamp(0.375rem, 0.1875rem + 0.1563vw, 0.4375rem);
+    --vspace-2xs: clamp(0.6875rem, 0.125rem + 0.4688vw, 0.875rem);
+    --vspace-xs: clamp(1.0625rem, 0.3125rem + 0.625vw, 1.3125rem);
+    --vspace-s: clamp(1.375rem, 0.25rem + 0.9375vw, 1.75rem);
+    --vspace-m: clamp(2.0625rem, 0.375rem + 1.4063vw, 2.625rem); /*also gutter*/
+    --vspace-l: clamp(2.75rem, 0.5rem + 1.875vw, 3.5rem);
+    --vspace-xl: clamp(4.125rem, 0.75rem + 2.8125vw, 5.25rem);
+    --vspace-2xl: clamp(5.5rem, 1rem + 3.75vw, 7rem);
+    --vspace-3xl: clamp(8.25rem, 1.5rem + 5.625vw, 10.5rem);
+    /* One-up pairs */
+    --vspace-3xs-2xs: clamp(0.375rem, -1.125rem + 1.25vw, 0.875rem);
+    --vspace-2xs-xs: clamp(0.6875rem, -1.1875rem + 1.5625vw, 1.3125rem);
+    --vspace-xs-s: clamp(1.0625rem, -1rem + 1.7188vw, 1.75rem);
+    --vspace-s-m: clamp(1.375rem, -2.375rem + 3.125vw, 2.625rem);
+    --vspace-m-l: clamp(2.0625rem, -2.25rem + 3.5938vw, 3.5rem);
+    --vspace-l-xl: clamp(2.75rem, -4.75rem + 6.25vw, 5.25rem);
+    --vspace-xl-2xl: clamp(4.125rem, -4.5rem + 7.1875vw, 7rem);
+    --vspace-2xl-3xl: clamp(5.5rem, -9.5rem + 12.5vw, 10.5rem);
+    /* Custom pairs */
+    --vspace-s-l: clamp(1.375rem, -5rem + 5.3125vw, 3.5rem);
+    --vspace-m-xl: clamp(2.0625rem, -7.5rem + 7.9687vw, 5.25rem);
+    --vspace-l-2xl: clamp(2.75rem, -10rem + 10.625vw, 7rem);
+    --vspace-xs-m: clamp(1.0625rem, -3.625rem + 3.9063vw, 2.625rem);
+    /* Line height */
+    --vlineheight-headers: clamp(7.523rem, 5.922vw + 0.416rem, 9.892rem);
+    --vlineheight-font0: clamp(2.2rem, 0.625vw + 1.45rem, 2.45rem);
+    --vlineheight-font-1: clamp(1.65rem, 0.206vw + 1.403rem, 1.733rem);
+    --vlineheight-font-2: clamp(1.313rem, -0.201vw + 1.634rem, 1.393rem);
+    --vlineheight-font-3: clamp(0.928rem, -0.292vw + 1.396rem, 1.045rem);
 
-    --vspace-3xs: clamp(0.3125rem, -0.0567rem + 0.3086vw, 0.4375rem);
-    --vspace-2xs: clamp(0.625rem, -0.1134rem + 0.6173vw, 0.875rem);
-    --vspace-xs: clamp(0.9375rem, -0.1701rem + 0.9259vw, 1.3125rem);
-    --vspace-s: clamp(1.25rem, -0.2269rem + 1.2346vw, 1.75rem);
-    --vspace-m: clamp(1.5625rem, -0.2836rem + 1.5432vw, 2.1875rem);
-    --vspace-l: clamp(1.875rem, -0.3403rem + 1.8519vw, 2.625rem);
-    --vspace-xl: clamp(2.5rem, -0.4537rem + 2.4691vw, 3.5rem);
-    --vspace-2xl: clamp(3.75rem, -0.6806rem + 3.7037vw, 5.25rem);
-    --vspace-3xl: clamp(5rem, -0.9074rem + 4.9383vw, 7rem);
-    --vspace-4xl: clamp(7.4375rem, -1.6082rem + 7.5617vw, 10.5rem);
+    /* #region Container custom vars */
+    /* cqi for scrollable or resizable containers like grid, flex... */
+    --cfont--3: clamp(0.5805rem, 0.4651rem + 0.0962cqi, 0.619rem);
+    --cfont--2: clamp(0.7738rem, 0.4695rem + 0.2536cqi, 0.8753rem);
+    --cfont--1: clamp(1.0315rem, 0.4132rem + 0.5153cqi, 1.2376rem);
+    --cfont-0: clamp(1.375rem, 0.25rem + 0.9375cqi, 1.75rem);
+    --cfont-1: clamp(1.8329rem, -0.092rem + 1.6041cqi, 2.4745rem);
+    --cfont-2: clamp(2.4432rem, -0.7239rem + 2.6393cqi, 3.4989rem);
+    --cfont-3: clamp(3.2568rem, -1.8153rem + 4.2267cqi, 4.9475rem);
+    --cfont-4: clamp(4.3413rem, -3.622rem + 6.6361cqi, 6.9958rem);
+    --cfont-5: clamp(5.787rem, -6.5281rem + 10.2626cqi, 9.892rem);
+
+    --cspace-3xs: clamp(0.375rem, 0.1875rem + 0.1563cqi, 0.4375rem);
+    --cspace-2xs: clamp(0.6875rem, 0.125rem + 0.4688cqi, 0.875rem);
+    --cspace-xs: clamp(1.0625rem, 0.3125rem + 0.625cqi, 1.3125rem);
+    --cspace-s: clamp(1.375rem, 0.25rem + 0.9375cqi, 1.75rem);
+    --cspace-m: clamp(2.0625rem, 0.375rem + 1.4063cqi, 2.625rem);
+    --cspace-l: clamp(2.75rem, 0.5rem + 1.875cqi, 3.5rem);
+    --cspace-xl: clamp(4.125rem, 0.75rem + 2.8125cqi, 5.25rem);
+    --cspace-2xl: clamp(5.5rem, 1rem + 3.75cqi, 7rem);
+    --cspace-3xl: clamp(8.25rem, 1.5rem + 5.625cqi, 10.5rem);
 
     /* One-up pairs */
-    --vspace-3xs-2xs: clamp(0.3125rem, -1.349rem + 1.3889vw, 0.875rem);
-    --vspace-2xs-xs: clamp(0.625rem, -1.4057rem + 1.6975vw, 1.3125rem);
-    --vspace-xs-s: clamp(0.9375rem, -1.4624rem + 2.0062vw, 1.75rem);
-    --vspace-s-m: clamp(1.25rem, -1.5191rem + 2.3148vw, 2.1875rem);
-    --vspace-m-l: clamp(1.5625rem, -1.5758rem + 2.6235vw, 2.625rem);
-    --vspace-l-xl: clamp(1.875rem, -2.9248rem + 4.0123vw, 3.5rem);
-    --vspace-xl-2xl: clamp(2.5rem, -5.6227rem + 6.7901vw, 5.25rem);
-    --vspace-2xl-3xl: clamp(3.75rem, -5.8495rem + 8.0247vw, 7rem);
-    --vspace-3xl-4xl: clamp(5rem, -11.2454rem + 13.5802vw, 10.5rem);
+    --cspace-3xs-2xs: clamp(0.375rem, -1.125rem + 1.25cqi, 0.875rem);
+    --cspace-2xs-xs: clamp(0.6875rem, -1.1875rem + 1.5625cqi, 1.3125rem);
+    --cspace-xs-s: clamp(1.0625rem, -1rem + 1.7188cqi, 1.75rem);
+    --cspace-s-m: clamp(1.375rem, -2.375rem + 3.125cqi, 2.625rem);
+    --cspace-m-l: clamp(2.0625rem, -2.25rem + 3.5938cqi, 3.5rem);
+    --cspace-l-xl: clamp(2.75rem, -4.75rem + 6.25cqi, 5.25rem);
+    --cspace-xl-2xl: clamp(4.125rem, -4.5rem + 7.1875cqi, 7rem);
+    --cspace-2xl-3xl: clamp(5.5rem, -9.5rem + 12.5cqi, 10.5rem);
 
     /* Custom pairs */
-    --vspace-3xs-m: clamp(0.3125rem, -5.2257rem + 4.6296vw, 2.1875rem);
-    --vspace-s-xl: clamp(1.25rem, -5.3958rem + 5.5556vw, 3.5rem);
-    /* grid gutter */
-    --vspace-s-l: clamp(1.25rem, -2.8113rem + 3.3951vw, 2.625rem);
-
-    --cspace-3xs: clamp(0.3125rem, -0.0567rem + 0.3086cqi, 0.4375rem);
-    --cspace-2xs: clamp(0.625rem, -0.1134rem + 0.6173cqi, 0.875rem);
-    --cspace-xs: clamp(0.9375rem, -0.1701rem + 0.9259cqi, 1.3125rem);
-    --cspace-s: clamp(1.25rem, -0.2269rem + 1.2346cqi, 1.75rem);
-    --cspace-m: clamp(1.5625rem, -0.2836rem + 1.5432cqi, 2.1875rem);
-    --cspace-l: clamp(1.875rem, -0.3403rem + 1.8519cqi, 2.625rem);
-    --cspace-xl: clamp(2.5rem, -0.4537rem + 2.4691cqi, 3.5rem);
-    --cspace-2xl: clamp(3.75rem, -0.6806rem + 3.7037cqi, 5.25rem);
-    --cspace-3xl: clamp(5rem, -0.9074rem + 4.9383cqi, 7rem);
-    --cspace-4xl: clamp(7.4375rem, -1.6082rem + 7.5617cqi, 10.5rem);
-
-    /* One-up pairs */
-    --cspace-3xs-2xs: clamp(0.3125rem, -1.349rem + 1.3889cqi, 0.875rem);
-    --cspace-2xs-xs: clamp(0.625rem, -1.4057rem + 1.6975cqi, 1.3125rem);
-    --cspace-xs-s: clamp(0.9375rem, -1.4624rem + 2.0062cqi, 1.75rem);
-    --cspace-s-m: clamp(1.25rem, -1.5191rem + 2.3148cqi, 2.1875rem);
-    --cspace-m-l: clamp(1.5625rem, -1.5758rem + 2.6235cqi, 2.625rem);
-    --cspace-l-xl: clamp(1.875rem, -2.9248rem + 4.0123cqi, 3.5rem);
-    --cspace-xl-2xl: clamp(2.5rem, -5.6227rem + 6.7901cqi, 5.25rem);
-    --cspace-2xl-3xl: clamp(3.75rem, -5.8495rem + 8.0247cqi, 7rem);
-    --cspace-3xl-4xl: clamp(5rem, -11.2454rem + 13.5802cqi, 10.5rem);
-
-    /* Custom pairs */
-    --cspace-3xs-m: clamp(0.3125rem, -5.2257rem + 4.6296cqi, 2.1875rem);
-    --cspace-s-xl: clamp(1.25rem, -5.3958rem + 5.5556cqi, 3.5rem);
-    /* Grid gutter */
-    --cspace-s-l: clamp(1.25rem, -2.8113rem + 3.3951cqi, 2.625rem);
-
-    /* Custom pairs
-    /* Space s-l: 16px → 48px */
-    /* --vspace-s-l: clamp(1rem, 0.5741rem + 2.1563vw, 3rem);
-    Space s-xl: 16px → 72px */
-    /* --vspace-s-xl: clamp(1rem, 0.2547rem + 3.7736vw, 4.5rem); */
+    --cspace-s-l: clamp(1.375rem, -5rem + 5.3125cqi, 3.5rem);
+    --cspace-m-xl: clamp(2.0625rem, -7.5rem + 7.9687cqi, 5.25rem);
+    --cspace-l-2xl: clamp(2.75rem, -10rem + 10.625cqi, 7rem);
+    /* #endregion Container custom vars */
   }
 
-  @media (width <= 1914px) {
+  /* Min viewport 320, max viewport 1920. */
+  @media (width < 1920px) {
     :root {
-      --vfont--1: clamp(0.8889rem, 0.8589rem + 0.1518vw, 1.0417rem);
-      --vfont-0: clamp(1rem, 0.9509rem + 0.2484vw, 1.25rem);
-      --vfont-1: clamp(1.125rem, 1.0514rem + 0.3727vw, 1.5rem);
-      --vfont-2: clamp(1.2656rem, 1.1607rem + 0.5311vw, 1.8rem);
-      --vfont-3: clamp(1.4238rem, 1.2793rem + 0.7316vw, 2.16rem);
+      --vfont--3: clamp(0.7023rem, 0.6837rem + 0.0934vw, 0.7957rem);
+      --vfont--2: clamp(0.7901rem, 0.7572rem + 0.1647vw, 0.9549rem);
+      --vfont--1: clamp(0.8889rem, 0.8375rem + 0.2569vw, 1.1458rem);
+      --vfont-0: clamp(1rem, 0.925rem + 0.375vw, 1.375rem);
+      --vfont-1: clamp(1.125rem, 1.02rem + 0.525vw, 1.65rem);
+      --vfont-2: clamp(1.2656rem, 1.1228rem + 0.7144vw, 1.98rem);
+      --vfont-3: clamp(1.4238rem, 1.2334rem + 0.9522vw, 2.376rem);
+      --vfont-4: clamp(1.6018rem, 1.3519rem + 1.2494vw, 2.8512rem);
+      --vfont-5: clamp(1.802rem, 1.4782rem + 1.6194vw, 3.4214rem);
 
-      --cfont--1: clamp(0.8889rem, 0.8589rem + 0.1518cqi, 1.0417rem);
-      --cfont-0: clamp(1rem, 0.9509rem + 0.2484cqi, 1.25rem);
-      --cfont-1: clamp(1.125rem, 1.0514rem + 0.3727cqi, 1.5rem);
-      --cfont-2: clamp(1.2656rem, 1.1607rem + 0.5311cqi, 1.8rem);
-      --cfont-3: clamp(1.4238rem, 1.2793rem + 0.7316cqi, 2.16rem);
-
-      /* SPACE SYSTEM */
-      /* Space 3xs: 4px → 5px */
-      --vspace-3xs: clamp(0.25rem, 0.2377rem + 0.0621vw, 0.3125rem);
-      /* Space 2xs: 8px → 10px */
-      --vspace-2xs: clamp(0.5rem, 0.4755rem + 0.1242vw, 0.625rem);
-      /* Space xs: 12px → 15px */
-      --vspace-xs: clamp(0.75rem, 0.7132rem + 0.1863vw, 0.9375rem);
-      /* Space s: 16px → 20px */
-      --vspace-s: clamp(1rem, 0.9509rem + 0.2484vw, 1.25rem);
-      /* Space m: 24px → 30px */
-      --vspace-m: clamp(1.5rem, 1.4264rem + 0.3727vw, 1.875rem);
-      /* Space l: 32px → 40px */
-      --vspace-l: clamp(2rem, 1.9019rem + 0.4969vw, 2.5rem);
-      /* Space xl: 48px → 60px */
-      --vspace-xl: clamp(3rem, 2.8528rem + 0.7453vw, 3.75rem);
-      /* Space 2xl: 64px → 80px */
-      --vspace-2xl: clamp(4rem, 3.8037rem + 0.9938vw, 5rem);
-      /* Space 3xl: 96px → 120px */
-      --vspace-3xl: clamp(6rem, 5.7056rem + 1.4907vw, 7.5rem);
-      /* Space 4xl: 102px → 128px */
-      --vspace-4xl: clamp(6.375rem, 6.0561rem + 1.6149vw, 8rem);
+      --vspace-3xs: clamp(0.25rem, 0.225rem + 0.125vw, 0.375rem);
+      --vspace-2xs: clamp(0.5rem, 0.4625rem + 0.1875vw, 0.6875rem);
+      --vspace-xs: clamp(0.75rem, 0.6875rem + 0.3125vw, 1.0625rem);
+      --vspace-s: clamp(1rem, 0.925rem + 0.375vw, 1.375rem);
+      --vspace-m: clamp(1.5rem, 1.3875rem + 0.5625vw, 2.0625rem);
+      --vspace-l: clamp(2rem, 1.85rem + 0.75vw, 2.75rem);
+      --vspace-xl: clamp(3rem, 2.775rem + 1.125vw, 4.125rem);
+      --vspace-2xl: clamp(4rem, 3.7rem + 1.5vw, 5.5rem);
+      --vspace-3xl: clamp(6rem, 5.55rem + 2.25vw, 8.25rem);
 
       /* One-up pairs */
-      /* Space 3xs-2xs: 4px → 10px */
-      --vspace-3xs-2xs: clamp(0.25rem, 0.1764rem + 0.3727vw, 0.625rem);
-      /* Space 2xs-xs: 8px → 15px */
-      --vspace-2xs-xs: clamp(0.5rem, 0.4141rem + 0.4348vw, 0.9375rem);
-      /* Space xs-s: 12px → 20px */
-      --vspace-xs-s: clamp(0.75rem, 0.6519rem + 0.4969vw, 1.25rem);
-      /* Space s-m: 16px → 30px */
-      --vspace-s-m: clamp(1rem, 0.8283rem + 0.8696vw, 1.875rem);
-      /* Space m-l: 24px → 40px */
-      --vspace-m-l: clamp(1.5rem, 1.3037rem + 0.9938vw, 2.5rem);
-      /* Space l-xl: 32px → 60px */
-      --vspace-l-xl: clamp(2rem, 1.6565rem + 1.7391vw, 3.75rem);
-      /* Space xl-2xl: 48px → 80px */
-      --vspace-xl-2xl: clamp(3rem, 2.6075rem + 1.9876vw, 5rem);
-      /* Space 2xl-3xl: 64px → 120px */
-      --vspace-2xl-3xl: clamp(4rem, 3.313rem + 3.4783vw, 7.5rem);
-      /* Space 3xl-4xl: 96px → 128px */
-      --vspace-3xl-4xl: clamp(6rem, 5.6075rem + 1.9876vw, 8rem);
+      --vspace-3xs-2xs: clamp(0.25rem, 0.1625rem + 0.4375vw, 0.6875rem);
+      --vspace-2xs-xs: clamp(0.5rem, 0.3875rem + 0.5625vw, 1.0625rem);
+      --vspace-xs-s: clamp(0.75rem, 0.625rem + 0.625vw, 1.375rem);
+      --vspace-s-m: clamp(1rem, 0.7875rem + 1.0625vw, 2.0625rem);
+      --vspace-m-l: clamp(1.5rem, 1.25rem + 1.25vw, 2.75rem);
+      --vspace-l-xl: clamp(2rem, 1.575rem + 2.125vw, 4.125rem);
+      --vspace-xl-2xl: clamp(3rem, 2.5rem + 2.5vw, 5.5rem);
+      --vspace-2xl-3xl: clamp(4rem, 3.15rem + 4.25vw, 8.25rem);
 
       /* Custom pairs */
-      /* Space s-l: 16px → 40px */
-      --vspace-s-l: clamp(1rem, 0.7056rem + 1.4907vw, 2.5rem);
-      --vspace-s-xl: clamp(1rem, 0.4602rem + 2.7329vw, 3.75rem);
-      /* GRID GUTTER Space 3xs-m: 4px → 30px */
-      --vspace-3xs-m: clamp(0.25rem, -0.0689rem + 1.6149vw, 1.875rem);
+      --vspace-s-l: clamp(1rem, 0.65rem + 1.75vw, 2.75rem);
+      --vspace-m-xl: clamp(1.5rem, 0.975rem + 2.625vw, 4.125rem);
+      --vspace-l-2xl: clamp(2rem, 1.3rem + 3.5vw, 5.5rem);
+      /* Gutter */
+      --vspace-xs-m: clamp(0.75rem, 0.4875rem + 1.3125vw, 2.0625rem);
 
-      --cspace-3xs: clamp(0.25rem, 0.2377rem + 0.0621cqi, 0.3125rem);
-      --cspace-2xs: clamp(0.5rem, 0.4755rem + 0.1242cqi, 0.625rem);
-      --cspace-xs: clamp(0.75rem, 0.7132rem + 0.1863cqi, 0.9375rem);
-      --cspace-s: clamp(1rem, 0.9509rem + 0.2484cqi, 1.25rem);
-      --cspace-m: clamp(1.5rem, 1.4264rem + 0.3727cqi, 1.875rem);
-      --cspace-l: clamp(2rem, 1.9019rem + 0.4969cqi, 2.5rem);
-      --cspace-xl: clamp(3rem, 2.8528rem + 0.7453cqi, 3.75rem);
-      --cspace-2xl: clamp(4rem, 3.8037rem + 0.9938cqi, 5rem);
-      --cspace-3xl: clamp(6rem, 5.7056rem + 1.4907cqi, 7.5rem);
-      --cspace-4xl: clamp(6.375rem, 6.0561rem + 1.6149cqi, 8rem);
+      /* line length */
+      --vlineheight-font5: clamp(2.342rem, 1.079vw + 2.127rem, 3.421rem);
+      --vlineheight-font0: clamp(1.6rem, 0.325vw + 1.535rem, 1.925rem);
+      --vlineheight-font-1: clamp(1.422rem, 0.182vw + 1.386rem, 1.604rem);
+      --vlineheight-font-2: clamp(1.422rem, 0.01vw + 1.42rem, 1.432rem);
+      --vlineheight-font-3: clamp(1.193rem, -0.071vw + 1.279rem, 1.265rem);
+      /* #region Container custom vars */
+      /* cqi for scrollable or resizable containers like grid, flex... */
+      --cfont--3: clamp(0.7023rem, 0.6837rem + 0.0934cqi, 0.7957rem);
+      --cfont--2: clamp(0.7901rem, 0.7572rem + 0.1647cqi, 0.9549rem);
+      --cfont--1: clamp(0.8889rem, 0.8375rem + 0.2569cqi, 1.1458rem);
+      --cfont-0: clamp(1rem, 0.925rem + 0.375cqi, 1.375rem);
+      --cfont-1: clamp(1.125rem, 1.02rem + 0.525cqi, 1.65rem);
+      --cfont-2: clamp(1.2656rem, 1.1228rem + 0.7144cqi, 1.98rem);
+      --cfont-3: clamp(1.4238rem, 1.2334rem + 0.9522cqi, 2.376rem);
+      --cfont-4: clamp(1.6018rem, 1.3519rem + 1.2494cqi, 2.8512rem);
+      --cfont-5: clamp(1.802rem, 1.4782rem + 1.6194cqi, 3.4214rem);
+
+      --cspace-3xs: clamp(0.25rem, 0.225rem + 0.125cqi, 0.375rem);
+      --cspace-2xs: clamp(0.5rem, 0.4625rem + 0.1875cqi, 0.6875rem);
+      --cspace-xs: clamp(0.75rem, 0.6875rem + 0.3125cqi, 1.0625rem);
+      --cspace-s: clamp(1rem, 0.925rem + 0.375cqi, 1.375rem);
+      --cspace-m: clamp(1.5rem, 1.3875rem + 0.5625cqi, 2.0625rem);
+      --cspace-l: clamp(2rem, 1.85rem + 0.75cqi, 2.75rem);
+      --cspace-xl: clamp(3rem, 2.775rem + 1.125cqi, 4.125rem);
+      --cspace-2xl: clamp(4rem, 3.7rem + 1.5cqi, 5.5rem);
+      --cspace-3xl: clamp(6rem, 5.55rem + 2.25cqi, 8.25rem);
 
       /* One-up pairs */
-      --cspace-3xs-2xs: clamp(0.25rem, 0.1764rem + 0.3727cqi, 0.625rem);
-      --cspace-2xs-xs: clamp(0.5rem, 0.4141rem + 0.4348cqi, 0.9375rem);
-      --cspace-xs-s: clamp(0.75rem, 0.6519rem + 0.4969cqi, 1.25rem);
-      --cspace-s-m: clamp(1rem, 0.8283rem + 0.8696cqi, 1.875rem);
-      --cspace-m-l: clamp(1.5rem, 1.3037rem + 0.9938cqi, 2.5rem);
-      --cspace-l-xl: clamp(2rem, 1.6565rem + 1.7391cqi, 3.75rem);
-      --cspace-xl-2xl: clamp(3rem, 2.6075rem + 1.9876cqi, 5rem);
-      --cspace-2xl-3xl: clamp(4rem, 3.313rem + 3.4783cqi, 7.5rem);
-      --cspace-3xl-4xl: clamp(6rem, 5.6075rem + 1.9876cqi, 8rem);
+      --cspace-3xs-2xs: clamp(0.25rem, 0.1625rem + 0.4375cqi, 0.6875rem);
+      --cspace-2xs-xs: clamp(0.5rem, 0.3875rem + 0.5625cqi, 1.0625rem);
+      --cspace-xs-s: clamp(0.75rem, 0.625rem + 0.625cqi, 1.375rem);
+      --cspace-s-m: clamp(1rem, 0.7875rem + 1.0625cqi, 2.0625rem);
+      --cspace-m-l: clamp(1.5rem, 1.25rem + 1.25cqi, 2.75rem);
+      --cspace-l-xl: clamp(2rem, 1.575rem + 2.125cqi, 4.125rem);
+      --cspace-xl-2xl: clamp(3rem, 2.5rem + 2.5cqi, 5.5rem);
+      --cspace-2xl-3xl: clamp(4rem, 3.15rem + 4.25cqi, 8.25rem);
 
       /* Custom pairs */
-      --cspace-s-l: clamp(1rem, 0.7056rem + 1.4907cqi, 2.5rem);
-      --cspace-s-xl: clamp(1rem, 0.4602rem + 2.7329cqi, 3.75rem);
-      --cspace-3xs-m: clamp(0.25rem, -0.0689rem + 1.6149cqi, 1.875rem);
+      --cspace-s-l: clamp(1rem, 0.65rem + 1.75cqi, 2.75rem);
+      --cspace-m-xl: clamp(1.5rem, 0.975rem + 2.625cqi, 4.125rem);
+      --cspace-l-2xl: clamp(2rem, 1.3rem + 3.5cqi, 5.5rem);
+      /* #endregion Container custom vars */
     }
   }
 
+  /* Custom vars that are related with a specific topic or functionality.
+  These vars will be used in tailwind configuration, so if we don´t like
+  some value, we just need to change the value here (to avoid the needs of 
+  add or delete utility classes in our component because we always use 
+  the same var for the same thing).*/
+  :root {
+    --footer-top-margin: var(--vspace-m-l);
+    /* separate different elements vertically (always use top margin) */
+    --default-top-margin: var(--vspace-m-l);
+    --min-height-nav: var(--vspace-l);
+    --min-height-footer: var(--vspace-l);
+  }
+  /* #region Default element configuration */
+  /* headers font family */
   h1,
   h2,
-  h3 {
-    font-family: 'Roboto-SemiBold', ui-serif;
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Linotte-Semibold', ui-serif;
   }
+
+  /* secondary font family */
+  button,
+  a {
+    font-family: 'OpenSans-SemiBold', 'Open Sans', system-ui;
+  }
+  /* caption font family */
+  figcaption,
+  caption {
+    font-family: 'Inter-Light', system-ui;
+  }
+
+  button {
+    letter-spacing: 1.25px;
+  }
+  /* #endregion Default element configuration */
 }
 
+/* custom classes that we can rewrite with the utility classes manually */
 @layer components {
-  /* at least as height the viewport height - var used with margin bottom
-  in a root container. At big viewport the container is totally showed,
-  in little viewport the content is bigger than the viewport height so 
-  the min height resolve that problem.
-  Used in combination with flex, grow and center to align container 
-  content vertically.
-   */
-  .v-full-height {
-    min-height: calc(100vh - var(--vspace-s-xl));
-    min-height: calc(100dvh - var(--vspace-s-xl));
+  /*#region Fontstyles*/
+  /* font styles according to viewport units, for container units add utility classes*/
+
+  .v-font-headers {
+    font-family: 'Linotte-Semibold';
+    font-size: var(--vfont-5); /* just for the bigger header */
+    letter-spacing: -1.5px;
+    /* line height: 1.3 - 1 */
+    line-height: var(--vlineheight-headers);
   }
+
+  .v-font-body1 {
+    font-family: 'Inter-Regular', system-ui, sans-serif;
+    font-size: var(--vfont-0);
+    letter-spacing: 0.5px;
+    /* line height 1.6 - 1.4 */
+    line-height: var(--vlineheight-font0);
+  }
+
+  .v-font-subtitle1 {
+    font-family: 'Inter-SemiBold';
+    font-size: var(--vfont-0);
+    letter-spacing: 0.15px;
+    /* line height 1.6 - 1.4 */
+    line-height: var(--vlineheight-font0);
+  }
+
+  .v-font-body2 {
+    font-family: 'Inter-Regular', system-ui, sans-serif;
+    font-size: var(--vfont--1);
+    letter-spacing: 0.25px;
+    /* line height 1.6 - 1.4 */
+    line-height: var(--vlineheight-font-1);
+  }
+
+  .v-font-subtitle2 {
+    font-family: 'Inter-Bold';
+    font-size: var(--vfont--1);
+    letter-spacing: 0.1px;
+    /* line height 1.6 - 1.4 */
+    line-height: var(--vlineheight-font-1);
+  }
+
+  /* needs to add letter spacing manually if needed (by default button is set) */
+  .v-font-secondary {
+    font-family: 'OpenSans-SemiBold';
+    font-size: var(--vfont--1);
+    /* line height 1.6 - 1.4 */
+    line-height: var(--vlineheight-font-1);
+  }
+
+  .v-font-caption {
+    font-family: 'Inter-Light';
+    font-size: var(--vfont--2);
+    letter-spacing: 0.4px;
+    /* line height: 1.8 - 1.5 */
+    line-height: var(--vlineheight-font-2);
+  }
+
+  .v-font-overline {
+    font-family: 'Inter-Light';
+    font-size: var(--vfont--3);
+    letter-spacing: 1.5px;
+    /* line height: 1.8 - 1.5 */
+    line-height: var(--vlineheight-font-3);
+  }
+
+  /* Grid to control the line length and improve readability.
+  By default it uses the body font size.
+  Add another font size to the element that has this class 
+  to rewrite font size, and that will change the em effect.
+  Also add responsive inline paddings for texts.
+  Can be used with img also and improve align.*/
+  .line-length-grid {
+    font-size: var(--vfont-0);
+    display: grid;
+    grid-template-columns: minmax(1.2rem, 1fr) minmax(auto, 34em) minmax(1.2rem, 1fr);
+    grid-row-gap: 1em;
+  }
+
+  /* position text paragraphs into the second (middle) column */
+  .p-line-length-grid {
+    grid-column: 2;
+  }
+  /* position images to take up all three columns */
+  .img-line-length-grid {
+    grid-column: 1 / 4;
+    width: 100%;
+    max-width: 100ch;
+    justify-self: center;
+  }
+  /*#endregion Fontstyles*/
+
+  /* #region GridRootContainer */
 
   :root {
     /*
     Stablish a fluid grid to work as visual align tester, also
-    to get the ugrid-gutter. This gutter can be used inside grid,
+    to get the root-grid-gutter. This gutter can be used inside grid,
     but also as padding for root element that are not full width.
-    Min viewport of 1914px and max viewport of 2562px.
+    Min viewport of 1920px and max viewport of 2560px.
     */
-    --ugrid-max-width: 160.13rem;
-    --ugrid-gutter: var(
-      --vspace-l,
-      clamp(1.875rem, -0.3403rem + 1.8519vw, 2.625rem)
-    );
+    --root-grid-max-width: 160rem;
+    --root-grid-gutter: var(--vspace-m, clamp(2.0625rem, 0.375rem + 1.4063vw, 2.625rem));
+    --root-grid-columns: 12;
   }
 
-  @media (width <= 1914px) {
-    /* Min viewport of 316px and max viewport of 1926px.
-    but at 1914 we will use the other root system.*/
+  @media (width < 1920px) {
+    /* Min viewport of 320px and max viewport of 1920px.
+    but at 1920 we will use the other root grid system.*/
     :root {
-      --ugrid-max-width: 120.38rem;
-      --ugrid-gutter: var(
-        --vspace-3xs-m,
-        clamp(0.25rem, -0.0689rem + 1.6149vw, 1.875rem)
+      --root-grid-max-width: 120rem;
+      --root-grid-gutter: var(
+        --vspace-xs-m,
+        clamp(0.75rem, 0.4875rem + 1.3125vw, 2.0625rem)
       );
     }
   }
 
-  /*the wrapper for the grid*/
-  .u-container {
-    max-width: var(--ugrid-max-width);
-    padding-inline: var(--ugrid-gutter);
-    /*over 2562px width use horizontally center */
-    margin-inline: auto;
-    /* height: 100vh; */
+  /*the wrapper for the grid or other root elements*/
+  .root-container {
+    max-width: var(--root-grid-max-width);
+    padding-inline: var(--root-grid-gutter);
+    margin-inline: auto; /*over 2560px width use horizontally center */
+    min-height: 100vh;
   }
 
-  .u-grid {
+  .root-grid {
     display: grid;
-    gap: var(--ugrid-gutter);
-    --ugrid-columns: 12;
+    gap: var(--root-grid-gutter);
+
     /*change the next according our needs*/
     height: 100%;
-    grid-template-columns: repeat(var(--ugrid-columns), 1fr);
-    /* color gap */
+    grid-template-columns: repeat(var(--root-grid-columns), minmax(0, 1fr));
+    /* color gutter gap */
     background-color: #ce9494;
   }
 
-  .u-grid-item {
+  .root-grid-item {
     /* column color */
     background-color: #d7d7d7;
     /* outline: 1px solid #ce9494; */
+  }
+  /* #endregion GridRootContainer */
+
+  /* 
+  We can see this effect in viewport over 2560px width.
+  At least as height the viewport height - other elements that are not
+  the root container(navbar,footer and vertically margin). 
+  In little viewport the content is bigger than the viewport height so 
+  the min height resolve that problem.
+  Used in combination with flex, grow and center to align container 
+  content vertically.
+   */
+  .container-full-height {
+    --sum-elements: calc(
+      var(--default-top-margin) + var(--min-height-nav) + var(--min-height-footer) +
+        var(--footer-top-margin)
+    );
+    min-height: calc(100vh - var(--sum-elements));
+    min-height: calc(100dvh - var(--sum-elements));
   }
 
   /* styles from uk government style guide */

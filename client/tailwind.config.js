@@ -14,26 +14,43 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        display: 'Roboto-SemiBold, ui-serif',
-        secondary: 'OpenSans-SemiBold, ui-sans-serif',
-        bodybold: 'Inter-Bold, system-ui',
-        bodythin: 'Inter-Light, system-ui',
+        'family-display': 'Linotte-Semibold, ui-serif',
+        'family-secondary': 'OpenSans-SemiBold, Open Sans, system-ui',
+        'family-body': 'Inter-Regular, system-ui',
+        'family-caption': 'Inter-Light, system-ui',
+        'family-subtitle': 'Inter-SemiBold, system-ui',
+        'family-subtitletwo': 'Inter-Bold, system-ui',
       },
       fontSize: {
         //for viewport
+        'vfont--3': 'var(--vfont--3)',
+        'vfont--2': 'var(--vfont--2)',
         'vfont--1': 'var(--vfont--1)',
         'vfont-0': 'var(--vfont-0)',
         'vfont-1': 'var(--vfont-1)',
         'vfont-2': 'var(--vfont-2)',
         'vfont-3': 'var(--vfont-3)',
+        'vfont-4': 'var(--vfont-4)',
+        'vfont-5': 'var(--vfont-5)',
         //for container
+        'cfont--3': 'var(--cfont--3)',
+        'cfont--2': 'var(--cfont--2)',
         'cfont--1': 'var(--cfont--1)',
         'cfont-0': 'var(--cfont-0)',
         'cfont-1': 'var(--cfont-1)',
         'cfont-2': 'var(--cfont-2)',
         'cfont-3': 'var(--cfont-3)',
+        'cfont-4': 'var(--cfont-4)',
+        'cfont-5': 'var(--cfont-5)',
       },
       spacing: {
+        //by topics
+        'footer-top-margin': 'var(--footer-top-margin)',
+        'default-top-margin': 'var(--default-top-margin)',
+        'gutter-space': 'var(--root-grid-gutter)', //can be for now: --vspace-m (in >= 1920) or --vspace-xs-m (in <1920)
+        'min-height-nav': 'var(--min-height-nav)',
+        'min-height-footer': 'var(--min-height-nav)',
+
         //utopia responsive scale according viewport
         'vspace-3xs': 'var(--vspace-3xs)',
         'vspace-2xs': 'var(--vspace-2xs)',
@@ -44,8 +61,6 @@ module.exports = {
         'vspace-xl': 'var(--vspace-xl)',
         'vspace-2xl': 'var(--vspace-2xl)',
         'vspace-3xl': 'var(--vspace-3xl)',
-        'vspace-4xl': 'var(--vspace-4xl)',
-
         'vspace-3xs-2xs': 'var(--vspace-3xs-2xs)',
         'vspace-2xs-xs': 'var( --vspace-2xs-xs)',
         'vspace-xs-s': 'var(--vspace-xs-s)',
@@ -54,10 +69,10 @@ module.exports = {
         'vspace-l-xl': 'var( --vspace-l-xl)',
         'vspace-xl-2xl': 'var(--vspace-xl-2xl)',
         'vspace-2xl-3xl': 'var(--vspace-2xl-3xl)',
-        'vspace-3xl-4xl': 'var(--vspace-3xl-4xl)',
         'vspace-s-l': 'var(--vspace-s-l)',
-        'vspace-3xs-m': 'var(--vspace-3xs-m)',
-        'vspace-s-xl': 'var(--vspace-s-xl)',
+        'vspace-m-xl': 'var(--vspace-m-xl)',
+        'vspace-l-2xl': 'var(--vspace-l-2xl)',
+        'vspace-xs-m': 'var(--vspace-xs-m)',
 
         //utopia responsive scale according container
         'cspace-3xs': 'var(--cspace-3xs)',
@@ -69,8 +84,6 @@ module.exports = {
         'cspace-xl': 'var(--cspace-xl)',
         'cspace-2xl': 'var(--cspace-2xl)',
         'cspace-3xl': 'var(--cspace-3xl)',
-        'cspace-4xl': 'var(--cspace-4xl)',
-
         'cspace-3xs-2xs': 'var(--cspace-3xs-2xs)',
         'cspace-2xs-xs': 'var( --cspace-2xs-xs)',
         'cspace-xs-s': 'var(--cspace-xs-s)',
@@ -79,10 +92,66 @@ module.exports = {
         'cspace-l-xl': 'var( --cspace-l-xl)',
         'cspace-xl-2xl': 'var(--cspace-xl-2xl)',
         'cspace-2xl-3xl': 'var(--cspace-2xl-3xl)',
-        'cspace-3xl-4xl': 'var(--cspace-3xl-4xl)',
-        'cspace-s-l': 'var(--cspace-s-l)',
-        'cspace-3xs-m': 'var(--cspace-3xs-m)',
-        'cspace-s-xl': 'var(--cspace-s-xl)',
+      },
+      maxWidth: {
+        // for line-length, alternative to use max-w-prose that always give 65ch width or the line-length-grid css class
+        'readable-vdiv': '34em', //68 characters if we consider 1 character is more or less 0.5em
+      },
+      colors: {
+        darkelements: {
+          background: '#232946',
+          headline: '#fffffe',
+          paragraph: '#b8c1ec',
+          link: '#eebbc3',
+          subheadline: '#fffffe',
+          cardbackground: '#fffffe',
+          cardheading: '#232946',
+          cardparagraph: '#232946',
+          cardhighlight: '#d4939d',
+          cardtagbackground: '#b8c1ec',
+          cardtagtext: '#232946',
+          hover: '#eebbc3',
+        },
+        lightelements: {
+          background: '#d4d8f0',
+          headline: '#232946',
+          paragraph: '#232946',
+          link: '#232946',
+          subheadline: '#232946',
+          cardbackground: '#fffffe',
+          cardheading: '#232946',
+          cardparagraph: '#232946',
+          cardhighlight: '#d4939d',
+          cardtagbackground: '#232946',
+          cardtagtext: '#fffffe',
+          hover: '#eebbc3',
+        },
+        button: {
+          button: '#eebbc3',
+          buttontext: '#232946',
+        },
+        form: {
+          background: '#d4939d',
+          input: '#fffffe',
+          labelplaceholder: '#232946',
+          button: '#232946',
+          buttontext: '#fffffe',
+        },
+        // icons or illustrations
+        icons: {
+          stroke: '#121629',
+          main: '#b8c1ec',
+          highlight: '#eebbc3',
+          secondary: '#fffffe',
+          tertiary: '#eebbc3',
+        },
+        footer: {
+          background: '#232946',
+          headline: '#fffffe',
+          paragraph: '#b8c1ec',
+          links: '#eebbc3',
+          hover: '#eebbc3',
+        },
       },
       keyframes: {
         'accordion-down': {

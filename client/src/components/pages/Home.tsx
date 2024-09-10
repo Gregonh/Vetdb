@@ -16,6 +16,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 function Home() {
   return (
     <>
+      <div className="root-container">
+        <div className="root-grid">
+          <p className="root-grid-item">papas</p>
+          <p className="root-grid-item">papas</p>
+          <p className="root-grid-item">papas</p>
+          <p className="root-grid-item">papas</p>
+          <p className="root-grid-item">papas</p>
+          <p className="root-grid-item">papas</p>
+          <p className="root-grid-item">papas</p>
+          <p className="root-grid-item">papas</p>
+          <p className="root-grid-item">papas</p>
+          <p className="root-grid-item">papas</p>
+          <p className="root-grid-item">papas</p>
+          <p className="root-grid-item">papas</p>
+        </div>
+      </div>
       <Link to="/register">About</Link>
       <Tabs defaultValue="login" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">

@@ -133,15 +133,14 @@ export function RegisterUser() {
 
   return (
     <>
-      {/* //margin-block-start: min(4rem, 8vh); */}
-      <div className="u-container v-full-height mb-vspace-s-xl text-cfont-0 md:flex md:items-center">
+      <div className="root-container container-full-height text-vfont-0 md:flex md:items-center">
         <div className="md:grow">
-          <h1 className="font-display text-cfont-3 px-cspace-s-l pt-cspace-s-l">
+          <h1 className="v-font-headers px-vspace-s-l pt-vspace-s-l">
             {!data ? `Registro de usuario` : data.message}
           </h1>
           <Form {...form}>
-            <form onSubmit={handleSubmit(onSubmit)} className="p-cspace-s-l">
-              <div className="md:gap-x-cspace-s-xl md:flex">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-vspace-s-l">
+              <div className="md:gap-x-vspace-s-l md:flex">
                 <div className="md:grow md:basis-0">
                   <FormField
                     control={control}
@@ -149,7 +148,7 @@ export function RegisterUser() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel
-                          className="font-bodybold block text-sm text-gray-700"
+                          className="v-font-body1 font-family-subtitle block text-sm text-gray-700"
                           htmlFor="firstName"
                         >
                           Username
@@ -166,24 +165,24 @@ export function RegisterUser() {
                             autoComplete="username"
                           />
                         </FormControl>
-                        <FormDescription className="font-bodythin">
+                        <FormDescription className="font-family-caption v-font-body2">
                           This is your public display name
                         </FormDescription>
-                        <FormMessage>
+                        <FormMessage className="v-font-body1">
                           {errors.firstName && errors.firstName?.message}
                         </FormMessage>
                       </FormItem>
                     )}
                   />
                 </div>
-                <div className="mt-cspace-xs md:mt-0 md:grow md:basis-0">
+                <div className="mt-vspace-xs md:mt-0 md:grow md:basis-0">
                   <FormField
                     control={control}
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel
-                          className="font-bodybold block text-sm text-gray-700"
+                          className="font-family-subtitle v-font-body1 block text-sm text-gray-700"
                           htmlFor="lastName"
                         >
                           Lastname
@@ -200,10 +199,10 @@ export function RegisterUser() {
                             autoComplete="additional-name"
                           />
                         </FormControl>
-                        <FormDescription className="font-bodythin">
+                        <FormDescription className="font-family-caption v-font-body2">
                           Introduce your last name
                         </FormDescription>
-                        <FormMessage>
+                        <FormMessage className="v-font-body1">
                           {errors.lastName && errors.lastName?.message}
                         </FormMessage>
                       </FormItem>
@@ -211,14 +210,14 @@ export function RegisterUser() {
                   />
                 </div>
               </div>
-              <div className="mt-cspace-xs">
+              <div className="mt-vspace-xs">
                 <FormField
                   control={control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel
-                        className="font-bodybold block text-sm text-gray-700"
+                        className="font-family-subtitle v-font-body1 block text-sm text-gray-700"
                         htmlFor="email"
                       >
                         Email
@@ -234,15 +233,17 @@ export function RegisterUser() {
                           autoComplete="email"
                         />
                       </FormControl>
-                      <FormDescription className="font-bodythin">
+                      <FormDescription className="font-family-caption v-font-body2">
                         We&apos;ll never share your email with anyone else
                       </FormDescription>
-                      <FormMessage>{errors.email && errors.email?.message}</FormMessage>
+                      <FormMessage className="v-font-body1">
+                        {errors.email && errors.email?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
               </div>
-              <div className="md:gap-x-cspace-s-xl mt-cspace-xs md:flex md:min-h-44">
+              <div className="md:gap-x-vspace-s-l mt-vspace-xs md:flex md:min-h-44">
                 <div className="md:grow md:basis-0">
                   <FormField
                     control={control}
@@ -250,7 +251,7 @@ export function RegisterUser() {
                     render={({ field }) => (
                       <FormItem className="md:flex md:h-[100%] md:flex-col">
                         <FormLabel
-                          className="font-bodybold block text-sm text-gray-700 md:overflow-y-auto"
+                          className="font-family-subtitle v-font-body1 block text-sm text-gray-700 md:overflow-y-auto"
                           htmlFor="password"
                         >
                           Password
@@ -268,24 +269,24 @@ export function RegisterUser() {
                             />
                           </FormControl>
                         </div>
-                        <FormDescription className="font-bodythin md:basis-10 md:overflow-y-auto">
+                        <FormDescription className="font-family-caption v-font-body2 md:basis-10 md:overflow-y-auto">
                           Choose a strong password
                         </FormDescription>
-                        <FormMessage className="md:basis-10 md:overflow-y-auto">
+                        <FormMessage className="v-font-body1 md:basis-10 md:overflow-y-auto">
                           {errors.password && errors.password?.message}
                         </FormMessage>
                       </FormItem>
                     )}
                   />
                 </div>
-                <div className="mt-cspace-xs md:mt-0 md:grow md:basis-0">
+                <div className="mt-vspace-xs md:mt-0 md:grow md:basis-0">
                   <FormField
                     control={control}
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem className="md:flex md:h-[100%] md:flex-col">
                         <FormLabel
-                          className="font-bodybold block text-sm text-gray-700 md:overflow-y-auto"
+                          className="font-family-subtitle v-font-body1 block text-sm text-gray-700 md:overflow-y-auto"
                           htmlFor="c_password"
                         >
                           Confirm password
@@ -303,10 +304,10 @@ export function RegisterUser() {
                             />
                           </FormControl>
                         </div>
-                        <FormDescription className="font-bodythin md:basis-10 md:overflow-y-auto">
+                        <FormDescription className="font-family-caption v-font-body2 md:basis-10 md:overflow-y-auto">
                           Choose the same password
                         </FormDescription>
-                        <FormMessage className="small-text md:basis-10 md:overflow-y-auto">
+                        <FormMessage className="small-text v-font-body1 md:basis-10 md:overflow-y-auto">
                           {errors.confirmPassword && errors.confirmPassword?.message}
                         </FormMessage>
                       </FormItem>
@@ -314,7 +315,7 @@ export function RegisterUser() {
                   />
                 </div>
               </div>
-              <div className="mt-cspace-m">
+              <div className="mt-vspace-m">
                 <FormField
                   control={control}
                   name="terms"
@@ -329,7 +330,7 @@ export function RegisterUser() {
                         </FormControl>
                         <div className="grid gap-3 leading-none">
                           <FormLabel
-                            className={`font-bodybold text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${
+                            className={`font-family-subtitle v-font-body1 text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${
                               errors.terms ? 'text-red-500' : 'text-gray-700'
                             }`}
                             htmlFor="terms"
@@ -337,11 +338,11 @@ export function RegisterUser() {
                             Accept Terms & Conditions
                           </FormLabel>
                           {!errors.terms ? (
-                            <FormDescription className="font-bodythin">
+                            <FormDescription className="font-family-caption v-font-body2">
                               You agree to our Terms of Service and Privacy Policy
                             </FormDescription>
                           ) : (
-                            <FormMessage className="small-text italic">
+                            <FormMessage className="v-font-body1 small-text italic">
                               {errors.terms && errors.terms?.message}
                             </FormMessage>
                           )}
@@ -352,9 +353,10 @@ export function RegisterUser() {
                 />
               </div>
 
-              <div className="mt-cspace-m text-center">
+              <div className="mt-vspace-m text-center">
                 <Button
-                  className="focus:shadow-outline font-bodybold w-full rounded-full bg-blue-500 px-4 py-2 text-[rgb(28,28,28)] hover:bg-blue-700 hover:text-white focus:outline-none"
+                  size="custom"
+                  className="v-font-secondary px-vspace-m py-vspace-2xs focus:shadow-outline bg-blue-500 text-[rgb(28,28,28)] hover:bg-blue-700 hover:text-white focus:outline-none"
                   type="submit"
                 >
                   Register Account
@@ -363,10 +365,10 @@ export function RegisterUser() {
             </form>
           </Form>
 
-          <hr className="mt-cspace-m border-t" />
-          <div className="mt-cspace-m text-center">
+          <hr className="mt-vspace-m border-t" />
+          <div className="mt-vspace-m text-center">
             <Link
-              className="font-secondary inline-block align-baseline text-sm text-[rgb(39,86,163)] hover:text-blue-800"
+              className="v-font-secondary inline-block align-baseline text-sm text-[rgb(39,86,163)] hover:text-blue-800"
               to="/login"
             >
               Already have an account? Login!
