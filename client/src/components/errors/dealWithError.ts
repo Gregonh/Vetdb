@@ -37,7 +37,7 @@ const unknownApproachError = (error: unknown, showBoundary: (error: any) => void
  */
 export const dealWithErrors = (error: unknown, showBoundary: (error: any) => void) => {
   logger.trace(error);
-
+  
   if (error instanceof z.ZodError) {
     zodApproachError(error);
     // eslint-disable-next-line import/no-named-as-default-member

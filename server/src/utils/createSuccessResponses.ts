@@ -4,7 +4,7 @@ import { SuccessResponseBody } from './IResponses';
 
 function createSuccessResponseBody<T>(data: T, message?: string): SuccessResponseBody<T> {
   return {
-    data,
+    innerBodyData: data,
     message,
   };
 }
@@ -27,18 +27,18 @@ export enum SuccessStatus {
  * @param response Response with the type of the body
  * @param responseStatus Only admit some enum status
  * @param dataBody Body´s data:TData
- * @param dataMessage Body´s optional message
+ * @param messageBody Body´s optional message
  * @returns Response<SuccessResponseBody< TData >> | void
  */
 export function createSuccessResponse<TData>(
   response: Response<SuccessResponseBody<TData>>,
   responseStatus: SuccessStatus,
   dataBody: TData,
-  dataMessage?: string,
+  messageBody?: string,
 ): Response<SuccessResponseBody<TData>> | void {
   if (responseStatus < SuccessStatus.OK || responseStatus > SuccessStatus.LIMIT) {
     throw new Error('Not valid success response status');
   }
-  const resBody = createSuccessResponseBody<TData>(dataBody, dataMessage);
+  const resBody = createSuccessResponseBody<TData>(dataBody, messageBody);
   return response.status(responseStatus).json(resBody);
 }

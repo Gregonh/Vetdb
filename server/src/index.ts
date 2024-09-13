@@ -58,7 +58,7 @@ app.get('/error', (_req: Request, _res: Response, _next: NextFunction) => {
   //be caught by the nearest error-handling middleware
   throw new Error('This is a test error!');
 });
-app.get('/customerror', (req: Request, _res: Response, next: NextFunction) => {
+app.post('/customerror', (req: Request, _res: Response, next: NextFunction) => {
   next(new ValidationError(undefined, req.url));
 });
 app.get('/pgerror', (_req: Request, _res: Response, next: NextFunction) => {

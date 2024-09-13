@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @layer base {
+  /* #region Fonts  */
   /* #region Import fonts */
   /* Use these font as tailwind classes (included as tailwind extend config)
   and also are included in the layer component (in our custom font classes). */
@@ -54,16 +55,16 @@
   /* Body1 or the default font style */
   body {
     font-size: 16px;
-    font-family: 'Inter-Regular', system-ui, sans-serif;
     font-feature-settings:
       'liga' 1,
       'calt' 1; /* fix for Chrome */
   }
 
-  /* Utopia type scale and spacing (for viewport and container).
+  :root {
+    /* Utopia type scale and spacing (for viewport and container).
   Min viewport 1920, máx viewport 2560. Use as tailwind classes 
   (included in tailwind config) and in other custom vars.*/
-  :root {
+
     /*overline*/
     --vfont--3: clamp(0.5805rem, 0.4651rem + 0.0962vw, 0.619rem);
     /*caption*/
@@ -103,8 +104,9 @@
     --vspace-m-xl: clamp(2.0625rem, -7.5rem + 7.9687vw, 5.25rem);
     --vspace-l-2xl: clamp(2.75rem, -10rem + 10.625vw, 7rem);
     --vspace-xs-m: clamp(1.0625rem, -3.625rem + 3.9063vw, 2.625rem);
-    /* Line height */
-    --vlineheight-headers: clamp(7.523rem, 5.922vw + 0.416rem, 9.892rem);
+    /* Line height 
+    TODO: header line height*/
+    --vlineheight-headers: 1.2;
     --vlineheight-font0: clamp(2.2rem, 0.625vw + 1.45rem, 2.45rem);
     --vlineheight-font-1: clamp(1.65rem, 0.206vw + 1.403rem, 1.733rem);
     --vlineheight-font-2: clamp(1.313rem, -0.201vw + 1.634rem, 1.393rem);
@@ -234,43 +236,192 @@
       /* #endregion Container custom vars */
     }
   }
+  /* #endregion Fonts  */
 
-  /* Custom vars that are related with a specific topic or functionality.
-  These vars will be used in tailwind configuration, so if we don´t like
-  some value, we just need to change the value here (to avoid the needs of 
-  add or delete utility classes in our component because we always use 
-  the same var for the same thing).*/
+  /* #region Color  */
   :root {
-    --footer-top-margin: var(--vspace-m-l);
-    /* separate different elements vertically (always use top margin) */
-    --default-top-margin: var(--vspace-m-l);
+    /* Values of custom vars, change color values here */
+    --back-dark: #232946;
+    --back-light: #d4d8f0;
+    --head-dark: #fffffe;
+    --head-light: #232946;
+    --p-dark: #b8c1ec;
+    --p-light: #232946;
+    --link-dark: #fffffe;
+    --link-light: #232946;
+    --hover-dark: #eebbc3;
+    --hover-light: #eebbc3;
+
+    --card-back-dark: #fffffe;
+    --card-back-light: #fffffe;
+    --card-head-dark: #232946;
+    --card-head-light: #232946;
+    --card-p-dark: #232946;
+    --card-p-light: #232946;
+    --card-highlight-dark: #d4939d;
+    --card-highlight-light: #d4939d;
+    --card-tag-background-dark: #b8c1ec;
+    --card-tag-background-light: #232946;
+    --card-tag-text-dark: #232946;
+    --card-tag-text-light: #fffffe;
+
+    --button-back: #232946;
+    --button-text: #fffffe;
+    --button-hover-bg: #eebbc3;
+    --button-hover-text: #232946;
+
+    --form-background: #fffffe;
+    --form-input: #fffffe;
+    --form-labelplaceholder: #232946;
+
+    --icons-stroke: #121629;
+    --icons-main: #b8c1ec;
+    --icons-highlight: #eebbc3;
+    --icons-secondary: #fffffe;
+    --icons-tertiary: #eebbc3;
+
+    --footer-background: #232946;
+    --footer-headline: #fffffe;
+    --footer-paragraph: #b8c1ec;
+    --footer-links: #eebbc3;
+    --footer-hover: #eebbc3;
+
+    /* tailwind config custom vars with dark values */
+    --color-bg: var(--back-dark);
+    --color-head: var(--head-dark);
+    --color-paragraph: var(--p-dark);
+    --color-link: var(--link-dark);
+    --color-hover: var(--hover-dark);
+
+    --color-card-bg: var(--card-back-dark);
+    --color-card-heading: var(--card-head-dark);
+    --color-card-text: var(--card-p-dark);
+    --color-card-highlight: var(--card-highlight-dark);
+    --color-card-tag-bg: var(--card-tag-background-dark);
+    --color-card-tag-text: var(--card-tag-text-dark);
+
+    --color-button: var(--button-back);
+    --color-button-text: var(--button-text);
+    --color-button-hover-bg: var(--button-hover-bg);
+    --color-button-hover-text: var(--button-hover-text);
+
+    --color-form-background: var(--form-background);
+    --color-form-input: var(--form-input);
+    --color-form-labelplaceholder: var(--form-labelplaceholder);
+
+    --color-icons-stroke: var(--icons-stroke);
+    --color-icons-main: var(--icons-main);
+    --color-icons-highlight: var(--icons-highlight);
+    --color-icons-secondary: var(--icons-secondary);
+    --color-icons-tertiary: var(--icons-tertiary);
+    --color-footer-background: var(--footer-background);
+    --color-footer-headline: var(--footer-headline);
+    --color-footer-paragraph: var(--footer-paragraph);
+    --color-footer-links: var(--footer-links);
+    --color-footer-hover: var(--footer-hover);
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      /* tailwind config custom vars with light values */
+      --color-bg: var(--back-light);
+      --color-head: var(--head-light);
+      --color-paragraph: var(--p-light);
+      --color-link: var(--link-light);
+      --color-card-bg: var(--card-back-light);
+      --color-card-heading: var(--card-head-light);
+      --color-card-text: var(--card-p-light);
+      --color-card-highlight: var(--card-highlight-light);
+      --color-card-tag-bg: var(--card-tag-background-light);
+      --color-card-tag-text: var(--card-tag-text-light);
+      --color-hover: var(--hover-light);
+    }
+  }
+  /* #endregion Color  */
+
+  /* #region Topic  */
+  /* Related with a specific topic or functionality.
+  Use in tailwind configuration, so if we don´t like
+  some value, we just need to change the value here 
+  (because we always use the same var for the same thing).*/
+  :root {
+    --default-top-margin: var(--vspace-m-l); /* Generally only use top and left margin */
+    --container-default-padding: var(--vspace-l-xl);
+    --header-default-padding: var(--vspace-l-xl);
     --min-height-nav: var(--vspace-l);
     --min-height-footer: var(--vspace-l);
+    --footer-top-margin: var(--vspace-m-l);
+
+    /*
+    Fluid grid to work as visual align tester, also
+    to get the root-grid-gutter. This gutter can be used inside grid,
+    but also as padding for root element that are not full width.
+    Min viewport of 1920px and max viewport of 2560px.
+    */
+    --root-grid-max-width: 160rem;
+    --root-grid-gutter: var(--vspace-m, clamp(2.0625rem, 0.375rem + 1.4063vw, 2.625rem));
+    --root-grid-columns: 12;
+
+    /* Customs still not added to tailwind  */
+    --section-spacing: var(--vspace-xl);
+    --card-padding: var(--vspace-s);
+    --button-padding: var(--vspace-2xs) var(--vspace-xs);
+    --input-padding: var(--vspace-2xs) var(--vspace-xs);
+    --list-item-spacing: var(--vspace-2xs);
+    --grid-gap: var(--vspace-s);
+    --inline-element-spacing: var(--vspace-2xs);
+    --form-group-spacing: var(--vspace-m);
+    --icon-size: var(--vspace-m);
+    --border-radius: var(--vspace-3xs);
   }
+
+  @media (width < 1920px) {
+    /* Min viewport of 320px and max of 1920px.
+    but at 1920 we will use the other root grid system.*/
+    :root {
+      --root-grid-max-width: 120rem;
+      --root-grid-gutter: var(
+        --vspace-xs-m,
+        clamp(0.75rem, 0.4875rem + 1.3125vw, 2.0625rem)
+      );
+    }
+  }
+  /* #endregion Topic  */
+
   /* #region Default element configuration */
-  /* headers font family */
+  body {
+    @apply font-family-body bg-elements-background text-base;
+  }
+
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    font-family: 'Linotte-Semibold', ui-serif;
+    @apply font-family-display text-elements-headline;
   }
 
-  /* secondary font family */
   button,
   a {
-    font-family: 'OpenSans-SemiBold', 'Open Sans', system-ui;
+    @apply font-family-secondary;
   }
-  /* caption font family */
+
   figcaption,
   caption {
-    font-family: 'Inter-Light', system-ui;
+    @apply font-family-caption;
   }
 
   button {
-    letter-spacing: 1.25px;
+    @apply bg-button-button text-button-buttontext tracking-[1.25px];
+  }
+
+  button:hover {
+    @apply bg-button-hoverbutton text-button-hoverbutton;
+  }
+
+  a {
+    @apply text-elements-link;
   }
   /* #endregion Default element configuration */
 }
@@ -281,67 +432,44 @@
   /* font styles according to viewport units, for container units add utility classes*/
 
   .v-font-headers {
-    font-family: 'Linotte-Semibold';
-    font-size: var(--vfont-5); /* just for the bigger header */
-    letter-spacing: -1.5px;
     /* line height: 1.3 - 1 */
-    line-height: var(--vlineheight-headers);
+    @apply text-elements-headline font-family-display text-vfont-5 leading-[var(--vlineheight-headers)] tracking-[-1.5px];
   }
 
   .v-font-body1 {
-    font-family: 'Inter-Regular', system-ui, sans-serif;
-    font-size: var(--vfont-0);
-    letter-spacing: 0.5px;
     /* line height 1.6 - 1.4 */
-    line-height: var(--vlineheight-font0);
+    @apply text-elements-paragraph font-family-body text-vfont-0 leading-[var(--vlineheight-font0)] tracking-[0.5px];
   }
 
   .v-font-subtitle1 {
-    font-family: 'Inter-SemiBold';
-    font-size: var(--vfont-0);
-    letter-spacing: 0.15px;
     /* line height 1.6 - 1.4 */
-    line-height: var(--vlineheight-font0);
+    @apply text-elements-paragraph font-family-subtitle text-vfont-0 leading-[var(--vlineheight-font0)] tracking-[0.15px];
   }
 
   .v-font-body2 {
-    font-family: 'Inter-Regular', system-ui, sans-serif;
-    font-size: var(--vfont--1);
-    letter-spacing: 0.25px;
     /* line height 1.6 - 1.4 */
-    line-height: var(--vlineheight-font-1);
+    @apply text-elements-paragraph font-family-body text-vfont--1 leading-[var(--vlineheight-font-1)] tracking-[0.25px];
   }
 
   .v-font-subtitle2 {
-    font-family: 'Inter-Bold';
-    font-size: var(--vfont--1);
-    letter-spacing: 0.1px;
     /* line height 1.6 - 1.4 */
-    line-height: var(--vlineheight-font-1);
+    @apply text-elements-paragraph font-family-subtitletwo text-vfont--1 leading-[var(--vlineheight-font-1)] tracking-[0.1px];
   }
 
-  /* needs to add letter spacing manually if needed (by default button is set) */
+  /* needs to add letter spacing and color manually if needed (by default button is set) */
   .v-font-secondary {
-    font-family: 'OpenSans-SemiBold';
-    font-size: var(--vfont--1);
     /* line height 1.6 - 1.4 */
-    line-height: var(--vlineheight-font-1);
+    @apply text-elements-link font-family-secondary text-vfont--1 leading-[var(--vlineheight-font-1)];
   }
 
   .v-font-caption {
-    font-family: 'Inter-Light';
-    font-size: var(--vfont--2);
-    letter-spacing: 0.4px;
     /* line height: 1.8 - 1.5 */
-    line-height: var(--vlineheight-font-2);
+    @apply font-family-caption text-vfont--2 leading-[var(--vlineheight-font-2)] tracking-[0.4px];
   }
 
   .v-font-overline {
-    font-family: 'Inter-Light';
-    font-size: var(--vfont--3);
-    letter-spacing: 1.5px;
     /* line height: 1.8 - 1.5 */
-    line-height: var(--vlineheight-font-3);
+    @apply font-family-caption text-vfont--3 uppercase leading-[var(--vlineheight-font-3)] tracking-[1.5px];
   }
 
   /* Grid to control the line length and improve readability.
@@ -371,34 +499,9 @@
   /*#endregion Fontstyles*/
 
   /* #region GridRootContainer */
-
-  :root {
-    /*
-    Stablish a fluid grid to work as visual align tester, also
-    to get the root-grid-gutter. This gutter can be used inside grid,
-    but also as padding for root element that are not full width.
-    Min viewport of 1920px and max viewport of 2560px.
-    */
-    --root-grid-max-width: 160rem;
-    --root-grid-gutter: var(--vspace-m, clamp(2.0625rem, 0.375rem + 1.4063vw, 2.625rem));
-    --root-grid-columns: 12;
-  }
-
-  @media (width < 1920px) {
-    /* Min viewport of 320px and max viewport of 1920px.
-    but at 1920 we will use the other root grid system.*/
-    :root {
-      --root-grid-max-width: 120rem;
-      --root-grid-gutter: var(
-        --vspace-xs-m,
-        clamp(0.75rem, 0.4875rem + 1.3125vw, 2.0625rem)
-      );
-    }
-  }
-
-  /*the wrapper for the grid or other root elements*/
+  /*Wrapper for the grid or other root elements*/
   .root-container {
-    max-width: var(--root-grid-max-width);
+    @apply max-w-root-container;
     padding-inline: var(--root-grid-gutter);
     margin-inline: auto; /*over 2560px width use horizontally center */
     min-height: 100vh;
@@ -407,7 +510,6 @@
   .root-grid {
     display: grid;
     gap: var(--root-grid-gutter);
-
     /*change the next according our needs*/
     height: 100%;
     grid-template-columns: repeat(var(--root-grid-columns), minmax(0, 1fr));
@@ -423,7 +525,7 @@
   /* #endregion GridRootContainer */
 
   /* 
-  We can see this effect in viewport over 2560px width.
+  Can see this effect in viewport over 2560px width.
   At least as height the viewport height - other elements that are not
   the root container(navbar,footer and vertically margin). 
   In little viewport the content is bigger than the viewport height so 
@@ -440,7 +542,7 @@
     min-height: calc(100dvh - var(--sum-elements));
   }
 
-  /* styles from uk government style guide */
+  /* Styles from uk government style guide */
   .focused-input {
     border: 0.125rem solid #ffeb3b;
     box-shadow: inset 0 0 0 0.125rem;

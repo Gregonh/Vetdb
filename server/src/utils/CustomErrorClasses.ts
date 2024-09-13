@@ -1,4 +1,4 @@
-import { ErrorResponseBody } from './IResponses';
+import { DefaultErrorResponseBody } from './IResponses';
 
 /**
  * It mimics the structure of the error response and will be
@@ -9,7 +9,7 @@ import { ErrorResponseBody } from './IResponses';
  * All of these subclasses will be handle by our custom error middleware,
  * to return an appropriate error response.
  */
-export abstract class BaseError extends Error implements ErrorResponseBody {
+export abstract class BaseError extends Error implements DefaultErrorResponseBody {
   constructor(
     message: string,
     public status: number,

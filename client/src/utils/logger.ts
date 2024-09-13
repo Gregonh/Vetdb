@@ -164,7 +164,7 @@ export function formatMessage(message: any, isStyled: boolean = true): string | 
       if (!isStyled) return formattedMessage;
       return `%c${formattedMessage}`;
     } catch (error) {
-      return 'Error formatting message: ';
+      return `Error formatting message: ${error instanceof Error ? error.message : String(error)}`;
     }
   }
   if (!isStyled) return message;

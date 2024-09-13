@@ -16,18 +16,18 @@ module.exports = {
       fontFamily: {
         'family-display': 'Linotte-Semibold, ui-serif',
         'family-secondary': 'OpenSans-SemiBold, Open Sans, system-ui',
-        'family-body': 'Inter-Regular, system-ui',
+        'family-body': 'Inter-Regular, system-ui, sans-serif',
         'family-caption': 'Inter-Light, system-ui',
         'family-subtitle': 'Inter-SemiBold, system-ui',
         'family-subtitletwo': 'Inter-Bold, system-ui',
       },
       fontSize: {
         //for viewport
-        'vfont--3': 'var(--vfont--3)',
-        'vfont--2': 'var(--vfont--2)',
-        'vfont--1': 'var(--vfont--1)',
-        'vfont-0': 'var(--vfont-0)',
-        'vfont-1': 'var(--vfont-1)',
+        'vfont--3': 'var(--vfont--3)' /*overline*/,
+        'vfont--2': 'var(--vfont--2)' /*caption*/,
+        'vfont--1': 'var(--vfont--1)' /*body2, subtitle2, secondary*/,
+        'vfont-0': 'var(--vfont-0)' /*body, subtitle1, */,
+        'vfont-1': 'var(--vfont-1)' /* headers levels*/,
         'vfont-2': 'var(--vfont-2)',
         'vfont-3': 'var(--vfont-3)',
         'vfont-4': 'var(--vfont-4)',
@@ -45,9 +45,11 @@ module.exports = {
       },
       spacing: {
         //by topics
-        'footer-top-margin': 'var(--footer-top-margin)',
         'default-top-margin': 'var(--default-top-margin)',
-        'gutter-space': 'var(--root-grid-gutter)', //can be for now: --vspace-m (in >= 1920) or --vspace-xs-m (in <1920)
+        'root-gutter-space': 'var(--root-grid-gutter)', //can be: --vspace-m (in >= 1920) or --vspace-xs-m (in <1920)
+        'container-default-padding': 'var(--container-default-padding)', // + drastic
+        'header-default-padding': 'var(--header-default-padding)', //for now same as container-default-padding
+        'footer-top-margin': 'var(--footer-top-margin)',
         'min-height-nav': 'var(--min-height-nav)',
         'min-height-footer': 'var(--min-height-nav)',
 
@@ -94,63 +96,52 @@ module.exports = {
         'cspace-2xl-3xl': 'var(--cspace-2xl-3xl)',
       },
       maxWidth: {
+        'root-container': 'var(--root-grid-max-width)',
         // for line-length, alternative to use max-w-prose that always give 65ch width or the line-length-grid css class
         'readable-vdiv': '34em', //68 characters if we consider 1 character is more or less 0.5em
       },
       colors: {
-        darkelements: {
-          background: '#232946',
-          headline: '#fffffe',
-          paragraph: '#b8c1ec',
-          link: '#eebbc3',
-          subheadline: '#fffffe',
-          cardbackground: '#fffffe',
-          cardheading: '#232946',
-          cardparagraph: '#232946',
-          cardhighlight: '#d4939d',
-          cardtagbackground: '#b8c1ec',
-          cardtagtext: '#232946',
-          hover: '#eebbc3',
+        elements: {
+          background: 'var(--color-bg)',
+          headline: 'var(--color-head)',
+          paragraph: 'var(--color-paragraph)',
+          link: 'var(--color-link)',
+          subheadline: 'var(--color-head)',
+          hover: 'var(--color-hover)',
         },
-        lightelements: {
-          background: '#d4d8f0',
-          headline: '#232946',
-          paragraph: '#232946',
-          link: '#232946',
-          subheadline: '#232946',
-          cardbackground: '#fffffe',
-          cardheading: '#232946',
-          cardparagraph: '#232946',
-          cardhighlight: '#d4939d',
-          cardtagbackground: '#232946',
-          cardtagtext: '#fffffe',
-          hover: '#eebbc3',
+        card: {
+          cardbackground: 'var(--color-card-bg)',
+          cardheading: 'var(--color-card-heading)',
+          cardparagraph: 'var(--color-card-text)',
+          cardhighlight: 'var(--color-card-highlight)',
+          cardtagbackground: 'var(--color-card-tag-bg)',
+          cardtagtext: 'var(--color-card-tag-text)',
         },
         button: {
-          button: '#eebbc3',
-          buttontext: '#232946',
+          button: 'var(--color-button)',
+          buttontext: 'var(--color-button-text)',
+          hoverbutton: 'var(--color-button-hover-bg)',
+          hoverbuttontext: 'var(--color-button-hover-text)',
         },
         form: {
-          background: '#d4939d',
-          input: '#fffffe',
-          labelplaceholder: '#232946',
-          button: '#232946',
-          buttontext: '#fffffe',
+          background: 'var(--color-form-background)',
+          input: 'var(--color-form-input)',
+          labelplaceholder: 'var(--color-form-labelplaceholder)',
         },
         // icons or illustrations
         icons: {
-          stroke: '#121629',
-          main: '#b8c1ec',
-          highlight: '#eebbc3',
-          secondary: '#fffffe',
-          tertiary: '#eebbc3',
+          stroke: 'var(--color-icons-stroke)',
+          main: 'var(--color-icons-main)',
+          highlight: 'var(--color-icons-highlight)',
+          secondary: 'var(--color-icons-secondary)',
+          tertiary: 'var(--color-icons-tertiary)',
         },
         footer: {
-          background: '#232946',
-          headline: '#fffffe',
-          paragraph: '#b8c1ec',
-          links: '#eebbc3',
-          hover: '#eebbc3',
+          background: 'var(--color-footer-background)',
+          headline: 'var(--color-footer-headline)',
+          paragraph: 'var(--color-footer-paragraph)',
+          links: 'var(--color-footer-links)',
+          hover: 'var(--color-footer-hover)',
         },
       },
       keyframes: {

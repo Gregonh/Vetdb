@@ -1,5 +1,5 @@
 // Default Error response interface following RFC 9457
-export interface ErrorResponseBody {
+export interface DefaultErrorResponseBody {
   status: number; //The HTTP status code
   type: string; //reference these URIs for documentation about the error, e.g., "https://example.com/probs/out-of-credit"
   title: string; // A short, human-readable summary of the problem. same across all instances, (e.g., "Validation Error")
@@ -17,8 +17,7 @@ export interface SecondaryErrorResponseBody {
 }
 
 export interface SuccessResponseBody<T> {
-  data: T;
+  //innerBodyData is data inside the body, this name was chosen to avoid conflict with axios data (all the response´s body)
+  innerBodyData: T;
   message?: string;
 }
-
-

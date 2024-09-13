@@ -2,7 +2,10 @@ import { ErrorRequestHandler } from 'express';
 import { DatabaseError } from 'pg';
 
 import { BaseError, ConflictError } from '../utils/CustomErrorClasses';
-import { ErrorResponseBody, SecondaryErrorResponseBody } from '../utils/IResponses';
+import {
+  DefaultErrorResponseBody,
+  SecondaryErrorResponseBody,
+} from '../utils/IResponses';
 
 /**
  * Last error defense before default express handler.
@@ -32,7 +35,7 @@ export const customErrorHandler: ErrorRequestHandler = (
     // Unique constraint violation in Postgres
     if (error.code === '23505' || error.code === '23503') {
       const conflictError = new ConflictError(req.url);
-      const errorResponse: ErrorResponseBody = conflictError;
+      const errorResponse: DefaultErrorResponseBody = conflictError;
       const statusCode = errorResponse.status ?? 409;
       return res.status(statusCode).json(errorResponse);
     } else {
@@ -42,7 +45,7 @@ export const customErrorHandler: ErrorRequestHandler = (
   } else if (error instanceof BaseError) {
     //custom errors
     const statusCode = error.status ?? 500;
-    const errorResponse: ErrorResponseBody = {
+    const errorResponse: DefaultErrorResponseBody = {
       status: statusCode,
       title: error.title,
       type: error.type,
