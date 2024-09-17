@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   root: true,
   env: { node: true, browser: true, es2021: true },
@@ -7,7 +9,7 @@ module.exports = {
     'plugin:react-hooks/recommended',
     'plugin:react/jsx-runtime',
     'plugin:jsx-a11y/recommended',
-    'plugin:import/recommended',
+    'plugin:import/typescript',
     'prettier',
   ],
   plugins: ['react', 'react-hooks', 'react-refresh', 'import', 'jsx-a11y'],
@@ -61,10 +63,7 @@ module.exports = {
     ],
     'react/jsx-props-no-spreading': 'off', //Evitar use props como var y no como attribute
     //Evitar curly braces unnecessary en attributes
-    'react/jsx-curly-brace-presence': [
-      'error',
-      { props: 'never', children: 'never' },
-    ],
+    'react/jsx-curly-brace-presence': ['error', { props: 'never', children: 'never' }],
     //avoid anchor as link
     'jsx-a11y/anchor-is-valid': [
       'error',
@@ -100,7 +99,17 @@ module.exports = {
       },
     ],
     'import/no-default-export': 'warn',
-    'import/no-extraneous-dependencies': 'error',
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: true,
+        packageDir: [
+          __dirname,
+          path.join(__dirname, 'client'),
+          path.join(__dirname, 'server'),
+        ],
+      },
+    ],
   },
   overrides: [
     {
@@ -127,15 +136,9 @@ module.exports = {
         // rules para los archivos de Typescript
         '@typescript-eslint/ban-ts-comment': 'off', // permitir comentarios directiva (ex. evitar check type)
         //error if we use a var before define it
-        '@typescript-eslint/no-use-before-define': [
-          'error',
-          { functions: false },
-        ],
+        '@typescript-eslint/no-use-before-define': ['error', { functions: false }],
         //error si no consumimos una promise al llamarla (need await or then)
-        '@typescript-eslint/no-floating-promises': [
-          'error',
-          { ignoreVoid: true },
-        ],
+        '@typescript-eslint/no-floating-promises': ['error', { ignoreVoid: true }],
         '@typescript-eslint/no-misused-promises': [
           2,
           {

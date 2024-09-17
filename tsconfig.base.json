@@ -20,7 +20,11 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,
-    "noPropertyAccessFromIndexSignature": true
+    "noPropertyAccessFromIndexSignature": true,
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["./shared/*"]
+    }
   },
 
   "exclude": ["node_modules"]

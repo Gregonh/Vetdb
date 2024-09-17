@@ -1,12 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import type { SuccessBody } from '@shared/interfaces/IResponses';
+import {
+  UserFormValidationSchema,
+  type UserFormValidation,
+} from '@shared/schemas/userValidation';
 import { useErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
-import { z } from 'zod';
+import { Link } from 'react-router-dom';
 
-import { SuccessResponseBody } from '../../data-sources/IResponses';
-import { useMutationRequest } from '../../data-sources/useMutationRequest';
-import { type MutationRequest } from '../../data-sources/useMutationRequest';
 import { dealWithErrors } from '../errors/dealWithError';
 import { Button } from '../ui/button';
 import { Checkbox } from '../ui/checkbox';
@@ -21,61 +22,28 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 
-const userValidationSchema = z
-  .object({
-    firstName: z
-      .string()
-      .min(2, { message: 'Name is required' })
-      .max(15, { message: 'Name must be no more than 15 characters' }),
-    lastName: z
-      .string()
-      .min(2, { message: 'Lastname is required' })
-      .max(15, { message: 'Last name must be no more than 15 characters' }),
-    email: z.string().min(9, { message: 'must be at least 9 characters' }).email({
-      message: 'Must be a valid email',
-    }),
-    password: z
-      .string()
-      .min(6, {
-        message: 'Password must be at least 6 characters',
-      })
-      .max(20, { message: 'Password must be no more than 20 characters' }),
-    confirmPassword: z
-      .string()
-      .min(6, { message: 'Confirm Password is required' })
-      .max(20, { message: 'Password must be no more than 20 characters' }),
-    //literal because we want exactly that value
-    terms: z.literal(true, {
-      //to customize the error message
-      errorMap: () => ({
-        message: 'You must accept our Terms and Privacy Policy',
-      }),
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ['confirmPassword'],
-    message: "Password don't match",
-  });
-
-type UserValidation = z.infer<typeof userValidationSchema>;
+import {
+  type MutationRequest,
+  useMutationRequest,
+} from '@/data-sources/useMutationRequest';
 
 type RequestBody = {
-  name: string;
+  firstName: string;
   lastName: string;
   email: string;
   password: string;
 };
 
-type ResponseBodyPost = SuccessResponseBody<{ id: number }>;
+type ResponseBodyPost = SuccessBody<{ id: number }>;
 
 const requestConfiguration: NonNullable<MutationRequest<RequestBody>> = {
-  url: 'http://localhost:4001/user',
+  url: 'http://localhost:4001/users/register',
 };
 
 export function RegisterUser() {
   const { showBoundary } = useErrorBoundary();
-  const form = useForm<UserValidation>({
-    resolver: zodResolver(userValidationSchema),
+  const form = useForm<UserFormValidation>({
+    resolver: zodResolver(UserFormValidationSchema),
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -83,11 +51,12 @@ export function RegisterUser() {
       password: '',
       confirmPassword: '',
     },
+    mode: 'onChange',
   });
   const { trigger, data } = useMutationRequest<ResponseBodyPost, RequestBody>(
     requestConfiguration,
   );
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const {
     handleSubmit,
@@ -95,15 +64,15 @@ export function RegisterUser() {
     control,
   } = form;
 
-  const createUser = async (user: UserValidation) => {
+  const createUserRequest = async (user: UserFormValidation) => {
     try {
-      const bodyData = {
-        name: user.firstName,
+      const bodyData: RequestBody = {
+        firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
         password: user.password,
       };
-
+      //axios automatically throw errors (server/Error response), put the trigger() inside try/catch
       const response = await trigger({
         request: requestConfiguration,
         methodType: 'POST',
@@ -115,12 +84,15 @@ export function RegisterUser() {
     }
   };
 
-  const onSubmit = async (data: UserValidation) => {
+  const onSubmit = async (formData: UserFormValidation) => {
     try {
-      const user = userValidationSchema.parse(data);
-      const response = await createUser(user);
+      const user = UserFormValidationSchema.parse(formData);
+      const response = await createUserRequest(user); //no need check if response.ok, axios automatically throw errors
+
       if (response) {
-        navigate('/login');
+        //navigate('/login');
+        // eslint-disable-next-line no-console
+        console.log(response);
       }
     } catch (error: unknown) {
       dealWithErrors(error, showBoundary);
@@ -133,6 +105,7 @@ export function RegisterUser() {
         <div className="md:grow">
           <h1 className="v-font-headers px-header-default-padding">
             {!data ? `Registro de usuario` : data.message}
+            {data && data.innerBodyData.id}
           </h1>
           <Form {...form}>
             <form

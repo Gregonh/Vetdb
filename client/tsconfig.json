@@ -8,13 +8,14 @@
     "target": "es2022",
     "lib": ["es2023", "DOM", "DOM.Iterable"],
     "outDir": "../dist/client", //all compiled javascript files will be placed here
-    "rootDir": "./src", //doesn't affect which files compile, no interact with include
+    "rootDir": "..", //doesn't affect which files compile, no interact with include
     "jsx": "react-jsx",
     "baseUrl": ".", // Setting the baseUrl for module resolution
     "paths": {
-      "@/*": ["./src/*"] // Alias for resolving paths
+      "@/*": ["./src/*"], // Alias for resolving paths
+      "@shared/*": ["../shared/*"]
     }
   },
-  "include": ["./src/**/*"], //files to compile and get javascript
+  "include": ["./src/**/*", "../shared/**/*"], //files to compile and get javascript
   "exclude": ["node_modules"]
 }

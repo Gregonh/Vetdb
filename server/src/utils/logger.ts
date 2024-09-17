@@ -163,8 +163,8 @@ export function formatMessage(message: any, isStyled: boolean = true): string | 
       );
       if (!isStyled) return formattedMessage;
       return `%c${formattedMessage}`;
-    } catch (error) {
-      return 'Error formatting message: ';
+    } catch (_error) {
+      return 'Error formatting message';
     }
   }
   if (!isStyled) return message;

@@ -1,16 +1,18 @@
+import type { SuccessBody } from '@shared/interfaces/IResponses';
+import { UserValidationSchema } from '@shared/schemas/userValidation';
 import { Request, Response, NextFunction } from 'express';
 import { QueryResult } from 'pg';
+import z from 'zod';
 
-import { pool } from '../dotConfig';
-import { createSuccessResponse, SuccessStatus } from '../utils/createSuccessResponses';
+import { pool } from '@/dotConfig';
+import { createSuccessResponse, SuccessStatus } from '@/utils/createSuccessResponses';
 import {
   BadRequestError,
   ConflictOperation,
   NotFoundError,
   OperationCanConflict,
   ValidationError,
-} from '../utils/CustomErrorClasses';
-import { SuccessResponseBody } from '../utils/IResponses';
+} from '@/utils/CustomErrorClasses';
 
 //a success database result follow these 3 types:
 //at least we need the user´s id
@@ -85,7 +87,7 @@ const checkUserResultError = <T extends PartialVetUserWithId>(
 };
 
 const returnUserIdResponse = <T extends PartialVetUserWithId>(
-  response: Response<SuccessResponseBody<VetUserId>>,
+  response: Response<SuccessBody<VetUserId>>,
   results: QueryResult<T>,
   request: Request,
   next: NextFunction,
@@ -106,7 +108,7 @@ const returnUserIdResponse = <T extends PartialVetUserWithId>(
 
 const getUsers = (
   request: Request,
-  response: Response<SuccessResponseBody<VetUser[]>>,
+  response: Response<SuccessBody<VetUser[]>>,
   next: NextFunction,
 ) => {
   const query = 'SELECT * FROM users ORDER BY id ASC';
@@ -160,7 +162,7 @@ $1 is a numbered placeholder that PostgreSQL uses natively instead of the ?
 */
 const getUserById = (
   request: Request,
-  response: Response<SuccessResponseBody<VetUserId>>,
+  response: Response<SuccessBody<VetUserId>>,
   next: NextFunction,
 ) => {
   const id = tryGetParamOrBodyId(next, request);
@@ -178,41 +180,11 @@ const getUserById = (
   });
 };
 
-// TODO: decide approach  in getEmail and in the post, between CreateUser and returnUserIdResponse
-type RequestBodyConfirmEmail = { id: string; email: string };
-type DataBodyConfirmEmail = { email: string };
-const getConfirmEmail = (
-  request: Request,
-  response: Response<SuccessResponseBody<DataBodyConfirmEmail>>,
-  next: NextFunction,
-) => {
-  const { id, email } = <RequestBodyConfirmEmail>request.body;
-  if (!id || !email) {
-    return next(new ValidationError('Body request', request.url));
-  }
-
-  const query = `SELECT id, email FROM users WHERE id = $1 and email = $2`;
-  getUserByDynamicsField(query, [id, email], (error, results) => {
-    if (!results) {
-      return next(error);
-    }
-    checkUserResultError(results, request, next);
-    //ensure body input and result email are equal
-    if (email.toLowerCase() === results.rows[0]?.email?.toLowerCase()) {
-      const resBody = { email: results.rows[0].email };
-      //TODO: try/catch
-      return createSuccessResponse(response, SuccessStatus.OK, resBody);
-    }
-
-    return next(new Error('Critical email error'));
-  });
-};
-
 type RequestBodyLogin = { password: string; email: string };
 type DataBodyUserByEmail = { email: string | undefined; id: number };
 const getLogin = (
   request: Request,
-  response: Response<SuccessResponseBody<DataBodyUserByEmail>>,
+  response: Response<SuccessBody<DataBodyUserByEmail>>,
   next: NextFunction,
 ) => {
   const { password, email } = <RequestBodyLogin>request.body;
@@ -243,24 +215,21 @@ const getLogin = (
   });
 };
 
-type RequestBodyNewUser = {
-  name: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
-type DataBodyPost = { id: number };
+//z.util.assertEqual<oldRequestBodyNewUser, z.infer<typeof UserValidationSchema>>(true);
+type RequestBodyNewUser = z.infer<typeof UserValidationSchema>;
+
+type InnerBodyData = { id: number };
 const postUser = async (
   request: Request,
-  response: Response<SuccessResponseBody<DataBodyPost>>,
+  response: Response<SuccessBody<InnerBodyData>>,
   next: NextFunction,
 ) => {
   try {
-    const { name, lastName, email, password } = <RequestBodyNewUser>request.body;
+    const { firstName, lastName, email, password } = <RequestBodyNewUser>request.body;
     const query =
       'INSERT INTO users (name, lastname, email, password) VALUES ($1, $2, $3, $4) RETURNING *';
     const results: QueryResult<VetUser> = await pool.query(query, [
-      name,
+      firstName,
       lastName,
       email,
       password,
@@ -269,12 +238,42 @@ const postUser = async (
       return next(new ConflictOperation(request.url, OperationCanConflict.INSERT));
     }
     checkUserResultError(results, request, next);
-    const resBody = { id: results.rows[0]!.id };
-    const resMessage = 'User added';
-    return createSuccessResponse(response, SuccessStatus.OK, resBody, resMessage);
+    const bodyData: InnerBodyData = { id: results.rows[0]!.id };
+    const bodyMessage = 'User added';
+    return createSuccessResponse(response, SuccessStatus.OK, bodyData, bodyMessage);
   } catch (error) {
     return next(error);
   }
+};
+
+// TODO: decide approach  in getEmail and in the post, between CreateUser and returnUserIdResponse
+type RequestBodyConfirmEmail = { id: string; email: string };
+type DataBodyConfirmEmail = { email: string };
+const getConfirmEmail = (
+  request: Request,
+  response: Response<SuccessBody<DataBodyConfirmEmail>>,
+  next: NextFunction,
+) => {
+  const { id, email } = <RequestBodyConfirmEmail>request.body;
+  if (!id || !email) {
+    return next(new ValidationError('Body request', request.url));
+  }
+
+  const query = `SELECT id, email FROM users WHERE id = $1 and email = $2`;
+  getUserByDynamicsField(query, [id, email], (error, results) => {
+    if (!results) {
+      return next(error);
+    }
+    checkUserResultError(results, request, next);
+    //ensure body input and result email are equal
+    if (email.toLowerCase() === results.rows[0]?.email?.toLowerCase()) {
+      const resBody = { email: results.rows[0].email };
+      //TODO: try/catch
+      return createSuccessResponse(response, SuccessStatus.OK, resBody);
+    }
+
+    return next(new Error('Critical email error'));
+  });
 };
 
 type RequestBodyUpdate = {
@@ -283,7 +282,7 @@ type RequestBodyUpdate = {
 };
 const updateUserPassword = async (
   request: Request,
-  response: Response<SuccessResponseBody<VetUserId>>,
+  response: Response<SuccessBody<VetUserId>>,
   next: NextFunction,
 ) => {
   const { id, newPassword } = <RequestBodyUpdate>request.body;
@@ -305,7 +304,7 @@ const updateUserPassword = async (
 
 const deleteUser = async (
   request: Request,
-  response: Response<SuccessResponseBody<VetUserId>>,
+  response: Response<SuccessBody<VetUserId>>,
   next: NextFunction,
 ) => {
   const id = tryGetParamOrBodyId(next, request);

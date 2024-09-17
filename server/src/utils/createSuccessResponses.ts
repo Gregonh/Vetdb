@@ -1,10 +1,12 @@
+import { SuccessBody } from '@shared/interfaces/IResponses';
 import { Response } from 'express';
 
-import { SuccessResponseBody } from './IResponses';
-
-function createSuccessResponseBody<T>(data: T, message?: string): SuccessResponseBody<T> {
+export function createSuccessResponseBody<T>(
+  innerBodyData: T,
+  message?: string,
+): SuccessBody<T> {
   return {
-    innerBodyData: data,
+    innerBodyData,
     message,
   };
 }
@@ -26,19 +28,22 @@ export enum SuccessStatus {
  * Response<any, Record<string, any>> returned in our middlewares.
  * @param response Response with the type of the body
  * @param responseStatus Only admit some enum status
- * @param dataBody Body´s data:TData
+ * @param innerBodyData Body´s data:TData
  * @param messageBody Body´s optional message
  * @returns Response<SuccessResponseBody< TData >> | void
  */
 export function createSuccessResponse<TData>(
-  response: Response<SuccessResponseBody<TData>>,
+  response: Response<SuccessBody<TData>>,
   responseStatus: SuccessStatus,
-  dataBody: TData,
+  innerBodyData: TData,
   messageBody?: string,
-): Response<SuccessResponseBody<TData>> | void {
+): Response<SuccessBody<TData>> | void {
   if (responseStatus < SuccessStatus.OK || responseStatus > SuccessStatus.LIMIT) {
     throw new Error('Not valid success response status');
   }
-  const resBody = createSuccessResponseBody<TData>(dataBody, messageBody);
+  const resBody: SuccessBody<TData> = {
+    innerBodyData,
+    message: messageBody,
+  };
   return response.status(responseStatus).json(resBody);
 }

@@ -18,6 +18,6 @@ export const notFoundRouteHandler = (
 ) => {
   // example: GET 'http://www.example.com/admin/new?a=b'
   const fullPath = req.originalUrl; // '/admin/new?a=b' (full path with query string)
-  const error = new RouteNotFound(fullPath, '/api/notFoundHandler');
+  const error = new RouteNotFound('/api/notFoundHandler', fullPath);
   next(error);
 };

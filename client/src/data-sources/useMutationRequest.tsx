@@ -55,6 +55,7 @@ const mutationFetcher = async <
 
   // eslint-disable-next-line no-useless-catch
   try {
+    //axios automatically throw errors, no need check response
     const response = await axios.request<TResponseBody>(config);
     return response;
   } catch (error) {
@@ -95,9 +96,16 @@ export function useMutationRequest<
 
   return {
     trigger,
-    response,
-    data: response && response.data,
+    response, //Entire axios response
+    data: response && response.data, //body response
     isMutating,
     error,
   };
 }
+
+/**
+ *  If the request succeeds, Axios returns an AxiosResponse.
+    If the request fails (e.g., network issue, timeout, or a 
+    response with a 4xx or 5xx status), Axios throws an AxiosError, 
+    which may or may not contain a response.
+ */

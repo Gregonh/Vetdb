@@ -7,17 +7,19 @@
     "client:dev": "pnpm --prefix client run dev",
     "client:build": "pnpm --prefix client run build",
     "client:preview": "pnpm --prefix client run preview",
-    "server:dev": "pnpm --prefix server dev",
+    "server:dev": "pnpm --prefix server run dev",
     "build": "pnpm run client:build && pnpm run server:dev",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --ignore-path .gitignore",
     "lint-fix": "pnpm lint -- --fix",
-    "dev": "concurrently \"pnpm run client:dev\" \"pnpm run server:dev\""
+    "dev": "concurrently \"pnpm run client:dev\" \"pnpm run server:dev\"",
+    "oxlint": "pnpm dlx oxlint@latest"
   },
   "keywords": [],
   "author": "Grego Nunez",
   "license": "MIT",
   "dependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.13.1",
@@ -37,4 +39,3 @@
     "typescript-eslint": "^7.13.1"
   }
 }
-

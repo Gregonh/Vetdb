@@ -83,9 +83,6 @@ importers:
       web-vitals:
         specifier: ^4.2.1
         version: 4.2.3
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
       zustand:
         specifier: ^4.5.2
         version: 4.5.5(@types/react@18.3.3)(react@18.3.1)
@@ -1790,9 +1787,6 @@ packages:
     engines: {node: '>= 14'}
     hasBin: true
 
-  zod@3.23.8:
-    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
-
   zustand@4.5.5:
     resolution: {integrity: sha512-+0PALYNJNgK6hldkgDq2vLrw5f6g/jCInz52n9RTpropGgeAf/ioFUCdtsjCqu4gNhW9D01rUQBROoRjdzyn2Q==}
     engines: {node: '>=12.7.0'}
@@ -3343,8 +3337,6 @@ snapshots:
   yallist@3.1.1: {}
 
   yaml@2.5.0: {}
-
-  zod@3.23.8: {}
 
   zustand@4.5.5(@types/react@18.3.3)(react@18.3.1):
     dependencies:

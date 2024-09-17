@@ -1,11 +1,10 @@
+import { DefaultErrorBody, SecondaryErrorBody } from '@shared/interfaces/IResponses';
 import { ErrorRequestHandler } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import { DatabaseError } from 'pg';
+import { ZodError, ZodIssue } from 'zod';
 
 import { BaseError, ConflictError } from '../utils/CustomErrorClasses';
-import {
-  DefaultErrorResponseBody,
-  SecondaryErrorResponseBody,
-} from '../utils/IResponses';
 
 /**
  * Last error defense before default express handler.
@@ -30,12 +29,21 @@ export const customErrorHandler: ErrorRequestHandler = (
   if (res.headersSent) {
     return next(error);
   }
+  //TODO: include zod in our custom error response
+  if (error instanceof ZodError) {
+    const errorMessages = error.errors.map((issue: ZodIssue) => ({
+      message: `${issue.path.join('.')} is ${issue.message}`,
+    }));
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: 'Invalid data', details: errorMessages });
+  }
   //postgres pg error: use pg error class to create a ConflictError instance
-  if (error instanceof DatabaseError) {
+  else if (error instanceof DatabaseError) {
     // Unique constraint violation in Postgres
     if (error.code === '23505' || error.code === '23503') {
       const conflictError = new ConflictError(req.url);
-      const errorResponse: DefaultErrorResponseBody = conflictError;
+      const errorResponse: DefaultErrorBody = conflictError;
       const statusCode = errorResponse.status ?? 409;
       return res.status(statusCode).json(errorResponse);
     } else {
@@ -45,7 +53,7 @@ export const customErrorHandler: ErrorRequestHandler = (
   } else if (error instanceof BaseError) {
     //custom errors
     const statusCode = error.status ?? 500;
-    const errorResponse: DefaultErrorResponseBody = {
+    const errorResponse: DefaultErrorBody = {
       status: statusCode,
       title: error.title,
       type: error.type,
@@ -56,7 +64,7 @@ export const customErrorHandler: ErrorRequestHandler = (
     return res.status(statusCode).json(errorResponse);
   } else if (error instanceof Error) {
     //Default error
-    const responseError: SecondaryErrorResponseBody = {
+    const responseError: SecondaryErrorBody = {
       status: 500,
       title: 'Internal Server Error',
       detail: error.message || 'An Error occurred',
@@ -65,12 +73,12 @@ export const customErrorHandler: ErrorRequestHandler = (
     return res.status(500).json(responseError);
   } else {
     //unknown error
-    const responseError: SecondaryErrorResponseBody = {
+    const responseError: SecondaryErrorBody = {
       status: 500,
       title: 'Internal Server Error',
       detail: 'An unknown error occurred',
       instance: req.url,
     };
-    return res.status(500).json(responseError);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(responseError);
   }
 };
