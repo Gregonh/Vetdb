@@ -1,9 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { SuccessBody } from '@shared/interfaces/IResponses';
 import {
-  UserFormValidationSchema,
-  type UserFormValidation,
-} from '@shared/schemas/userValidation';
+  FormPostUserSchema,
+  type FormPostUser,
+  type RequestBodyPostUser,
+} from '@shared/schemas/users/requestUserValidation';
+import {
+  InnerBodyPostUserSchema,
+  type InnerBodyPostUser,
+} from '@shared/schemas/users/responseUserValidation';
 import { useErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
@@ -22,28 +27,20 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 
+import { validationAxiosResponseBody } from '@/data-sources/helperValidationResponse';
 import {
   type MutationRequest,
   useMutationRequest,
 } from '@/data-sources/useMutationRequest';
 
-type RequestBody = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
-
-type ResponseBodyPost = SuccessBody<{ id: number }>;
-
-const requestConfiguration: NonNullable<MutationRequest<RequestBody>> = {
+const requestConfiguration: NonNullable<MutationRequest<RequestBodyPostUser>> = {
   url: 'http://localhost:4001/users/register',
 };
 
 export function RegisterUser() {
   const { showBoundary } = useErrorBoundary();
-  const form = useForm<UserFormValidation>({
-    resolver: zodResolver(UserFormValidationSchema),
+  const form = useForm<FormPostUser>({
+    resolver: zodResolver(FormPostUserSchema),
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -53,9 +50,10 @@ export function RegisterUser() {
     },
     mode: 'onChange',
   });
-  const { trigger, data } = useMutationRequest<ResponseBodyPost, RequestBody>(
-    requestConfiguration,
-  );
+  const { trigger, data } = useMutationRequest<
+    SuccessBody<InnerBodyPostUser>,
+    RequestBodyPostUser
+  >(requestConfiguration);
   //const navigate = useNavigate();
 
   const {
@@ -64,9 +62,9 @@ export function RegisterUser() {
     control,
   } = form;
 
-  const createUserRequest = async (user: UserFormValidation) => {
+  const postUserRequest = async (user: FormPostUser) => {
     try {
-      const bodyData: RequestBody = {
+      const requestBodyData: RequestBodyPostUser = {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
@@ -76,7 +74,7 @@ export function RegisterUser() {
       const response = await trigger({
         request: requestConfiguration,
         methodType: 'POST',
-        requestBody: bodyData,
+        requestBody: requestBodyData,
       });
       return response;
     } catch (error) {
@@ -84,16 +82,14 @@ export function RegisterUser() {
     }
   };
 
-  const onSubmit = async (formData: UserFormValidation) => {
+  const onSubmit = async (formData: FormPostUser) => {
     try {
-      const user = UserFormValidationSchema.parse(formData);
-      const response = await createUserRequest(user); //no need check if response.ok, axios automatically throw errors
-
-      if (response) {
-        //navigate('/login');
-        // eslint-disable-next-line no-console
-        console.log(response);
-      }
+      const user = FormPostUserSchema.parse(formData);
+      const response = await postUserRequest(user); //no need check if response.ok, axios automatically throw errors
+      validationAxiosResponseBody(response!, InnerBodyPostUserSchema); //postUserRequest check if there is response
+      //navigate('/login');
+      // eslint-disable-next-line no-console
+      console.log(response);
     } catch (error: unknown) {
       dealWithErrors(error, showBoundary);
     }

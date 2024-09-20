@@ -16,9 +16,14 @@ export interface SecondaryErrorBody {
   instance: string;
 }
 
-//use when call the useRequest hook as generic argument
+/*
+  Use when call the useRequest hook as generic argument.
+  SuccessBody is the full body response, include the response and a innerBodyData,
+  so SuccessBody is in AxiosResponse the data property (front part),
+  and the Response<SuccessBody<innerBodyData>> (back part).
+*/
 export interface SuccessBody<T> {
-  //innerBodyData is data inside the body, this name was chosen to avoid conflict with axios data (all the response´s body)
+  //innerBodyData is data inside the body, this name was chosen to avoid conflict with axios data
   innerBodyData: T;
   message?: string;
 }

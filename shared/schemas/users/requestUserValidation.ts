@@ -30,11 +30,6 @@ const defaultValidation = {
     }),
 };
 
-//the back schema
-// In this example we will only validate the request body.
-//body: z.object({ ...defaultValidation }),
-export const UserValidationSchema = z.object({ ...defaultValidation });
-
 const formValidationSchema = z.object({
   ...defaultValidation,
   //literal because we want exactly that value
@@ -70,15 +65,18 @@ const passwordCheckSchema = z
     message: "Password don't match",
   });
 
-//the front schema, combine it with alwaysRefine and react hook form
+//the back schema
+export const RequestBodyPostUserSchema = z.object({ ...defaultValidation });
+//the back type
+export type RequestBodyPostUser = z.infer<typeof RequestBodyPostUserSchema>;
+
+//the front schema, combine it with alwaysRefine and react hook form.
 //intersection to separate the different refine by schema
-export const UserFormValidationSchema = z.intersection(
+export const FormPostUserSchema = z.intersection(
   //intersection doesn't override field when there is name collision so omit default schema password:
   formValidationSchema.omit({ password: true }),
   passwordCheckSchema,
 );
 
 //the front type
-export type UserFormValidation = z.infer<typeof UserFormValidationSchema>;
-
-//response
+export type FormPostUser = z.infer<typeof FormPostUserSchema>;

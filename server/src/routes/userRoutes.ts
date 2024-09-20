@@ -1,4 +1,4 @@
-import { UserValidationSchema } from '@shared/schemas/userValidation';
+import { RequestBodyPostUserSchema } from '@shared/schemas/users/requestUserValidation';
 import express from 'express';
 
 import { db } from './controllers/userController';
@@ -12,7 +12,7 @@ userRouter.get('/all', db.getUsers);
 userRouter.get('/:id', db.getUserById);
 userRouter.post(
   '/register',
-  validateBody(UserValidationSchema),
+  validateBody(RequestBodyPostUserSchema),
   asyncWrapper(db.createUser),
 );
 userRouter.post('/confirmEmail', db.getConfirmEmail); //post because we need the body to send sensible data

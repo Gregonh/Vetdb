@@ -1,21 +1,29 @@
 import type { SuccessBody } from '@shared/interfaces/IResponses';
-import { UserValidationSchema } from '@shared/schemas/userValidation';
+import { RequestBodyPostUser } from '@shared/schemas/users/requestUserValidation';
+import {
+  InnerBodyPostUser,
+  InnerBodyPostUserSchema,
+} from '@shared/schemas/users/responseUserValidation';
 import { Request, Response, NextFunction } from 'express';
 import { QueryResult } from 'pg';
-import z from 'zod';
+
+import { checkQueryResultError, zodValidationResult } from './helperCheckResultError';
 
 import { pool } from '@/dotConfig';
 import { createSuccessResponse, SuccessStatus } from '@/utils/createSuccessResponses';
 import {
   BadRequestError,
-  ConflictOperation,
   NotFoundError,
-  OperationCanConflict,
   ValidationError,
 } from '@/utils/CustomErrorClasses';
 
-//a success database result follow these 3 types:
-//at least we need the user´s id
+/*
+  A successful database result aka QueryResult<T> follows 4 types: a schema type, VetUserId, VetUser, PartialVetUserWithId.
+  A schema is always used as the body´s inner data and can be used with QueryResult when we don´t need to do logic with some 
+  property which is not included in the response´s body
+*/
+
+//just the id
 interface VetUserId {
   readonly id: number;
 }
@@ -28,8 +36,10 @@ interface VetUser {
   readonly password: string;
 }
 
-//When you query the database, usually the shape of the QueryResult  match this:
+//id and more properties
 type PartialVetUserWithId = Partial<VetUser> & VetUserId;
+
+const resourceNotFound = 'User';
 
 const checkIdIsValidString = (requestId: string | undefined, request: Request) => {
   if (requestId === '') {
@@ -60,39 +70,13 @@ function tryGetParamOrBodyId(next: NextFunction, request: Request, bodyId?: stri
   }
 }
 
-/**
- * Default check with the results after
- * success a database operation.
- * @param results Row of user, always has id and the others props are optional
- * @param request
- * @param next return errors
- * @returns
- */
-const checkUserResultError = <T extends PartialVetUserWithId>(
-  results: QueryResult<T> | null | undefined,
-  request: Request,
-  next: NextFunction,
-) => {
-  if (!results || results?.rows.length === 0 || !results.rows[0]) {
-    return next(new NotFoundError(request.url, 'User'));
-  }
-  //TODO: decide database error manage
-  if (!results.rows[0].id) {
-    return next(new Error('Critical error, Id conflict'));
-  }
-
-  if (results.rows.length > 1) {
-    return next(new Error('Critical error, Duplicate conflict'));
-  }
-};
-
 const returnUserIdResponse = <T extends PartialVetUserWithId>(
   response: Response<SuccessBody<VetUserId>>,
   results: QueryResult<T>,
   request: Request,
   next: NextFunction,
 ) => {
-  checkUserResultError(results, request, next);
+  checkQueryResultError(results, request, next, resourceNotFound);
 
   if (results?.rows[0]?.id) {
     const updatedUserId = results.rows[0].id;
@@ -174,7 +158,7 @@ const getUserById = (
     if (error) {
       return next(error);
     }
-    checkUserResultError(results, request, next);
+    checkQueryResultError(results, request, next, resourceNotFound);
 
     return returnUserIdResponse(response, results!, request, next);
   });
@@ -197,7 +181,7 @@ const getLogin = (
     if (!results) {
       return next(error);
     } else {
-      checkUserResultError(results, request, next);
+      checkQueryResultError(results, request, next, resourceNotFound);
       try {
         const resBody = {
           email: results.rows[0]!.email,
@@ -216,29 +200,28 @@ const getLogin = (
 };
 
 //z.util.assertEqual<oldRequestBodyNewUser, z.infer<typeof UserValidationSchema>>(true);
-type RequestBodyNewUser = z.infer<typeof UserValidationSchema>;
 
-type InnerBodyData = { id: number };
+//type InnerBodyPostUser = { id: number }; use also with QueryResult because we don´t need to do logic with a complete VetUser
 const postUser = async (
   request: Request,
-  response: Response<SuccessBody<InnerBodyData>>,
+  response: Response<SuccessBody<InnerBodyPostUser>>,
   next: NextFunction,
 ) => {
   try {
-    const { firstName, lastName, email, password } = <RequestBodyNewUser>request.body;
+    const { firstName, lastName, email, password } = <RequestBodyPostUser>request.body;
     const query =
-      'INSERT INTO users (name, lastname, email, password) VALUES ($1, $2, $3, $4) RETURNING *';
-    const results: QueryResult<VetUser> = await pool.query(query, [
+      'INSERT INTO users (name, lastname, email, password) VALUES ($1, $2, $3, $4) RETURNING id';
+    const results: QueryResult<InnerBodyPostUser> = await pool.query(query, [
       firstName,
       lastName,
       email,
       password,
     ]);
-    if (results.rows.length === 0) {
-      return next(new ConflictOperation(request.url, OperationCanConflict.INSERT));
-    }
-    checkUserResultError(results, request, next);
-    const bodyData: InnerBodyData = { id: results.rows[0]!.id };
+
+    checkQueryResultError(results, request, next, resourceNotFound);
+    zodValidationResult(next, results, InnerBodyPostUserSchema);
+
+    const bodyData: InnerBodyPostUser = { id: results.rows[0]!.id };
     const bodyMessage = 'User added';
     return createSuccessResponse(response, SuccessStatus.OK, bodyData, bodyMessage);
   } catch (error) {
@@ -264,7 +247,7 @@ const getConfirmEmail = (
     if (!results) {
       return next(error);
     }
-    checkUserResultError(results, request, next);
+    checkQueryResultError(results, request, next, resourceNotFound);
     //ensure body input and result email are equal
     if (email.toLowerCase() === results.rows[0]?.email?.toLowerCase()) {
       const resBody = { email: results.rows[0].email };

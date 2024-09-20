@@ -1,10 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios, { AxiosError, isAxiosError } from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { useState, useEffect, useCallback } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
 import { redirect, useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 
+import { dealWithErrors } from '../errors/dealWithError';
 import { Button } from '../ui/button';
 import {
   Card,
@@ -61,6 +63,7 @@ interface EmailResponse {
 }
 
 function ChangePassword() {
+  const { showBoundary } = useErrorBoundary();
   const [userEmail, setUserEmail] = useState('');
   const params = useParams();
   /**
@@ -127,7 +130,7 @@ function ChangePassword() {
       };
       await client.put(baseURL, data);
     } catch (error) {
-      throw new AxiosError('axios error in put');
+      dealWithErrors(error, showBoundary);
     }
   };
 

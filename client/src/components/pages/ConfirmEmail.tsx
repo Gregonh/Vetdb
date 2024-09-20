@@ -1,9 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
+import { useErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 
+import { dealWithErrors } from '../errors/dealWithError';
 import { Button } from '../ui/button';
 import {
   Form,
@@ -39,6 +41,7 @@ const emailValidationSchema = z
 type EmailValidation = z.infer<typeof emailValidationSchema>;
 
 export function ConfirmEmail() {
+  const { showBoundary } = useErrorBoundary();
   const { id } = useParams();
   const navigate = useNavigate();
   const form = useForm<EmailValidation>({
@@ -73,7 +76,7 @@ export function ConfirmEmail() {
       };
       await client.post(baseURL, data);
     } catch (error) {
-      throw error;
+      dealWithErrors(error, showBoundary);
     }
   };
 

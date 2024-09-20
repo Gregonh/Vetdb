@@ -30,8 +30,9 @@ const unknownApproachError = (error: unknown, showBoundary: (error: any) => void
  * Deal with errors that are caught manually (not by Errorboundary).
  * Narrow and then we have two options:
  * - log the error and show a visual indication to the user
- * - send the error to ErrorBoundary (that automatically logs also)
- * AxiosError are also logged automatically.
+ * - send the error to ErrorBoundary (that automatically logs also).
+ * If one error use showBoundary, it can´t use a toast.
+ * The toast must be used with a Toaster component at the same time.
  * @param error from a catch block
  * @param showBoundary hook to re-throw an error to ErrorBoundary
  */

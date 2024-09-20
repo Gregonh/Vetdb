@@ -1,6 +1,8 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import useSWRMutation from 'swr/mutation';
 
+import { logger } from '@/utils/logger';
+
 export type MutationRequest<TRequestBody = undefined> =
   AxiosRequestConfig<TRequestBody> | null;
 
@@ -32,7 +34,8 @@ const mutationFetcher = async <
         arg.queryParams as Record<string, string>,
       ).toString();
     }
-  } catch (_error) {
+  } catch (error) {
+    logger.error(error);
     throw new Error('queryParams must be a valid object');
   }
 
@@ -53,14 +56,9 @@ const mutationFetcher = async <
     config.data = arg.requestBody;
   }
 
-  // eslint-disable-next-line no-useless-catch
-  try {
-    //axios automatically throw errors, no need check response
-    const response = await axios.request<TResponseBody>(config);
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  // Axios will automatically throw errors, and SWR will catch them
+  const response = await axios.request<TResponseBody>(config);
+  return response;
 };
 
 /**
@@ -83,6 +81,7 @@ export function useMutationRequest<
   TParam = undefined,
 >(req: MutationRequest<TRequestBody>) {
   const {
+    //useSWRMutation doesn't trigger the request automatically like useSWR. manually call the trigger()
     trigger,
     data: response,
     isMutating,
@@ -104,8 +103,22 @@ export function useMutationRequest<
 }
 
 /**
- *  If the request succeeds, Axios returns an AxiosResponse.
-    If the request fails (e.g., network issue, timeout, or a 
-    response with a 4xx or 5xx status), Axios throws an AxiosError, 
-    which may or may not contain a response.
+ *If the request succeeds, Axios returns an AxiosResponse.
+  If the request fails (e.g., network issue, timeout, or a 
+  response with a 4xx or 5xx status), Axios throws an AxiosError, 
+  which may or may not contain a response.
+
+  Handle these errors in multiple ways, either inside your fetcher 
+  or in the place where you call trigger(). I will handle it in the 
+  place where i call trigger:
+  Pros: By handling the error in trigger, you can do more specific error handling.
+  Cons: If you always catch the error there, you might prevent the error variable 
+  in the hook from being populated automatically.
+  If you don’t wrap the trigger() with try/catch, the error will be captured 
+  by SWR itself, and you’ll have access to the error variable from the mutation hook.
+  ensure that your central error handler distinguishes between errors you want to 
+  handle globally and errors you want to show in the UI.
+  If your goal is to manage errors in the UI using the error variable from the hook, 
+  you can avoid try/catch and let SWR handle the error.
+  Only use try/catch when you want to do something specific with the error (e.g., logging)
  */

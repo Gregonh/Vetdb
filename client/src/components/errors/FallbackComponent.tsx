@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-
 import { FallbackProps } from 'react-error-boundary';
 
 export function FallbackComponent({ error, resetErrorBoundary }: FallbackProps) {
   return (
     <div role="alert">
-      <pre>{error.message}</pre>
+      {error instanceof Error && (
+        <pre>{error.message || 'An unknown error occurred'}</pre>
+      )}
       {resetErrorBoundary && <button onClick={resetErrorBoundary}>🔄 Try Again!</button>}
     </div>
   );
