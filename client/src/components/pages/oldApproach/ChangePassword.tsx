@@ -6,8 +6,8 @@ import { useForm } from 'react-hook-form';
 import { redirect, useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 
-import { dealWithErrors } from '../errors/dealWithError';
-import { Button } from '../ui/button';
+import { dealWithErrors } from '../../errors/dealWithError';
+import { Button } from '../../ui/button';
 import {
   Card,
   CardContent,
@@ -15,7 +15,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '../ui/card';
+} from '../../ui/card';
 import {
   Form,
   FormControl,
@@ -24,8 +24,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
+} from '../../ui/form';
+import { Input } from '../../ui/input';
 
 /**
  * TODO: error boundary

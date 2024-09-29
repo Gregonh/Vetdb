@@ -13,9 +13,9 @@ import { useErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
-import { dealWithErrors } from '../errors/dealWithError';
-import { Button } from '../ui/button';
-import { Checkbox } from '../ui/checkbox';
+import { dealWithErrors } from '../../errors/dealWithError';
+import { Button } from '../../ui/button';
+import { Checkbox } from '../../ui/checkbox';
 import {
   Form,
   FormControl,
@@ -24,16 +24,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
+} from '../../ui/form';
+import { Input } from '../../ui/input';
 
 import { validationAxiosResponseBody } from '@/data-sources/helperValidationResponse';
 import {
-  type MutationRequest,
+  type MutationRequestConfig,
   useMutationRequest,
 } from '@/data-sources/useMutationRequest';
 
-const requestConfiguration: NonNullable<MutationRequest<RequestBodyPostUser>> = {
+const requestConfiguration: NonNullable<MutationRequestConfig<RequestBodyPostUser>> = {
   url: 'http://localhost:4001/users/register',
 };
 

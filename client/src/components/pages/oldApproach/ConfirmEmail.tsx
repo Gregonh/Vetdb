@@ -2,11 +2,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { useErrorBoundary } from 'react-error-boundary';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { z } from 'zod';
 
-import { dealWithErrors } from '../errors/dealWithError';
-import { Button } from '../ui/button';
+import { dealWithErrors } from '../../errors/dealWithError';
+import { Button } from '../../ui/button';
 import {
   Form,
   FormControl,
@@ -14,32 +14,38 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
+} from '../../ui/form';
+import { Input } from '../../ui/input';
 
 /**
+ * TODO: error boundary
+ * TODO: catch error better
  * TODO: improve styles
  * TODO: refactor
  */
 
-const loginValidationSchema = z.object({
-  email: z.string().min(9, { message: 'must be at least 9 characters' }).email({
-    message: 'Must be a valid email',
-  }),
-  password: z
-    .string()
-    .min(6, {
-      message: 'Password must be at least 6 characters',
-    })
-    .max(20, { message: 'Password must be no more than 20 characters' }),
-});
+const emailValidationSchema = z
+  .object({
+    email: z.string().min(9, { message: 'must be at least 9 characters' }).email({
+      message: 'Must be a valid email',
+    }),
+    confirmEmail: z.string().min(9, { message: 'must be at least 9 characters' }).email({
+      message: 'Must be a valid email',
+    }),
+  })
+  .refine((data) => data.email === data.confirmEmail, {
+    path: ['confirmEmail'],
+    message: "Email don't match",
+  });
 
-type LoginValidation = z.infer<typeof loginValidationSchema>;
+type EmailValidation = z.infer<typeof emailValidationSchema>;
 
-export function LoginUser() {
+export function ConfirmEmail() {
   const { showBoundary } = useErrorBoundary();
-  const form = useForm<LoginValidation>({
-    resolver: zodResolver(loginValidationSchema),
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const form = useForm<EmailValidation>({
+    resolver: zodResolver(emailValidationSchema),
   });
 
   const {
@@ -48,10 +54,15 @@ export function LoginUser() {
     control,
   } = form;
 
-  const loginUser = async (user: LoginValidation) => {
+  if (!id || id == null) {
+    navigate('/login');
+  }
+
+  const confirmEmailExist = async (user: EmailValidation) => {
+    // eslint-disable-next-line no-useless-catch
     try {
       const client = axios.create({
-        baseURL: 'http://localhost:4001/user',
+        baseURL: 'http://localhost:4001/user/confirmEmail',
         timeout: 40000,
         headers: {
           Accept: 'application/json',
@@ -60,8 +71,8 @@ export function LoginUser() {
       });
       const baseURL = client.defaults.baseURL as string;
       const data = {
-        name: user.email,
-        password: user.password,
+        id: id as string,
+        email: user.email.toLowerCase(),
       };
       await client.post(baseURL, data);
     } catch (error) {
@@ -69,12 +80,24 @@ export function LoginUser() {
     }
   };
 
-  const onSubmit = async (data: LoginValidation) => {
+  const onSubmit = async (data: EmailValidation) => {
     try {
-      const user = loginValidationSchema.parse(data);
-      await loginUser(user);
-    } catch (error: unknown) {
-      dealWithErrors(error, showBoundary);
+      const userEmail = emailValidationSchema.parse(data);
+      if (!id) {
+        navigate('/login');
+      }
+      await confirmEmailExist(userEmail);
+      //TODO: learn how to dealt with axios response
+      navigate(`/changePassword/${id}`);
+    } catch (err: unknown) {
+      if (err instanceof z.ZodError) {
+        console.error(err.issues);
+      }
+      if (err instanceof Error) {
+        console.error(err.message);
+      }
+
+      navigate('/login');
     }
   };
 
@@ -82,7 +105,6 @@ export function LoginUser() {
     <>
       <div className="u-container v-full-height mb-vspace-s-xl text-cfont-0 md:flex md:items-center">
         <div className="md:grow">
-          <h1 className="text-cfont-3 px-cspace-s-l pt-cspace-s-l">Login de usuario</h1>
           <Form {...form}>
             <form onSubmit={handleSubmit(onSubmit)} className="p-cspace-s-l">
               <div>
@@ -117,31 +139,29 @@ export function LoginUser() {
               <div className="mt-cspace-xs">
                 <FormField
                   control={control}
-                  name="password"
+                  name="confirmEmail"
                   render={({ field }) => (
-                    <FormItem className="md:flex md:h-[100%] md:flex-col">
+                    <FormItem>
                       <FormLabel
-                        className="font-bodybold block text-sm text-gray-700 md:overflow-y-auto"
-                        htmlFor="password"
+                        className="font-bodybold block text-sm text-gray-700"
+                        htmlFor="c_email"
                       >
-                        Password
+                        Confirm Email
                       </FormLabel>
-                      <div className="md:grow md:basis-0">
-                        <FormControl className="mt-2">
-                          <Input
-                            {...field}
-                            type="password"
-                            className={`w-full border px-3 py-2 text-sm leading-tight text-gray-700 ${
-                              errors.password && 'border-red-500'
-                            } focus:shadow-outline appearance-none rounded focus:outline-none`}
-                            id="password"
-                            autoComplete="new-password"
-                            defaultValue=""
-                          />
-                        </FormControl>
-                      </div>
-                      <FormMessage className="md:basis-10 md:overflow-y-auto">
-                        {errors.password && errors.password?.message}
+                      <FormControl>
+                        <Input
+                          {...field}
+                          className={`w-full border px-3 py-2 text-sm leading-tight text-gray-700 ${
+                            errors.confirmEmail && 'border-red-500'
+                          } focus:shadow-outline appearance-none rounded focus:outline-none`}
+                          id="c_email"
+                          type="email"
+                          autoComplete="email"
+                          defaultValue=""
+                        />
+                      </FormControl>
+                      <FormMessage>
+                        {errors.confirmEmail && errors.confirmEmail?.message}
                       </FormMessage>
                     </FormItem>
                   )}
@@ -152,29 +172,11 @@ export function LoginUser() {
                   className="focus:shadow-outline w-full rounded-full bg-blue-500 px-4 py-2 font-bold text-[rgb(28,28,28)] hover:bg-blue-700 hover:text-white focus:outline-none"
                   type="submit"
                 >
-                  Login
+                  Send Email
                 </Button>
               </div>
             </form>
           </Form>
-
-          <hr className="mt-cspace-m border-t" />
-          <div className="mt-cspace-m text-center">
-            <a
-              className="small-text inline-block align-baseline text-sm text-[rgb(39,86,163)] hover:text-blue-800"
-              href="/changePassword/9"
-            >
-              Forgot Password?
-            </a>
-          </div>
-          <div className="text-center">
-            <Link
-              className="small-text inline-block align-baseline text-sm text-[rgb(39,86,163)] hover:text-blue-800"
-              to="/register"
-            >
-              Don&apos;t have an account? Register!
-            </Link>
-          </div>
         </div>
       </div>
     </>

@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 
+import { LoginButton } from '../buttons/LoginButton';
+import { SignupButton } from '../buttons/SingupButton';
 import { Button } from '../ui/button';
 import {
   Card,
@@ -17,7 +19,17 @@ function Home() {
   return (
     <>
       <div className="root-container">
-        <div className="root-grid">
+        <Card className="w-[350px] mx-auto">
+          <CardHeader>
+            <CardTitle>Welcome to VetApp</CardTitle>
+            <CardDescription>What do you want to do?</CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-between gap-2">
+            <SignupButton className="grow basis-0" />
+            <LoginButton className="grow basis-0" />
+          </CardContent>
+        </Card>
+        <div className="root-grid mt-8">
           <p className="root-grid-item">papas</p>
           <p className="root-grid-item">papas</p>
           <p className="root-grid-item">papas</p>
@@ -85,18 +97,6 @@ function Home() {
           </Card>
         </TabsContent>
       </Tabs>
-      <Card className="w-[350px]">
-        <CardHeader>
-          <CardTitle>Welcome to VetApp</CardTitle>
-          <CardDescription>What do you want to do?</CardDescription>
-        </CardHeader>
-        <CardContent className="flex justify-between">
-          <Button variant="outline" className="grow basis-0">
-            Register
-          </Button>
-          <Button className="grow basis-0">Login</Button>
-        </CardContent>
-      </Card>
     </>
   );
 }

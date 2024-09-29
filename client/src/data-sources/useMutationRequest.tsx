@@ -3,29 +3,31 @@ import useSWRMutation from 'swr/mutation';
 
 import { logger } from '@/utils/logger';
 
-export type MutationRequest<TRequestBody = undefined> =
-  AxiosRequestConfig<TRequestBody> | null;
+export type MutationRequestConfig<RequestBody = undefined> =
+  AxiosRequestConfig<RequestBody> | null;
 
-interface MutationRequestArgs<TRequestBody = undefined, TParam = undefined> {
+interface FetcherRequestArgs<RequestBody = undefined, QueryParam = undefined> {
   //preventing conflicts or misuse when constructing the request.
-  request: NonNullable<Omit<MutationRequest<TRequestBody>, 'params' | 'data' | 'method'>>; //these omit properties can be defined now
+  request: NonNullable<
+    Omit<MutationRequestConfig<RequestBody>, 'params' | 'data' | 'method'>
+  >;
+  //these omit properties can be defined now
   methodType: 'delete' | 'DELETE' | 'post' | 'POST' | 'put' | 'PUT' | 'patch' | 'PATCH';
-  requestBody?: TRequestBody;
-  queryParams?: TParam extends Record<string, string | number | boolean | undefined>
-    ? TParam
+  requestBody?: RequestBody;
+  queryParams?: QueryParam extends Record<string, string | number | boolean | undefined>
+    ? QueryParam
     : undefined;
 }
-
-//type ResponseType<TResponseBody> = TResponseBody ; //we prefer the full axios response, not just body response
-
+//fist arg is passed automatically as hook´s key, the second is our FetcherRequestArgs obj
+//when we call the trigger() we pass manually only the second argument
 const mutationFetcher = async <
-  TResponseBody,
-  TRequestBody = undefined,
-  TParam = undefined,
+  SuccessBody,
+  RequestBody = undefined,
+  QueryParam = undefined,
 >(
   baseUrl: string,
-  { arg }: { arg: MutationRequestArgs<TRequestBody, TParam> },
-): Promise<AxiosResponse<TResponseBody>> => {
+  { arg }: { arg: FetcherRequestArgs<RequestBody, QueryParam> },
+): Promise<AxiosResponse<SuccessBody>> => {
   const url = new URL(baseUrl);
 
   try {
@@ -39,7 +41,7 @@ const mutationFetcher = async <
     throw new Error('queryParams must be a valid object');
   }
 
-  const config: AxiosRequestConfig<TRequestBody> = {
+  const config: AxiosRequestConfig<RequestBody> = {
     //Default config
     timeout: 40000,
     headers: {
@@ -57,7 +59,7 @@ const mutationFetcher = async <
   }
 
   // Axios will automatically throw errors, and SWR will catch them
-  const response = await axios.request<TResponseBody>(config);
+  const response = await axios.request<SuccessBody>(config);
   return response;
 };
 
@@ -67,19 +69,20 @@ const mutationFetcher = async <
  * useRequest instance to automatically revalidate that get local cache
  * after call trigger().
  * If we want manually revalidate use mutate() with the same key of a get request.
- * TResponseBody is the return body data type, TRequestBody the request body type,
- * TParam is the query parameter type.
- * @param req
+ * SuccessBody is the return body data type, we generally use SuccessBody<zodSchemaTypeForInnerBody>.
+ * RequestBody the request body type, we generally use a zodSchemaTypeForRequest.
+ * QueryParam is the query parameter type.
+ * @param requestConfig
  * Axios request configuration
  * @returns
  * trigger to call the fetcher and automatically revalidate if the key is the same
  * as one used with useSWR hook.
  */
 export function useMutationRequest<
-  TResponseBody,
-  TRequestBody = undefined,
-  TParam = undefined,
->(req: MutationRequest<TRequestBody>) {
+  SuccessBody,
+  RequestBody = undefined,
+  QueryParam = undefined,
+>(requestConfig: MutationRequestConfig<RequestBody>) {
   const {
     //useSWRMutation doesn't trigger the request automatically like useSWR. manually call the trigger()
     trigger,
@@ -87,11 +90,11 @@ export function useMutationRequest<
     isMutating,
     error,
   } = useSWRMutation<
-    AxiosResponse<TResponseBody>,
+    AxiosResponse<SuccessBody>,
     AxiosError | Error,
     string | null,
-    MutationRequestArgs<TRequestBody, TParam>
-  >(req?.url ?? null, mutationFetcher);
+    FetcherRequestArgs<RequestBody, QueryParam>
+  >(requestConfig?.url ?? null, mutationFetcher);
 
   return {
     trigger,

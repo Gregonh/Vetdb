@@ -1,6 +1,8 @@
 import { Outlet, Link } from 'react-router-dom';
 
-const MainLayout = () => {
+/*It´s better to have the footer outside this layout
+to avoid the ui jump impression.*/
+const MainLayout: React.FC = () => {
   return (
     <>
       <nav className="min-h-min-height-nav">
@@ -11,11 +13,9 @@ const MainLayout = () => {
         </ul>
       </nav>
       <main className="mt-default-top-margin">
+        {/* {isLoading ? <p>Loading ....</p> : <Outlet />} */}
         <Outlet />
       </main>
-      <footer className="mt-footer-top-margin">
-        <p>Footer content</p>
-      </footer>
     </>
   );
 };
